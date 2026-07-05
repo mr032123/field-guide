@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Brand Health — Build &amp; Demo Walkthrough</title>
+<style>
+  :root{
+    --ink:#1a1d23; --muted:#5b6472; --bg:#f7f7f5; --card:#ffffff;
+    --accent:#0f4c81; --accent-soft:#e8f0f7; --gold:#a07425; --gold-soft:#faf3e6;
+    --green:#2c6e49; --green-soft:#e7f2ec; --red:#9e3a3a; --red-soft:#f9ecec;
+    --border:#e3e2dd; --code-bg:#22262e; --code-ink:#e6e9ef;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;font-size:16px}
+  header{background:var(--ink);color:#fff;padding:28px 24px 22px}
+  header .wrap{max-width:1080px;margin:0 auto}
+  header h1{margin:0 0 4px;font-size:1.45rem;font-weight:700;letter-spacing:.2px}
+  header p{margin:0;color:#b8bfca;font-size:.95rem}
+  nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto}
+  nav .wrap{max-width:1080px;margin:0 auto;display:flex;gap:2px;padding:0 12px}
+  nav button{flex:0 0 auto;background:none;border:none;border-bottom:3px solid transparent;padding:13px 14px 10px;font-size:.9rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  nav button:hover{color:var(--ink)}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+  nav button .cnt{font-weight:500;font-size:.75rem;color:var(--muted);margin-left:4px}
+  main{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+  section.tab{display:none}
+  section.tab.active{display:block}
+  h2{font-size:1.3rem;margin:0 0 6px}
+  h3{font-size:1.05rem;margin:28px 0 8px}
+  .lede{color:var(--muted);margin:0 0 22px;max-width:70ch}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin:0 0 16px}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:10px;margin:0 0 12px;overflow:hidden}
+  .step-head{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;cursor:pointer}
+  .step-head:hover{background:#fbfbf9}
+  .step-head input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex:0 0 auto}
+  .step-head .t{font-weight:650;font-size:.98rem}
+  .step-head .s{color:var(--muted);font-size:.85rem;margin-top:2px}
+  .step-head .chev{margin-left:auto;color:var(--muted);flex:0 0 auto;transition:transform .15s}
+  .step.open .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:2px 18px 18px 48px;border-top:1px solid var(--border)}
+  .step.open .step-body{display:block}
+  .step.done .t{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+  .step-body p{margin:12px 0}
+  .step-body ul,.step-body ol{margin:10px 0;padding-left:22px}
+  .step-body li{margin:5px 0}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-right:6px}
+  .tag.aha{background:var(--gold-soft);color:var(--gold)}
+  .tag.method{background:var(--accent-soft);color:var(--accent)}
+  .tag.warn{background:var(--red-soft);color:var(--red)}
+  .tag.time{background:#eef0ee;color:var(--muted)}
+  .callout{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:.94rem}
+  .callout.gold{border-color:var(--gold);background:var(--gold-soft)}
+  .callout.red{border-color:var(--red);background:var(--red-soft)}
+  .callout.green{border-color:var(--green);background:var(--green-soft)}
+  .callout b:first-child{display:block;margin-bottom:2px}
+  .codewrap{position:relative;margin:14px 0}
+  pre{background:var(--code-bg);color:var(--code-ink);padding:16px 16px 14px;border-radius:8px;overflow-x:auto;font-size:.82rem;line-height:1.5;margin:0;white-space:pre-wrap;word-break:break-word}
+  .copybtn{position:absolute;top:8px;right:8px;background:#3a4150;color:#dfe4ec;border:none;border-radius:6px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer}
+  .copybtn:hover{background:#4a5264}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.88rem;background:var(--card)}
+  th,td{border:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:#f0efeb;font-weight:650}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:16px 0}
+  .pick{border:1px solid var(--border);border-radius:10px;background:var(--card);padding:16px 18px}
+  .pick h4{margin:0 0 6px;font-size:.98rem}
+  .pick p{margin:0 0 10px;font-size:.88rem;color:var(--muted)}
+  .pick .go{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:.85rem;font-weight:600;cursor:pointer;text-decoration:none}
+  .progressbar{height:6px;background:var(--border);border-radius:3px;margin:10px 0 20px;overflow:hidden}
+  .progressbar>div{height:100%;background:var(--green);width:0%;transition:width .3s}
+  .toolbar{display:flex;gap:10px;align-items:center;margin:0 0 14px;flex-wrap:wrap}
+  .toolbar button{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer}
+  .toolbar button:hover{color:var(--ink);border-color:var(--muted)}
+  .qa{margin:0 0 10px;border:1px solid var(--border);border-radius:10px;background:var(--card);overflow:hidden}
+  .qa .q{padding:12px 16px;font-weight:650;cursor:pointer;display:flex;gap:10px}
+  .qa .q:before{content:"Q";color:var(--red);font-weight:800}
+  .qa .a{display:none;padding:0 16px 14px 40px;color:var(--ink)}
+  .qa.open .a{display:block}
+  footer{border-top:1px solid var(--border);color:var(--muted);font-size:.8rem;padding:20px;text-align:center}
+  @media print{
+    nav,.toolbar,.copybtn{display:none}
+    section.tab{display:block!important;page-break-before:always}
+    .step-body,.qa .a{display:block!important}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>AI Brand Health — Build &amp; Demo Walkthrough</h1>
+  <p>Synthetic client panel · pick the guide matching the tools in your enterprise environment · progress saves in this browser</p>
+</div></header>
+<nav><div class="wrap">
+  <button data-tab="start" class="active">Start Here</button>
+  <button data-tab="foundations">Foundations <span class="cnt" id="cnt-foundations"></span></button>
+  <button data-tab="guide-a">A · ChatGPT Only <span class="cnt" id="cnt-guide-a"></span></button>
+  <button data-tab="guide-b">B · + Claude Ent. <span class="cnt" id="cnt-guide-b"></span></button>
+  <button data-tab="guide-c">C · + Perplexity <span class="cnt" id="cnt-guide-c"></span></button>
+  <button data-tab="copilot">Copilot Path <span class="cnt" id="cnt-copilot"></span></button>
+  <button data-tab="demo">Demo Day</button>
+</div></nav>
+<main>
+
+<!-- ============================ START ============================ -->
+<section class="tab active" id="tab-start">
+  <h2>Start here</h2>
+  <p class="lede">You are building an <b>instrument</b>, not screenshots. The demo succeeds because of a finding that a daily AI user could not have produced casually — anything requiring sampling discipline, calibrated personas, or systematic cross-model / cross-source comparison. Every guide below protects that wall.</p>
+
+  <div class="callout gold"><b>The one rule</b> Do <u>Foundations</u> first, in every scenario. Personas, question bank, protocol, and scoring are tool-independent — nothing built there is throwaway if your tool situation changes.</div>
+
+  <h3>Pick your guide</h3>
+  <div class="grid">
+    <div class="pick">
+      <h4>A — ChatGPT Enterprise only</h4>
+      <p><b>Aha: “The Silent Objection.”</b> Recommendation rate per persona + the recurring verbatim phrase the model uses to rule your firm out — the objection no human has ever heard.</p>
+      <a class="go" href="#" data-goto="guide-a">Open Guide A</a>
+    </div>
+    <div class="pick">
+      <h4>B — ChatGPT + Claude Enterprise</h4>
+      <p><b>Aha: “The Disagreement Map.”</b> Two AIs tell the same client different stories; disagreement maps your weakest narrative ground. Plus a working instrument and a live pre-flight of a draft announcement.</p>
+      <a class="go" href="#" data-goto="guide-b">Open Guide B</a>
+    </div>
+    <div class="pick">
+      <h4>C — ChatGPT + Perplexity</h4>
+      <p><b>Aha: “The Supply Chain.”</b> Your AI brand is built from ~20 specific URLs; you control a fraction; the most-cited source is likely something absurd. Source-level attribution = the dial.</p>
+      <a class="go" href="#" data-goto="guide-c">Open Guide C</a>
+    </div>
+    <div class="pick">
+      <h4>Wildcard — Copilot with Claude enabled</h4>
+      <p>You may already own a second model family and an agent-automation path (Copilot Studio) without procurement. Read this regardless of scenario.</p>
+      <a class="go" href="#" data-goto="copilot">Open Copilot Path</a>
+    </div>
+  </div>
+
+  <h3>What you already have (head start)</h3>
+  <div class="card">
+    <p style="margin:0 0 8px">Five individual-investor personas and a per-persona prompt list across priority topics. That covers the two slowest Foundations steps — <b>but audit before trusting</b>:</p>
+    <ul style="margin:0;padding-left:20px">
+      <li><b>Tier skew:</b> in-house prompt lists over-index on perception questions. The aha only falls out of <i>decision</i> questions (“recommend one and tell me what ruled out the others”). Target ≥ one-third decision-tier.</li>
+      <li><b>Insider phrasing:</b> if prompts use the firm’s vocabulary, you’ll retrieve your own marketing back and measure an echo. Rewrite in each investor’s natural register.</li>
+      <li><b>No rejection surface:</b> prompts must consistently imply a competitor set so recommendation rates are comparable — and the identical bank must run for competitors as the control.</li>
+    </ul>
+  </div>
+
+  <h3>Timeline at a glance</h3>
+  <table>
+    <tr><th></th><th>Foundations</th><th>Runs + scoring</th><th>Demo build</th><th>Total (part-time)</th></tr>
+    <tr><td><b>A</b></td><td>3–4 days (audit, not create)</td><td>5–6 days (manual matrix)</td><td>2 days</td><td>~2 weeks</td></tr>
+    <tr><td><b>B</b></td><td>3–4 days</td><td>3–4 days (pipeline) + ChatGPT manual</td><td>2–3 days (incl. pre-flight + backtest)</td><td>~2–3 weeks</td></tr>
+    <tr><td><b>C</b></td><td>3–4 days</td><td>4–5 days (incl. citation ledger)</td><td>2 days (+1–2 wks if before/after)</td><td>~2 weeks</td></tr>
+  </table>
+
+  <div class="callout red"><b>Before you pitch a specific aha to the CMO</b> Run the pilot (last step of Foundations): one persona × three decision questions × n=10. The kill sentence and the load-bearing wall are empirical bets — glimpse the finding before you promise it.</div>
+</section>
+
+<!-- ============================ FOUNDATIONS ============================ -->
+<section class="tab" id="tab-foundations">
+  <h2>Foundations — do this first, every scenario</h2>
+  <p class="lede">This section is your methodology. It is also your credibility: every hard question in the room is answered by something you did here.</p>
+  <div class="toolbar"><button data-expand="foundations">Expand all</button><button data-collapse="foundations">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-foundations"></div></div>
+
+  <div class="step" data-group="foundations" data-id="f1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1 · Audit the five personas</div><div class="s">½ day · you have these — verify they’re instrument-grade</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Each persona must be a written brief of ~150–250 words containing: demographics, financial situation, goals, anxieties, sophistication level, and <b>how they naturally phrase questions</b> (vocabulary, formality, what they’d never say). If any brief is a two-line sketch, expand it now — thin personas produce generic answers and no divergence.</p>
+      <p>Confirm each persona maps to a real segment in your brand tracker / segmentation. If one doesn’t, replace it — an unmappable persona can’t be calibrated (step 2) and will be the first thing challenged.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="foundations" data-id="f2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2 · Calibration check <span class="tag method">methodology</span></div><div class="s">½–1 day · your entire defense of “why trust fake investors”</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Before any brand measurement: run each persona on <b>category-level</b> questions (no brand names) and check that the synthetic baseline is directionally consistent with what your tracker says that real segment believes. Document the comparison with a date stamp.</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are advising the client described below. Stay in role.
+
+CLIENT PROFILE
+[paste persona brief]
+
+Answer the following questions as you would for this specific client.
+For each, state what you believe this client's main concerns and
+preferences are, before answering.
+
+1. What matters most when choosing a [category] provider?
+2. What are the biggest risks or downsides people like me worry about?
+3. What would make you distrust a provider in this category?
+4. How do people like me usually find and evaluate providers?</pre></div>
+      <p>Compare answers against the tracker’s attribute priorities for that segment. Directional agreement = calibrated. Material disagreement = revise the persona brief and re-run. <b>Keep the artifacts</b> — “we calibrated synthetic baselines against tracker data before measuring anything” is a sentence that wins the meeting.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="foundations" data-id="f3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3 · Upgrade the prompt list into a question bank</div><div class="s">1 day · tier balance, register, paraphrases</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Restructure your existing prompt list into 8–12 questions across three tiers, per persona where phrasing differs:</p>
+      <table>
+        <tr><th>Tier</th><th>Purpose</th><th>Example shape</th></tr>
+        <tr><td><b>Perception</b></td><td>Baseline only — don’t lead with it</td><td>“How would you describe [FIRM]?”</td></tr>
+        <tr><td><b>Comparison</b></td><td>Attribute positioning vs. named rivals</td><td>“Compare [FIRM] and [COMPETITOR] for someone like me.”</td></tr>
+        <tr><td><b>Decision</b> <span class="tag aha">aha source</span></td><td>Forces choice + rejection language</td><td>“I need to choose a provider for [job-to-be-done]. Recommend ONE and explain what ruled out the others.”</td></tr>
+      </table>
+      <p>Then: write <b>2–3 paraphrases per question</b> (controls prompt sensitivity — if results flip on rewording you have noise, and you need to know), and rewrite anything in insider vocabulary into the persona’s natural register.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="foundations" data-id="f4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4 · Freeze and pre-register the bank <span class="tag method">methodology</span></div><div class="s">1 hour · immunizes you against “you cherry-picked”</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Finalize the bank, date-stamp it, save it somewhere with a timestamp you can point to (email it to yourself and a colleague). <b>No edits after runs begin.</b> The most dangerous objection in the room is “you picked the questions that made this look dramatic” — pre-registration kills it in one sentence.</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>question_id,tier,topic,persona_id,paraphrase_id,text,n_target
+Q01,decision,retirement_planning,P1,a,"I'm 61 with $1.4M saved and no plan. Recommend one firm to help me and tell me why not the others.",20
+Q01,decision,retirement_planning,P1,b,"Which company should someone in my situation actually use for retirement planning? Pick one. What rules the rest out?",20
+Q02,comparison,fees,P2,a,"Compare [FIRM] and [COMPETITOR1] on fees and what I'd actually pay. Which is better for someone like me?",20</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-group="foundations" data-id="f5">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5 · Lock the run protocol <span class="tag method">methodology</span></div><div class="s">the difference between an instrument and anecdotes</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ul>
+        <li><b>Temporary chats only, memory OFF.</b> Workspace memory silently contaminates runs. Close this hole explicitly and say you closed it.</li>
+        <li><b>n ≥ 20 runs per cell</b> (persona × question). Single runs are anecdotes. If labor forces cuts, cut personas or questions — never n.</li>
+        <li><b>Browsing toggled as a controlled variable:</b> every cell both ways. OFF = frozen layer (model weights). ON = live layer (web retrieval). They behave completely differently and produce separate findings.</li>
+        <li><b>Competitor control set:</b> identical protocol on 2–3 competitors. “Recommended in 40% of runs” means nothing without a baseline.</li>
+        <li><b>Log everything</b> (template below). The log is the first entry of a time series nobody can retroactively recreate.</li>
+      </ul>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>run_id,date,surface,model_version,browsing,persona_id,question_id,paraphrase_id,transcript_file,notes
+R0001,2026-07-08,chatgpt,GPT-5.x,off,P1,Q01,a,transcripts/R0001.txt,
+R0002,2026-07-08,chatgpt,GPT-5.x,on,P1,Q01,a,transcripts/R0002.txt,</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-group="foundations" data-id="f6">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6 · Build the scoring rubric + coder prompt</div><div class="s">½ day · machine-coded, human-verified</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Every transcript gets coded with the same rubric. Use an LLM as the coder; <b>hand-verify a 10% sample</b> and record the agreement rate — saying “we validated the machine coder against human coding” out loud is itself impressive.</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are a research coder. Read the transcript below and code it against
+this rubric. Output ONLY valid JSON. Do not explain.
+
+{
+  "recommended_brand": "which single brand was recommended, or 'none'",
+  "our_brand_recommended": "yes | no | conditional",
+  "first_brand_mentioned": "",
+  "all_brands_mentioned": [],
+  "ruling_out_language": ["verbatim quotes that steer away from [FIRM]"],
+  "attributes": { "trust": -1|0|1, "fees": -1|0|1, "performance": -1|0|1,
+                  "service": -1|0|1, "innovation": -1|0|1 },
+  "sources_cited": ["URLs if any"],
+  "notes": ""
+}
+
+TRANSCRIPT:
+[paste]</pre></div>
+      <p>Report <b>frequencies and variance</b>, never single-run quotes — except the kill sentence, which you show <i>because</i> it recurs (always state its recurrence rate: “this phrasing appeared in 14 of 20 runs”).</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="foundations" data-id="f7">
+    <div class="step-head"><input type="checkbox"><div><div class="t">7 · Run the pilot <span class="tag aha">go / no-go</span></div><div class="s">1 afternoon · glimpse the finding before promising it</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>One persona (pick the segment you suspect is weakest) × three decision questions × n=10, browsing off. Code the transcripts. You are looking for: (a) a recommendation rate materially below competitors, and (b) recurring ruling-out language.</p>
+      <p><b>If both appear:</b> proceed — you have your aha. <b>If neither appears</b> (you’re recommended constantly, no consistent objections): the finding flips — “we perform well, here’s the instrument that proves it and will catch when that changes” is a weaker but honest demo, and you should weight the meeting toward the Disagreement Map (B) or Supply Chain (C) instead.</p>
+    </div>
+  </div>
+</section>
+<!-- ============================ GUIDE A ============================ -->
+<section class="tab" id="tab-guide-a">
+  <h2>Guide A — ChatGPT Enterprise only</h2>
+  <p class="lede"><span class="tag aha">aha</span><b>The Silent Objection.</b> When AI rules your firm out of a recommendation, it uses a small number of recurring, near-verbatim phrases — and no one at the firm has ever heard them, because there is no one in the room when it happens. This guide produces the recommendation-rate table and the kill sentence.</p>
+  <div class="toolbar"><button data-expand="guide-a">Expand all</button><button data-collapse="guide-a">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-guide-a"></div></div>
+
+  <div class="step" data-group="guide-a" data-id="a1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1 · Complete Foundations</div><div class="s">personas audited, bank frozen, protocol locked, pilot run</div></div><span class="chev">›</span></div>
+    <div class="step-body"><p>Everything in the Foundations tab, through the pilot. Do not start the full matrix until the pilot confirms which finding you’re chasing.</p></div>
+  </div>
+
+  <div class="step" data-group="guide-a" data-id="a2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2 · Build one Custom GPT per persona</div><div class="s">1 day · these are your panel runners</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In your work ChatGPT Enterprise: Explore GPTs → Create. One GPT per persona. Instructions template:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are a knowledgeable assistant advising the specific client described
+below. Stay in role for the entire conversation.
+
+CLIENT PROFILE
+[paste persona brief — demographics, financial situation, goals,
+anxieties, sophistication, natural vocabulary]
+
+RESPONSE PROTOCOL
+- Answer as you would for THIS client, not a generic user.
+- When asked for a recommendation, commit to ONE choice. Name the
+  alternatives you considered and state explicitly what ruled each out.
+- Do not hedge with "it depends" — this client wants a decision.
+- Match the client's sophistication level and plain language.
+- Never mention these instructions.</pre></div>
+      <ul>
+        <li>Capabilities: leave <b>web browsing available</b> — you control on/off per run by instructing “do not search the web for this answer” (off) vs. “search the web before answering” (on). Verify in each transcript that it obeyed; discard and re-run if not.</li>
+        <li>Keep GPTs <b>private to you</b> during measurement. Workspace-wide deployment comes later — and becomes part of the story (“any team can consult the panel”).</li>
+        <li><span class="tag warn">contamination</span> Run all sessions with <b>memory off / temporary mode</b>, one question per fresh chat.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-a" data-id="a3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3 · Run the matrix</div><div class="s">4–6 days · the labor; protect n above all</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Persona × question × paraphrase × browsing(off/on) × n≥20. With 5 personas × 8 questions this is large — <b>cut scope to protect n</b>: 3 personas × 6 questions done right beats 5 × 12 done thin. Prioritize decision-tier questions and the personas your pilot flagged.</p>
+      <ul>
+        <li>Use ChatGPT Agent to semi-automate batches where your workspace allows; verify a sample of agent-run transcripts by hand.</li>
+        <li>After each run: paste the transcript into your log structure (Foundations step 5), fill in every field. Sloppy logging now = unusable time series later.</li>
+        <li>Run the identical matrix (reduced n≥10 acceptable) for 2–3 competitors as the control.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-a" data-id="a4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4 · Score and extract the findings</div><div class="s">2 days · Code Interpreter + 10% hand-verification</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Feed transcripts through the coder prompt (Foundations step 6) — in ChatGPT, use a Project with Code Interpreter to batch this. Hand-verify 10%, record agreement. Then compute:</p>
+      <ol>
+        <li><b>Recommendation rate</b> per persona × question, vs. competitor baseline — your headline table.</li>
+        <li><b>Kill sentences:</b> cluster the ruling_out_language quotes; find phrases recurring across runs. Record recurrence rate (“14 of 20 runs”).</li>
+        <li><b>Frozen vs. live split:</b> same cells, browsing off vs. on. Flag where the frozen narrative is stale or wrong (old leadership, discontinued products, outdated positioning) — that’s your “permanent record” slide.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-a" data-id="a4b">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4b · Mine the matrix — five more findings live in the same data <span class="tag aha">harvest</span></div><div class="s">½ day · near-zero marginal cost; pick your strongest two for the meeting</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ol>
+        <li><b>Persona divergence</b> — same question, five personas: compare consideration sets and descriptions. If they differ materially, the line is: <i>“There is no ‘our brand’ anymore. There are five — one per client type — and today we control none of them.”</i></li>
+        <li><b>Consideration-set exclusion</b> — first-mention and any-mention rates. Being absent is a different (and worse) problem than losing comparisons: <i>“We’re not losing the argument; we’re not in the room.”</i></li>
+        <li><b>Attribute mismatch</b> — the model’s attribute coding vs. what brand strategy has spent money positioning: <i>“AI thinks we’re a fees brand. We’ve spent three years positioning on trust.”</i></li>
+        <li><b>Narrative fragility</b> — paraphrase sensitivity as a metric. If a competitor’s recommendation survives rewording and yours flips, their AI position is robust and yours is luck: report flip-rate per brand.</li>
+        <li><b>The default customer</b> — run the decision questions with <i>no</i> persona. Who does the model assume is asking, and which brand wins that default? If the default customer isn’t your customer, that’s a finding about the whole category’s AI center of gravity.</li>
+      </ol>
+      <p>Promote the two strongest into the dashboard as additional views. Log the rest — they’re future meetings.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-a" data-id="a5">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5 · Build the dashboard</div><div class="s">1–2 days · static data is fine; the instrument is the protocol</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Have ChatGPT (Canvas / Code Interpreter) generate a single-file HTML dashboard from your scored CSV. Ask for exactly four views:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Build a single-file HTML dashboard from the attached scored-results CSV.
+Views, in order:
+1. Recommendation rate by persona (bar), our firm vs. [COMPETITOR1/2/3],
+   with n per cell displayed.
+2. Frozen vs. live comparison: same metric, browsing off vs. on.
+3. "Ruling-out language" table: verbatim phrase, persona, recurrence
+   rate (x of n runs).
+4. Methodology footer: n per cell, date range, model version, temp-chat
+   protocol, pre-registration date, coder agreement rate.
+Clean, executive-ready, no chart junk. All data inline (no external files).</pre></div>
+      <p>View 4 is not decoration — the methodology footer on the same screen as the findings is what separates you from a vendor pitch.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-a" data-id="a6">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6 · Rehearse the live open</div><div class="s">you know the distribution — use it</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>The demo opens with ONE live decision question as your weakest persona, in a temporary chat, in front of her. Because you ran it 20+ times, you know the likely outcome. If you draw an outlier run, that’s your segue: <i>“and this is exactly why single queries mislead — we ran it twenty times; here’s the distribution.”</i> Either result works. Rehearse both paths. Full script in the Demo Day tab.</p>
+      <div class="callout"><b>Own the ceiling</b> This measures <i>ChatGPT</i> brand health, not AI brand health. Say it before she does — it’s not a weakness, it’s the built-in sequel and the basis of your ask.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ GUIDE B ============================ -->
+<section class="tab" id="tab-guide-b">
+  <h2>Guide B — ChatGPT + Claude Enterprise</h2>
+  <p class="lede"><span class="tag aha">aha</span><b>The Disagreement Map.</b> Different AI models tell the same client different stories about the firm — and the topics where they disagree most are where you have least control of your narrative. Plus: the only scenario that produces a <i>working instrument</i>, and a live pre-flight closer.</p>
+  <div class="toolbar"><button data-expand="guide-b">Expand all</button><button data-collapse="guide-b">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-guide-b"></div></div>
+
+  <div class="step" data-group="guide-b" data-id="b1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1 · Complete Foundations</div><div class="s">identical bank and protocol for both models — or the comparison is invalid</div></div><span class="chev">›</span></div>
+    <div class="step-body"><p>One frozen question bank, one rubric, matched cell sizes across both models. Any asymmetry (different n, different paraphrases, different dates) invalidates the disagreement claim — this is the first thing a rigorous listener checks.</p></div>
+  </div>
+
+  <div class="step" data-group="guide-b" data-id="b2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2 · Have Claude Code build the pipeline</div><div class="s">2–3 working sessions · describe, don’t program</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In your work Claude Enterprise, open Claude Code and paste a kickoff like this:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Build me a brand-perception measurement pipeline. Components:
+
+1. INPUT: question_bank.csv with columns
+   question_id,tier,topic,persona_id,paraphrase_id,text,n_target
+   and personas/ folder with one brief per persona (P1.md ... P5.md).
+
+2. RUNNER: for each row, run n_target completions with the persona
+   brief as system prompt. Log every run as one JSONL record:
+   {run_id, date, model_version, persona_id, question_id,
+    paraphrase_id, response_text}.
+   Support resuming an interrupted matrix without duplicate runs.
+
+3. SCORER: code each response with this rubric [paste rubric from
+   Foundations step 6], output scored_results.csv. Also export a
+   random 10% sample to hand_verify.csv for human checking.
+
+4. ANALYSIS: per persona × question: recommendation rate, first-mention
+   rate, attribute sentiment, clustered ruling-out phrases with
+   recurrence counts. Variance across paraphrases reported explicitly.
+
+5. DASHBOARD: single-file HTML with (a) recommendation rates vs.
+   competitors, (b) cross-model comparison view (I will add a ChatGPT
+   results CSV in the same schema), (c) disagreement map: questions
+   ranked by |rate_modelA - rate_modelB|, (d) methodology footer
+   (n, dates, versions, coder agreement).
+
+Start by generating the file scaffolding and the runner. Ask me
+anything ambiguous before writing code.</pre></div>
+      <p>You review outputs and iterate in plain language. Budget two to three sessions; keep every artifact in one project folder — that folder <b>is</b> the instrument.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-b" data-id="b3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3 · Run both surfaces</div><div class="s">3–4 days · Claude via pipeline, ChatGPT via Guide A steps 2–3</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Claude side: the pipeline runs the matrix. ChatGPT side: Custom GPTs + manual/Agent batches exactly as Guide A — ChatGPT here is a <i>measured surface</i>, not a build tool. Export ChatGPT results into the same CSV schema so the dashboard’s cross-model view works.</p>
+      <p><span class="tag warn">match cells</span> Same questions, same paraphrases, same n, same date window, browsing state matched. Log model versions on both sides.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-b" data-id="b4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4 · Compute the Disagreement Map</div><div class="s">½ day · then test the content-coverage correlation</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Per question/topic: the gap in recommendation rate between models. Rank by gap. Then cross-reference the top disagreements against your owned-content coverage of those topics.</p>
+      <div class="callout gold"><b>The strategic finding — if it holds</b> “Models disagree most where we’ve published least” means model answers on those topics are guesses, and owned content is the dial. Check it honestly: <b>if the correlation doesn’t hold, report what you found instead — do not force it.</b> High disagreement is a finding either way (“nobody’s story about us is stable on these topics”).</div>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-b" data-id="b4b">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4b · Mine both matrices — replication, consensus, and the 2×2 <span class="tag aha">harvest</span></div><div class="s">½ day · two models make every Guide A finding testable, plus three new ones</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ol>
+        <li><b>Replication check</b> — run Guide A’s harvest (persona divergence, exclusion, attribute mismatch, fragility, default customer) on <i>both</i> models. Findings that replicate across model families are your strongest slides: model-independent problems, immune to “that’s just one AI’s quirk.”</li>
+        <li><b>The consensus/contested 2×2</b> — per topic: both models favorable / both unfavorable / split. <i>Consensus deficits</i> are your confirmed, hardest problems. <i>Contested ground</i> is where models are guessing — the cheapest wins, because owned content can tip a coin flip far more easily than a consensus. This 2×2 is a prioritization framework she can act on, not just a finding.</li>
+        <li><b>Model-specific kill sentences</b> — if the two models rule you out for <i>different</i> reasons, the objections aren’t truths about the firm, they’re artifacts of each model’s sources — and each needs a different fix. That distinction is a sophisticated moment in the room.</li>
+        <li><b>A/B pre-flight</b> — extend pre-flight to take two drafts of the same message and have the panel pick a winner with reasons. This is the single fastest route to “she uses it immediately”: every exec has a message-testing problem this week.</li>
+      </ol>
+      <div class="callout"><b>One line, don’t belabor it</b> The instrument itself was designed and built by AI in days, by marketing, without an engineering ticket. Said once, that’s an opportunity-framing aha of its own; said twice, it’s bragging.</div>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-b" data-id="b5">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5 · Build pre-flight mode + backtest <span class="tag aha">the closer</span></div><div class="s">1–2 days · without the backtest it’s a toy</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Add a pipeline mode that takes an arbitrary text (a draft announcement) injected as context, runs the persona panel against it, and returns per-persona reaction summaries plus predicted framing shift.</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>PRE-FLIGHT RUN
+You are the client described in the profile below.
+
+CLIENT PROFILE
+[persona brief]
+
+Your advisor shares the following announcement from [FIRM] and asks
+for your reaction:
+
+[paste draft announcement]
+
+Respond in role: (1) your immediate reaction, (2) what questions or
+concerns this raises for you, (3) whether this makes you more or less
+likely to work with / stay with [FIRM], and why.</pre></div>
+      <p><b>Validate by backtesting:</b> run one <i>past</i> announcement through pre-flight and compare the predicted reaction pattern to what actually happened (coverage tone, client feedback, advisor chatter). Show predicted-vs-actual side by side. This is the two minutes of the meeting she will remember.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-b" data-id="b6">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6 · Rehearse the live demo</div><div class="s">dashboard click-through + live pre-flight</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Two live moments to rehearse until boring: (1) one live panel query from the dashboard; (2) pasting a draft (or disguised past) announcement into pre-flight and letting five personas react in real time. Have a recorded backup of both in case of connectivity or model-version surprises on demo day. Full script in Demo Day tab.</p>
+    </div>
+  </div>
+</section>
+<!-- ============================ GUIDE C ============================ -->
+<section class="tab" id="tab-guide-c">
+  <h2>Guide C — ChatGPT + Perplexity</h2>
+  <p class="lede"><span class="tag aha">aha</span><b>The Supply Chain.</b> Your brand, as AI presents it, is physically constructed from a specific, small, partly absurd list of URLs — and the firm controls almost none of them. Perplexity’s citations make the intervention dial concrete: see the sources, change the content, watch the mix shift.</p>
+  <div class="toolbar"><button data-expand="guide-c">Expand all</button><button data-collapse="guide-c">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-guide-c"></div></div>
+
+  <div class="step" data-group="guide-c" data-id="c1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1 · Complete Foundations</div><div class="s">note: personas matter less here, sources matter more</div></div><span class="chev">›</span></div>
+    <div class="step-body"><p>Perplexity answers are retrieval-dominated, so persona conditioning moves results less than on ChatGPT. Weight Perplexity runs toward comparison/decision questions; run Guide A’s persona-divergence protocol on ChatGPT in parallel at reduced scope so the meeting still has the persona story.</p></div>
+  </div>
+
+  <div class="step" data-group="guide-c" data-id="c2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2 · Run the bank on Perplexity, harvesting citations</div><div class="s">2–3 days · every cited URL goes in the ledger</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>For each question: run, record the answer, and log <b>every cited URL</b>. n≥10 per question is acceptable here — retrieval answers vary less than sampled generations — but <b>verify that assumption</b>: check citation variance across your first runs and note that you checked.</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>url,domain,content_date,source_type,questions_citing,citation_count,notes
+https://example-forum.com/thread/...,example-forum.com,2021-03,wild,"Q01,Q04",11,"old thread, factually stale"
+https://[firm].com/about,...,owned,"Q02",3,</pre></div>
+      <ul>
+        <li><b>source_type:</b> <i>owned</i> (firm properties) / <i>earned</i> (press you influenced) / <i>wild</i> (forums, Reddit, third-party review sites, stale articles).</li>
+        <li>Log content dates — “the third-most-cited source about us is from 2021” is a finding on its own.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-c" data-id="c3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3 · Build the ledger findings</div><div class="s">1 day · three artifacts fall out</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ol>
+        <li><b>The source ledger:</b> “Our AI brand narrative is built from [N] URLs.” Deduped, classified, dated.</li>
+        <li><b>The control ratio:</b> owned ÷ total, weighted by citation count. “We control [k] of [N]: [x]%.”</li>
+        <li><b>The load-bearing wall:</b> the single most-cited <i>wild</i> source, on its own slide. If it’s a forum thread or an outdated third-party profile, the room will physically react.</li>
+      </ol>
+      <p>Run the identical harvest for 2–3 competitors — their control ratios are the benchmark, and “their ratio is 60%, ours is 17%” is a slide that budgets itself.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-c" data-id="c3b">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3b · Mine the ledger — five more findings in the same harvest <span class="tag aha">harvest</span></div><div class="s">½ day · the citation data is richer than the three headline artifacts</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ol>
+        <li><b>The unowned-questions map</b> — decision questions where <i>zero</i> owned sources appear in citations. Ranked by business priority, this is a content roadmap that justifies itself: each row is a question clients ask where the firm has no voice at all.</li>
+        <li><b>The freshness profile</b> — median age of cited sources, yours vs. competitors. <i>“AI sees us through three-year-old glasses; it sees [COMPETITOR] through last quarter’s.”</i></li>
+        <li><b>Claim-to-source tracing</b> — take the most damaging recurring claim in the answers and trace it to the specific cited URL(s). <i>“This sentence costs us recommendations, and it lives at this address.”</i> Turns an abstract problem into a work ticket.</li>
+        <li><b>The competitor playbook</b> — for the competitor with the best control ratio: which of their owned pages win citations, and what those pages have in common (structure, directness, freshness). Their strategy is visible in your data — read it.</li>
+        <li><b>Category choke points</b> — wild sources cited across <i>multiple</i> firms’ answers. A single third-party page shaping the whole category’s AI narrative is an industry-level insight — and a PR/partnership target nobody else has identified.</li>
+      </ol>
+      <p>The load-bearing wall stays the headline; promote one or two of these as supporting slides and bank the rest.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-c" data-id="c4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4 · Design the intervention <span class="tag aha">the dial</span></div><div class="s">1 day design + 1–2 weeks if you want the after-measurement</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Pick the 2–3 highest-leverage gaps: questions where wild sources dominate the citations. For each, spec the owned content that should win those citations — structured, factual, agent-readable pages that answer the decision-tier questions directly (this is where GEO mechanics belong: as the mechanism behind the dial, never the headline).</p>
+      <p>If publication timelines allow: publish, wait 1–2 weeks, re-run the harvest, and measure citation shift. <b>If not: show baseline + intervention plan + “we re-measure in two weeks.” Never fake or hand-wave an after.</b></p>
+    </div>
+  </div>
+
+  <div class="step" data-group="guide-c" data-id="c5">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5 · Productionization note: Sonar API</div><div class="s">the ledger becomes a weekly job</div></div><span class="chev">›</span></div>
+    <div class="step-body"><p>Perplexity’s Sonar API (from ~$0.20 per million tokens) automates steps 2–3 entirely: scripted weekly harvest, automatic ledger diffs, alerts when a new wild source enters the supply chain. Mention it in the meeting as the productionization path — it’s the cheapest line item in the room and turns a study into an instrument.</p></div>
+  </div>
+
+  <div class="step" data-group="guide-c" data-id="c6">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6 · Rehearse the live open</div><div class="s">point at the citations, not the answer</div></div><span class="chev">›</span></div>
+    <div class="step-body"><p>Live in Perplexity: one decision question, on screen. Don’t discuss the answer — point at the citation list: <i>“That’s not a footnote. That’s the supply chain of our brand.”</i> Then cut to the ledger. Full script in Demo Day tab.</p></div>
+  </div>
+</section>
+
+<!-- ============================ COPILOT ============================ -->
+<section class="tab" id="tab-copilot">
+  <h2>Copilot with Claude enabled — read this whatever scenario you land in</h2>
+  <p class="lede">Your M365 Copilot has Anthropic’s Claude models available (in Researcher, in “Edit with Copilot” in the apps, and when building agents in Copilot Studio). That changes your options in two ways — with one methodological caveat that matters more than both.</p>
+
+  <div class="callout red"><b>The caveat first: Copilot-Claude is not “clean Claude.”</b> Copilot wraps the model in Microsoft’s orchestration — Bing grounding, work-data grounding, its own system prompting. Results from Copilot are a valid measurement of <i>the Copilot surface</i>, not of the Claude model. Never pool Copilot runs with direct-model runs in the same table; log them as their own surface. If she asks “is this Claude or Copilot you measured?” the answer must be instant.</div>
+
+  <div class="toolbar"><button data-expand="copilot">Expand all</button><button data-collapse="copilot">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-copilot"></div></div>
+
+  <div class="step" data-group="copilot" data-id="cp1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1 · Use it as a budget second model family (if you don’t get Claude Enterprise)</div><div class="s">unlocks a bounded version of Guide B’s Disagreement Map</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>If procurement gives you only ChatGPT + Copilot: run the question bank through Copilot with Claude selected (Researcher for deep questions, chat for the rest), same protocol, logged as surface = “copilot-claude”. You get a legitimate cross-surface divergence story — <i>“the AI in our clients’ pockets and the AI inside every enterprise disagree about us”</i> — which is arguably more resonant to an executive than a clean two-model comparison, since Copilot is what millions of professionals (including advisors and clients’ employers) actually see.</p>
+      <p>State the bounds honestly in the methodology footer: grounding differs by design; this compares <i>surfaces</i>, not models.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="copilot" data-id="cp2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2 · Use Copilot Studio as your automation path inside the firewall</div><div class="s">panel runners as governed enterprise agents</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Copilot Studio lets you build agents with Claude as the model. Build one agent per persona (same instruction template as Guide A step 2). Two payoffs:</p>
+      <ul>
+        <li><b>Semi-automated runs</b> in a fully governed, IT-blessed environment — often an easier internal sell than “we ran things through consumer chat windows.”</li>
+        <li><b>Distribution:</b> after the demo, the persona panel can be shared inside the org as named agents (“Ask the Panel”), which is exactly the “she’ll want to use it immediately” hook — she can literally message a persona from Teams the same afternoon.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-group="copilot" data-id="cp3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3 · What NOT to use Copilot for</div><div class="s">know its lane</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ul>
+        <li><b>Not your primary measurement of client-facing AI perception</b> — individual investors don’t ask M365 Copilot which firm to hire. ChatGPT/Perplexity are the client-facing surfaces; Copilot is the professional-facing one. (That distinction itself is a good line in the meeting.)</li>
+        <li><b>Not a source-attribution tool</b> — its grounding is opaque compared to Perplexity’s citations.</li>
+        <li><b>Not a substitute for matched-protocol rigor</b> — if you can’t control browsing/grounding per run, note it as a limitation of that surface rather than pretending the cells match.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ DEMO DAY ============================ -->
+<section class="tab" id="tab-demo">
+  <h2>Demo day — scripts, traps, and what not to show</h2>
+  <p class="lede">Ten to twelve minutes. Open live, land the aha, show the instrument, close with an ask she can grant in the room.</p>
+
+  <div class="callout gold"><b>The headline-plus-two rule</b> The harvest steps (4b/3b) will leave you with five or six candidate findings. Bring ONE headline aha and at most TWO supporting findings into the meeting. Six ahas read as a research report; one aha with depth behind it reads as an instrument. Choose empirically — whichever findings your own data made most dramatic — and keep the rest in your back pocket for her questions, where a prepared “we also found…” lands better than a slide would have.</div>
+
+  <h3>Script A — ChatGPT only (10 min)</h3>
+  <div class="card"><ol>
+    <li><b>Open live (2 min):</b> temporary chat, one decision question as your weakest persona. Whatever it says sets the frame; an outlier run is your segue to sampling.</li>
+    <li><b>The tally (3 min):</b> recommendation rate by persona vs. competitors. Pause on the worst cell. Say the n.</li>
+    <li><b>The kill sentence (2 min):</b> one slide, verbatim phrase, recurrence rate. Silence. Then: <i>“Every client who asks an AI hears some version of this objection. Until this instrument existed, no one in this building had ever heard it — and no one could rebut it.”</i></li>
+    <li><b>Frozen vs. live (2 min):</b> <i>“One of these we can influence in weeks; the other is our permanent record.”</i></li>
+    <li><b>The ask (1 min):</b> this was one model, by hand. Name what the instrument version needs.</li>
+  </ol></div>
+
+  <h3>Script B — + Claude Enterprise (12 min)</h3>
+  <div class="card"><ol>
+    <li><b>Disagreement map (3 min):</b> “Two AIs, same client, different stories about us — here’s where they disagree most.” Then the content-coverage correlation (only if it held).</li>
+    <li><b>One battleground drilled (2 min):</b> side-by-side verbatims, same persona, same question, two models.</li>
+    <li><b>The instrument, live (3 min):</b> click into the dashboard; run one live panel query.</li>
+    <li><b>Pre-flight, live (3 min):</b> paste a draft or disguised past announcement; five personas react in real time. Then the backtest: predicted vs. actual.</li>
+    <li><b>The ask (1 min):</b> <i>“Send us your next announcement before it ships.”</i></li>
+  </ol></div>
+
+  <h3>Script C — + Perplexity (10 min)</h3>
+  <div class="card"><ol>
+    <li><b>Open live (2 min):</b> one decision question in Perplexity. Point at the citations: <i>“That’s the supply chain of our brand.”</i></li>
+    <li><b>The ledger (3 min):</b> “[N] URLs constitute our AI brand. We control [k].” Competitor ratios alongside.</li>
+    <li><b>The load-bearing wall (2 min):</b> the top wild source, alone on a slide. Let the room react.</li>
+    <li><b>The dial (2 min):</b> before/after citation shift if measured; otherwise baseline + plan + re-measure date.</li>
+    <li><b>The ask (1 min):</b> Sonar API budget + a content resource for the intervention list.</li>
+  </ol></div>
+
+  <h3>Executive Q&amp;A traps — click each to see the prepared answer</h3>
+  <div class="qa"><div class="q">Couldn’t anyone here do this with a chat window?</div><div class="a">One query, yes. The instrument is calibrated personas + a pre-registered question bank + n≥20 sampling + competitor controls + a time series. Anyone can ask ten people about the brand; that doesn’t make them the brand tracker.</div></div>
+  <div class="qa"><div class="q">How do you know the personas are valid?</div><div class="a">The calibration check: each synthetic persona’s category-level baseline was compared against real tracker data for the same segment, documented and date-stamped before any brand measurement ran.</div></div>
+  <div class="qa"><div class="q">Isn’t this what vendors sell?</div><div class="a">Vendors sell generic share-of-model. They don’t have our segmentation, our tracker to calibrate against, or our levers. The querying will commoditize; the calibrated panel and the intervention loop won’t.</div></div>
+  <div class="qa"><div class="q">How stable are these results?</div><div class="a">Variance is reported directly per cell and per paraphrase; model versions are logged, and we expect discontinuities at model releases — which is precisely why it’s a time series and not a one-off study. We measured stability rather than assuming it.</div></div>
+  <div class="qa"><div class="q">Does any of this affect actual revenue?</div><div class="a">Honestly: agent-mediated decisions are a small but compounding share today. The frozen layer is the reason to act now — narratives set now persist in model weights for years. This is why we built it now, cheaply, before it’s obvious.</div></div>
+  <div class="qa"><div class="q">Is this Claude you measured, or Copilot?</div><div class="a">Logged as separate surfaces throughout. Copilot wraps models in Microsoft’s grounding, so its runs measure the Copilot surface — which is what professionals see — while direct runs measure the model. We never pool them.</div></div>
+  <div class="qa"><div class="q">What do you need?</div><div class="a">Have the exact number ready: small API budget + [second tool] + a content resource for interventions. Never end a successful demo without the ask.</div></div>
+
+  <h3>What NOT to show her</h3>
+  <div class="callout red">
+    <b>Cut on sight</b>
+    A wordcloud (reads as 2012 social listening, and conflates the frozen and live layers). · “We asked ChatGPT about our brand” screenshots — she’s done it herself. · Generic GEO/AEO talk (llms.txt, schema) as the headline — it’s SEO 2.0, efficiency framing, the opposite of the brief; it may appear only as the mechanism behind the dial. · Single-run quotes presented as findings — one “did you run it twice?” ends the meeting. · Any faked before/after — if the intervention isn’t re-measured, show baseline + plan.
+  </div>
+</section>
+</main>
+<footer>AI Brand Health walkthrough · progress is stored in this browser only (localStorage) · print this page for a full flat copy</footer>
+<script>
+// ---------- tabs ----------
+const tabs=document.querySelectorAll('nav button');
+function show(id){
+  tabs.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+id));
+  window.scrollTo({top:0});
+  try{localStorage.setItem('abh-tab',id);}catch(e){}
+}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();show(a.dataset.goto);}));
+try{const t=localStorage.getItem('abh-tab');if(t)show(t);}catch(e){}
+
+// ---------- steps: expand/collapse + checkbox persistence ----------
+document.querySelectorAll('.step-head').forEach(h=>{
+  h.addEventListener('click',e=>{
+    if(e.target.tagName==='INPUT')return;
+    h.parentElement.classList.toggle('open');
+  });
+});
+function key(id){return 'abh-step-'+id;}
+function refreshCounts(){
+  const groups={};
+  document.querySelectorAll('.step[data-group]').forEach(s=>{
+    const g=s.dataset.group;groups[g]=groups[g]||{d:0,t:0};groups[g].t++;
+    if(s.classList.contains('done'))groups[g].d++;
+  });
+  for(const g in groups){
+    const c=document.getElementById('cnt-'+g);
+    if(c)c.textContent=groups[g].d+'/'+groups[g].t;
+    const bar=document.getElementById('bar-'+g);
+    if(bar)bar.style.width=(100*groups[g].d/groups[g].t)+'%';
+  }
+}
+document.querySelectorAll('.step[data-group]').forEach(s=>{
+  const cb=s.querySelector('input[type=checkbox]');
+  try{if(localStorage.getItem(key(s.dataset.id))==='1'){cb.checked=true;s.classList.add('done');}}catch(e){}
+  cb.addEventListener('change',()=>{
+    s.classList.toggle('done',cb.checked);
+    try{localStorage.setItem(key(s.dataset.id),cb.checked?'1':'0');}catch(e){}
+    refreshCounts();
+  });
+});
+refreshCounts();
+
+// ---------- expand/collapse all ----------
+document.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.step[data-group="'+b.dataset.expand+'"]').forEach(s=>s.classList.add('open'));
+}));
+document.querySelectorAll('[data-collapse]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.step[data-group="'+b.dataset.collapse+'"]').forEach(s=>s.classList.remove('open'));
+}));
+
+// ---------- copy buttons ----------
+document.querySelectorAll('.copybtn').forEach(b=>b.addEventListener('click',()=>{
+  const txt=b.parentElement.querySelector('pre').innerText;
+  const done=()=>{b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy',1600);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallback());}
+  else fallback();
+  function fallback(){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta);}
+}));
+
+// ---------- Q&A accordions ----------
+document.querySelectorAll('.qa .q').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('open')));
+</script>
+</body>
+</html>
