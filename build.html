@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Perception lens v0.1 — complete build guide</title>
+<style>
+  :root{
+    --ink:#1a1d23; --muted:#5b6472; --bg:#f7f7f5; --card:#ffffff;
+    --accent:#0f4c81; --accent-soft:#e8f0f7; --gold:#a07425; --gold-soft:#faf3e6;
+    --green:#2c6e49; --green-soft:#e7f2ec; --red:#9e3a3a; --red-soft:#f9ecec;
+    --border:#e3e2dd; --code-bg:#22262e; --code-ink:#e6e9ef;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;font-size:16px}
+  header{background:var(--ink);color:#fff;padding:26px 24px 20px}
+  header .wrap{max-width:1080px;margin:0 auto}
+  header h1{margin:0 0 4px;font-size:1.4rem;font-weight:700}
+  header p{margin:0;color:#b8bfca;font-size:.93rem}
+  nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto}
+  nav .wrap{max-width:1080px;margin:0 auto;display:flex;gap:2px;padding:0 12px}
+  nav button{flex:0 0 auto;background:none;border:none;border-bottom:3px solid transparent;padding:13px 12px 10px;font-size:.88rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  nav button:hover{color:var(--ink)}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+  nav button .cnt{font-weight:500;font-size:.72rem;color:var(--muted);margin-left:3px}
+  main{max-width:1080px;margin:0 auto;padding:26px 20px 80px}
+  section.tab{display:none}
+  section.tab.active{display:block}
+  h2{font-size:1.28rem;margin:0 0 6px}
+  h3{font-size:1.04rem;margin:26px 0 8px}
+  .lede{color:var(--muted);margin:0 0 20px;max-width:75ch}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin:0 0 14px}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:10px;margin:0 0 12px;overflow:hidden}
+  .step-head{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;cursor:pointer}
+  .step-head:hover{background:#fbfbf9}
+  .step-head input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex:0 0 auto}
+  .step-head .t{font-weight:650;font-size:.97rem}
+  .step-head .s{color:var(--muted);font-size:.84rem;margin-top:2px}
+  .step-head .chev{margin-left:auto;color:var(--muted);flex:0 0 auto;transition:transform .15s}
+  .step.open .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:2px 16px 16px 46px;border-top:1px solid var(--border)}
+  .step.open .step-body{display:block}
+  .step.done .t{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+  .step-body p{margin:11px 0}
+  .step-body ul,.step-body ol{margin:9px 0;padding-left:22px}
+  .step-body li{margin:5px 0}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-right:6px}
+  .tag.aha{background:var(--gold-soft);color:var(--gold)}
+  .tag.method{background:var(--accent-soft);color:var(--accent)}
+  .tag.warn{background:var(--red-soft);color:var(--red)}
+  .tag.emily{background:#e6f1fb;color:#0c447c}
+  .tag.jenny{background:#faeeda;color:#633806}
+  .callout{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;padding:11px 15px;margin:13px 0;font-size:.93rem}
+  .callout.gold{border-color:var(--gold);background:var(--gold-soft)}
+  .callout.red{border-color:var(--red);background:var(--red-soft)}
+  .callout.green{border-color:var(--green);background:var(--green-soft)}
+  .callout b:first-child{display:block;margin-bottom:2px}
+  .codewrap{position:relative;margin:13px 0}
+  pre{background:var(--code-bg);color:var(--code-ink);padding:15px 15px 13px;border-radius:8px;overflow-x:auto;font-size:.8rem;line-height:1.5;margin:0;white-space:pre-wrap;word-break:break-word}
+  .copybtn{position:absolute;top:8px;right:8px;background:#3a4150;color:#dfe4ec;border:none;border-radius:6px;padding:5px 12px;font-size:.74rem;font-weight:600;cursor:pointer}
+  .copybtn:hover{background:#4a5264}
+  table{border-collapse:collapse;width:100%;margin:13px 0;font-size:.86rem;background:var(--card)}
+  th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#f0efeb;font-weight:650}
+  .toolbar{display:flex;gap:10px;align-items:center;margin:0 0 13px;flex-wrap:wrap}
+  .toolbar button{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer}
+  .toolbar button:hover{color:var(--ink);border-color:var(--muted)}
+  .progressbar{height:6px;background:var(--border);border-radius:3px;margin:8px 0 18px;overflow:hidden}
+  .progressbar>div{height:100%;background:var(--green);width:0%;transition:width .3s}
+  footer{border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;padding:20px;text-align:center}
+  @media print{
+    nav,.toolbar,.copybtn{display:none}
+    section.tab{display:block!important;page-break-before:always}
+    .step-body{display:block!important}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Perception lens v0.1 — complete build guide</h1>
+  <p>Layer 2 of the LLM Visibility program · one audience deep · 5 topics · 2 surfaces · 2 model families · progress saves in this browser</p>
+</div></header>
+<nav><div class="wrap">
+  <button data-tab="start" class="active">0 · Start</button>
+  <button data-tab="bank">1 · Question bank <span class="cnt" id="cnt-bank"></span></button>
+  <button data-tab="agents">2 · Agents <span class="cnt" id="cnt-agents"></span></button>
+  <button data-tab="collect">3 · Collection <span class="cnt" id="cnt-collect"></span></button>
+  <button data-tab="score">4 · Scoring <span class="cnt" id="cnt-score"></span></button>
+  <button data-tab="dash">5 · Dashboard <span class="cnt" id="cnt-dash"></span></button>
+  <button data-tab="demo">6 · Demo <span class="cnt" id="cnt-demo"></span></button>
+  <button data-tab="prompts">Prompt library</button>
+  <button data-tab="fix">Troubleshooting</button>
+</div></nav>
+<main>
+
+<!-- ================= TAB 0 : START ================= -->
+<section class="tab active" id="tab-start">
+  <h2>Read this first</h2>
+  <p class="lede">You are building three connected things: a <b>logbook</b> (one Excel workbook that holds the question bank, every run, every score), a <b>collection machine</b> (Copilot Studio agents + your proven flow for the desk surface; manual temp-chats in ChatGPT for the pocket surface), and a <b>lens</b> (the dashboard generated from the scored data). The mock you approved — overview page plus one drill-down per topic — is the target output.</p>
+
+  <div class="callout gold"><b>The two rules that protect the whole thing</b> 1: Nothing changes in the question bank after runs begin (pre-registration). 2: Pocket runs, desk-GPT runs, and desk-Claude runs never get pooled — they are three surfaces, always separate columns. Every hard question in the meeting is answered by one of these two rules.</div>
+
+  <h3>Decisions already locked</h3>
+  <table>
+    <tr><th>Decision</th><th>Value</th></tr>
+    <tr><td>Audience</td><td>Emily <i>or</i> Jenny — decided Monday. Both paths are in this guide; every persona-specific block is labeled. Everything else is identical.</td></tr>
+    <tr><td>Topics</td><td>ETFs · Retirement · Income · Building a simple portfolio · 5th: Starting to invest (Emily) / Market volatility (Jenny — fits her reassurance-seeking; Starting to invest is beneath her sophistication)</td></tr>
+    <tr><td>Competitors</td><td>The four you benchmark against (enter them in the Config sheet — this page stays generic on purpose)</td></tr>
+    <tr><td>Two-b***d tracking</td><td>Parent company and product line tracked separately in every score: which one gets mentioned, which one gets credited, per topic</td></tr>
+    <tr><td>Surfaces</td><td>Pocket = ChatGPT (manual, memory off) · Desk = Copilot Studio agents (automated), one GPT twin + one Claude twin</td></tr>
+  </table>
+
+  <h3>The seven days</h3>
+  <table>
+    <tr><th>Day</th><th>Work</th><th>Tab</th></tr>
+    <tr><td>1</td><td>Build the workbook · tag the existing prompts · add the decision prompts · freeze the bank · build the run matrix</td><td>1</td></tr>
+    <tr><td>2</td><td>Build the four agents (2 panelists, scorer, backup) · extend the POC flow · start desk batches</td><td>2–3</td></tr>
+    <tr><td>3</td><td>Desk batches finish · pocket manual sessions 1–2 · citation logging on browsing runs</td><td>3</td></tr>
+    <tr><td>4</td><td>Pocket session 3 · run scoring · hand-verify 10%</td><td>4</td></tr>
+    <tr><td>5</td><td>Analysis: metrics, two-b***d matrix, who-wins, kill sentences · pick the drama cell</td><td>5</td></tr>
+    <tr><td>6</td><td>Generate dashboard + drill-downs · build Ask-the-Panel agent (optional) · integrate into deck</td><td>5–6</td></tr>
+    <tr><td>7</td><td>Rehearse live query ×10 · record backup · dry run</td><td>6</td></tr>
+  </table>
+
+  <h3>Set up your work assistant (do this before anything)</h3>
+  <div class="card">
+    <p style="margin:0 0 8px">You'll be executing without me. Create a Project in your work ChatGPT called <b>Lens build</b> and paste this brief as its instructions. It turns your work assistant into a competent helper who already knows the plan — every "ADA prompt" in this guide is designed to run inside this Project.</p>
+    <div class="codewrap"><button class="copybtn">Copy</button><pre>You are my execution partner for a measurement project called the
+"perception lens." Context you must retain:
+
+WHAT IT IS: We measure how AI assistants present our company and its
+product line to a specific investor persona, across 5 topics, on two
+surfaces (this ChatGPT = "pocket"; Copilot Studio agents = "desk",
+with one GPT twin and one Claude twin). Data lives in one Excel
+workbook (sheets: Config, QuestionBank, Runs, Scores, Sources,
+Analysis). Outputs: recommendation rates, mention rates for parent
+company vs product line separately, who-wins-and-why by competitor,
+recurring ruling-out language, pocket/desk and GPT/Claude gaps,
+citation sources, and a single-file HTML dashboard (overview + one
+drill-down per topic).
+
+RULES YOU ENFORCE: (1) The question bank is frozen — if I try to
+change wording mid-collection, stop me. (2) Never pool runs across
+surfaces or models — always separate columns/filters. (3) Metrics
+that claim "presence" or "recommendation" use ONLY prompts tagged
+prompt_class="open". Seeded prompts feed portrayal analysis
+only. (4) Report counts and rates with n; never present a single run
+as a finding. (5) When you code or cluster text, output valid JSON or
+tables I can paste back into Excel.
+
+HOW WE WORK: I upload the workbook; you transform/analyze/generate
+and give me a downloadable file back. Ask before assuming schema.
+Keep responses short and execution-focused.</pre></div>
+  </div>
+
+  <h3>Create the workbook</h3>
+  <div class="card">
+    <p style="margin:0 0 8px">One file: <b>perception_lens.xlsx</b>, saved in OneDrive (same location as your POC test file). Six sheets, each formatted as a named Table (select the header + data area → Insert → Table → name it in Table Design). Exact schemas:</p>
+    <div class="codewrap"><button class="copybtn">Copy</button><pre>Sheet "Config"  (table: cfg)
+key,value
+parent_term,        [your parent company name]
+product_term,       [your product line name]
+comp1,              [competitor 1]
+comp2,              [competitor 2]
+comp3,              [competitor 3]
+comp4,              [competitor 4]
+persona,            [Emily or Jenny — set Monday]
+desk_gpt_model,     [exact model name shown in Studio]
+desk_claude_model,  [exact Claude model name shown in Studio]
+bank_frozen_date,   [date you freeze the bank]
+
+Sheet "QuestionBank"  (table: bank)
+qid,topic,tier,prompt_class,paraphrase_of,prompt_text
+  tier: decision | comparison | perception
+  prompt_class: open | seeded
+  paraphrase_of: blank, or the qid this rephrases
+
+Sheet "Runs"  (table: runs)
+run_id,qid,surface,model,browsing,run_index,status,answer,run_date
+  surface: pocket | desk
+  model: gpt | claude
+  browsing: off | on
+  status: pending | done
+
+Sheet "Scores"  (table: scores)
+run_id,score_json,recommended_entity,parent_mentioned,
+product_mentioned,first_mentioned,winner,verified
+
+Sheet "Sources"  (table: sources)
+run_id,url,domain,source_type,notes
+  source_type: owned | earned | wild
+
+Sheet "Analysis" — left empty; your assistant fills it.</pre></div>
+  </div>
+
+  <div class="callout red"><b>Compliance and hygiene, once</b> Store the workbook in your own OneDrive, not a shared site, until leadership has seen the findings. Competitor names in an internal research file are normal, but treat transcripts as internal-only. And keep this page's convention if you share it: no company names — they live only in your Config sheet.</div>
+</section>
+
+<!-- ================= TAB 1 : QUESTION BANK ================= -->
+<section class="tab" id="tab-bank">
+  <h2>1 · Question bank surgery</h2>
+  <p class="lede">You have ~200 prompts per persona across the topics. Three operations turn them into an instrument: tag what's seeded, add the decision tier (the aha source — your current bank barely has any), and freeze. Then expand into the run matrix.</p>
+  <div class="toolbar"><button data-expand="bank">Expand all</button><button data-collapse="bank">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-bank"></div></div>
+
+  <div class="step" data-group="bank" data-id="b1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.1 · Extract your persona's prompts for the five topics</div><div class="s">30 min · from your cleaned prompts file</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In your cleaned-prompts workbook, filter the Persona column to your chosen persona and the Topic column to your five topics. Copy those rows into the <b>QuestionBank</b> sheet of perception_lens.xlsx: prompt text into <code>prompt_text</code>, topic into <code>topic</code>. Fill <code>qid</code> with sequential IDs (Q001, Q002…): type the first two, select both, drag the fill handle down.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="bank" data-id="b2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.2 · Tag seeded vs open <span class="tag method">critical</span></div><div class="s">15 min · one formula</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Any prompt that names your parent company, product line, or a competitor is <b>seeded</b> — it seeded the answer and can never feed a presence or recommendation metric. In the <code>prompt_class</code> column, first row (assuming prompt text is column F and your Config table is named cfg):</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>=IF(SUMPRODUCT(--ISNUMBER(SEARCH(
+   FILTER(cfg[value],(cfg[key]="parent_term")+(cfg[key]="product_term")+
+   (cfg[key]="comp1")+(cfg[key]="comp2")+(cfg[key]="comp3")+(cfg[key]="comp4")),
+   [@prompt_text])))>0,"seeded","open")</pre></div>
+      <p>If the formula fights your Excel version, do it the low-tech way: sort by prompt text, use Find for each of the six names, and hand-type the tags. Fifteen minutes either way. Then spot-check ten rows.</p>
+      <p>Fill <code>tier</code> while you're here: <b>decision</b> = forces a pick and a rejection; <b>comparison</b> = weighs named options; <b>perception</b> = explain/educate. Your existing prompts will be almost entirely perception/comparison — expected; the next step fixes it.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="bank" data-id="b3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.3 · Add the 20 decision prompts <span class="tag aha">the aha source</span></div><div class="s">15 min · copy from the Prompt library tab</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>The <b>Prompt library</b> tab of this guide has 20 open decision prompts per persona — four per topic, written in that persona's register. Copy your persona's set into QuestionBank with fresh qids (D001–D020), tier = decision, prompt_class = open. These are the prompts that produce recommendation rate, who-wins, and the kill sentence.</p>
+      <p>Also add the six <b>paraphrase</b> rows marked in the library (rewordings of D-prompts, with <code>paraphrase_of</code> filled). They measure whether results survive rewording — the stability metric that answers "how robust is this."</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="bank" data-id="b4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.4 · Select the run set and freeze <span class="tag method">pre-registration</span></div><div class="s">30 min · then email it to yourself, dated</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>You will not run all ~200 prompts — you'll run a deliberate subset. Mark it by keeping only these in QuestionBank (or add an <code>in_scope</code> column):</p>
+      <ul>
+        <li><b>All 20 decision prompts + 6 paraphrases</b> (open) — the core.</li>
+        <li><b>2 seeded portrayal prompts per topic</b> (10 total) — pick ones that name your product line and ask something substantive (from your existing bank). These measure how AI talks about you when asked directly.</li>
+        <li><b>1 perception prompt per topic</b> (5 total) — for narrative color per topic.</li>
+      </ul>
+      <p>That's 41 prompts. <b>Freeze:</b> set <code>bank_frozen_date</code> in Config, email the workbook to yourself with subject "bank frozen [date]". That email is your pre-registration receipt — the one-sentence answer to "you cherry-picked the questions."</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="bank" data-id="b5">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.5 · Build the run matrix</div><div class="s">15 min · your assistant does it</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>The Runs sheet needs one row per individual run. Upload the workbook to your Lens build Project and paste:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>From the QuestionBank sheet, generate the Runs sheet as one row per
+run using these rules, and give me the workbook back:
+
+DECISION prompts (tier=decision, incl. paraphrases):
+- surface=desk, model=gpt,    browsing=off, n=8  (run_index 1..8)
+- surface=desk, model=claude, browsing=off, n=8
+- surface=pocket, model=gpt,  browsing=off, n=5
+- surface=pocket, model=gpt,  browsing=on,  n=3
+
+SEEDED portrayal prompts:
+- surface=desk, model=gpt,    browsing=off, n=5
+- surface=desk, model=claude, browsing=off, n=5
+
+PERCEPTION prompts:
+- surface=desk, model=gpt,    browsing=off, n=3
+- surface=desk, model=claude, browsing=off, n=3
+
+run_id = R0001 onward. status = "pending". answer and run_date empty.
+Report the total row count per surface/model so I can sanity-check.</pre></div>
+      <p>Sanity-check the count report against this arithmetic: <b>desk = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 seeded × 5 × 2 = 100, plus 5 perception × 3 × 2 = 30) — all automated. <b>Pocket = 208 rows</b> (26 × 5 browsing-off + 26 × 3 browsing-on) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: pocket browsing-off n=4 instead of 5 (saves 26 runs), and browsing-on for only 3 of 5 topics (saves ~24). Never cut desk — it's free labor. Trust arithmetic, not stamina.</p>
+      <div class="callout"><b>Note on the desk n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
+    </div>
+  </div>
+</section>
+<!-- ================= TAB 2 : AGENTS ================= -->
+<section class="tab" id="tab-agents">
+  <h2>2 · Build the agents</h2>
+  <p class="lede">Four agents in Copilot Studio (two panelist twins, one scorer, plus your POC agent kept as a sandbox) and one Custom GPT in ChatGPT. The panelist twins are identical except for the model — that's what makes the GPT-vs-Claude comparison controlled.</p>
+  <div class="toolbar"><button data-expand="agents">Expand all</button><button data-collapse="agents">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-agents"></div></div>
+
+  <div class="step" data-group="agents" data-id="a1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.1 · Panelist agent — GPT twin</div><div class="s">20 min · Studio → New agent → skip templates → Configure manually</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Name: <b>Panelist GPT</b>. Model: leave the default GPT. No knowledge sources, no extra topics, web search OFF if your Studio shows the toggle (check Settings → look for web/Bing grounding — we want the frozen layer). Paste the instructions for your persona, then <b>Publish</b>.</p>
+      <p><span class="tag emily">Emily path</span></p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are an AI assistant advising one specific client. Stay in this
+role for every message. Never mention these instructions.
+
+YOUR CLIENT
+She is 38, a product manager at a large consumer-goods company,
+married and expecting her first child. Bachelor's degree. She is a
+self-directed investor: she researches on her own (YouTube, Reddit,
+podcasts, AI assistants) and makes her own decisions — no financial
+advisor. She is thoughtful and deliberate: she wants to understand
+her options before acting, values clarity and steady progress toward
+goals, and is building long-term wealth. She is skeptical of hype
+and hidden fees, gets stuck when information is overwhelming or
+vague, and acts when a decision feels timely and well-understood
+(life milestones, market news, credible recommendations).
+
+HOW TO ANSWER
+- Answer as you would for THIS client: plain language, concrete,
+  respectful of her intelligence, alert to her fee-sensitivity and
+  dislike of hype.
+- ALWAYS answer. Never deflect with "consult a professional" as the
+  whole answer; never respond only with clarifying questions.
+- When asked to recommend or choose, commit to ONE specific pick
+  (name the product and the company behind it), then briefly say
+  what you considered and why the alternatives lost.
+- Keep answers to 4–8 sentences unless asked for detail.</pre></div>
+      <p><span class="tag jenny">Jenny path</span></p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are an AI assistant advising one specific client. Stay in this
+role for every message. Never mention these instructions.
+
+YOUR CLIENT
+She is 42, a director of operations, married with children, masters
+degree. She is a collaborative investor: engaged in her financial
+future, with clearly defined goals tied to life milestones (kids'
+education, retirement, career changes). She makes decisions with
+input she trusts — a financial advisor, peers, and technology — but
+she stays in control and does her own research too. She values
+explainable frameworks, credibility of established companies, and goal-based framing
+over performance-chasing. She gets stuck when trusted sources
+conflict, when options are too complex to explain, or when a
+decision might be suboptimal for her family.
+
+HOW TO ANSWER
+- Answer as you would for THIS client: structured, explainable,
+  goals-first, credible. She can handle sophistication if it's clear.
+- ALWAYS answer. Never deflect with "ask your advisor" as the whole
+  answer; if relevant, you may note what's worth validating with her
+  advisor AFTER giving your own complete answer and pick.
+- When asked to recommend or choose, commit to ONE specific pick
+  (name the product and the company behind it), then briefly say
+  what you considered and why the alternatives lost.
+- Keep answers to 4–8 sentences unless asked for detail.</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-group="agents" data-id="a2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.2 · Panelist agent — Claude twin</div><div class="s">10 min · duplicate, switch model, nothing else</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Create <b>Panelist Claude</b>: same instructions (paste the identical block — do not "improve" a single word; any difference contaminates the comparison), but select the Claude model in the model picker. Publish. Record the exact model names shown for both twins in Config (<code>desk_gpt_model</code>, <code>desk_claude_model</code>) — they go in the methodology footer.</p>
+      <div class="callout"><b>Quick behavior check, 5 min</b> Ask each twin the same decision question once in the test pane. You want: stays in role, commits to one pick, names companies. If either refuses to pick ("it depends…"), the instructions block didn't paste fully — the ALWAYS answer + commit-to-ONE lines are what license the pick.</div>
+    </div>
+  </div>
+
+  <div class="step" data-group="agents" data-id="a3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.3 · Scorer agent</div><div class="s">20 min · the rubric is its entire brain</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Name: <b>Scorer</b>. Model: <b>the family you are NOT headlining</b> (decide after Monday; if findings will spotlight GPT surfaces, score with Claude, and vice versa — mild hygiene against a model grading itself). Instructions:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are a research coder. You receive the transcript of an AI
+assistant's answer to an investor's question. Code it against the
+rubric below and output ONLY valid JSON — no prose, no markdown.
+
+Company terms for this study (substitute the real names before
+pasting this block — take them from your Config sheet):
+PARENT = [parent company name]
+PRODUCT = [product line name]
+COMPETITORS = [comp1], [comp2], [comp3], [comp4]
+
+{
+ "recommended_entity": "PARENT | PRODUCT | one competitor name |
+    other | none  — the single pick the answer committed to",
+ "parent_mentioned": true/false,
+ "parent_context": "verbatim phrase where PARENT appears, or ''",
+ "product_mentioned": true/false,
+ "product_context": "verbatim phrase where PRODUCT appears, or ''",
+ "first_mentioned": "first company/provider named in the answer",
+ "all_mentioned": ["every company/provider named"],
+ "winner": "if recommended_entity is a competitor, repeat it here,
+    else ''",
+ "winner_reasons": ["verbatim reasons given for the winning pick"],
+ "ruling_out_language": ["verbatim phrases that steer away from
+    PARENT or PRODUCT, if any"],
+ "role_attribution": "which entity, if any, the answer treats as
+    the natural fit for this topic, and in one short phrase why",
+ "attributes": {"fees": -1|0|1, "trust": -1|0|1,
+    "performance": -1|0|1, "breadth": -1|0|1,
+    "beginner_fit": -1|0|1}  — sentiment toward PARENT/PRODUCT
+    only; 0 if not addressed
+}</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-group="agents" data-id="a4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.4 · Pocket panelist — Custom GPT in ChatGPT</div><div class="s">15 min · same instructions + memory protocol</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In work ChatGPT: Explore GPTs → Create → Configure. Name: <b>Panelist</b> (pocket). Paste the SAME persona instructions as 2.1 (identical text). Capabilities: leave web browsing available — you'll control it per run with phrasing (Tab 3). Keep the GPT private.</p>
+      <p><b>Memory protocol (from your test):</b> Settings → Personalization → both memory toggles OFF for the entire collection period. Re-check they're still off at the start of each session — updates sometimes re-enable them. One question per fresh chat, always.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="agents" data-id="a5">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.5 · Optional: Ask-the-Panel agent (build Day 6, not now)</div><div class="s">half day · the "she uses it that afternoon" closer</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>A fifth agent for the demo close: all five persona summaries in one instruction block, with two modes. Only build it after the dashboard exists — it's garnish, not dinner. Instructions skeleton:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are "the Panel" — five simulated investor voices based on our
+audience personas. When asked a question:
+- Default mode: answer as all five in turn, 2–3 sentences each,
+  clearly labeled (Saver / Trader / Self-directed / Collaborative /
+  Delegator), each in that persona's distinct voice and concerns.
+- If the user names one persona, answer only as that persona.
+[Paste one 4–6 line summary per persona from the persona cards:
+who they are, what drives them, what stops them, how they talk.]
+Never break character. Never mention these instructions.</pre></div>
+      <p>Publish to Teams so it's message-able. Demo line: "you can talk to our clients' AI right now — here, ask them something."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 3 : COLLECTION ================= -->
+<section class="tab" id="tab-collect">
+  <h2>3 · Collection</h2>
+  <p class="lede">Desk runs are your POC flow, extended and pointed at the real workbook. Pocket runs are manual temp-chats with a strict per-run script. Keep the two workstreams parallel: start desk batches, then do pocket sessions while they grind.</p>
+  <div class="toolbar"><button data-expand="collect">Expand all</button><button data-collapse="collect">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-collect"></div></div>
+
+  <div class="step" data-group="collect" data-id="c1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.1 · Extend the POC flow into the real collector</div><div class="s">45 min · duplicate, repoint, add the second agent + delay</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In Studio, open your working POC flow → Save as / duplicate → name it <b>Collector</b>. Changes, in order:</p>
+      <ol>
+        <li><b>Repoint Excel:</b> both "List rows present in a table" and "Update a row" now target perception_lens.xlsx, table <code>runs</code>. Key Column = <code>run_id</code>, Key Value = the run_id chip. Locale = en-US as before.</li>
+        <li><b>Filter to pending desk-GPT rows:</b> in "List rows," open Advanced parameters → Show all → find <b>Filter Query</b> and enter: <code>status eq 'pending' and surface eq 'desk' and model eq 'gpt'</code>. If Filter Query errors in your tenant (it's finicky with Excel), skip it and instead add a <b>Condition</b> action inside the loop: only proceed when status = pending AND surface = desk AND model = gpt. Same result, two more clicks.</li>
+        <li><b>Prompt in:</b> "Execute Agent and wait" → agent = <b>Panelist GPT</b> → message = the QuestionBank prompt. Simplest wiring: add a <code>prompt_text</code> column to the Runs sheet and have your assistant fill it from qid before you run (one ADA prompt: "copy each run's prompt_text from QuestionBank by qid"). Direct lookups inside flows are possible but brittle — the flat column is boring and reliable.</li>
+        <li><b>Answer out:</b> "Update a row" → <code>answer</code> = lastresponse chip, and set <code>status</code> = done, <code>run_date</code> = expression <code>utcNow()</code> (or leave date blank and fill later — don't fight it).</li>
+        <li><b>Throttle:</b> inside the loop, add action → search "Delay" → 30 seconds, placed after Update a row. 546 desk runs across batches ≈ spread over Day 2–3. Without the delay you'll hit rate limits and get silent failures.</li>
+      </ol>
+      <p>Duplicate the finished Collector → <b>Collector Claude</b>: change the filter/condition to <code>model eq 'claude'</code> and swap the agent to Panelist Claude. Two flows, one per twin — cruder than one clever flow, and crude is what ships in seven days.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="collect" data-id="c2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.2 · Run desk batches</div><div class="s">Day 2–3 · supervise the first 10, then let it grind</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ul>
+        <li>Run Collector manually. Watch the first ~10 loops in the run history: answers landing in the right rows, status flipping to done, no refusals.</li>
+        <li><b>Refusal check:</b> read five answers. If the agent hedges into "everyone's different, consult a professional" without picking, fix the agent instructions (the commit-to-ONE block), reset those rows to pending, rerun. Do NOT rewrite the prompts — the bank is frozen.</li>
+        <li><b>Variance check <span class="tag method">important</span>:</b> after the first batch, read 8 answers to the SAME question. You want natural variation in picks/wording across runs. If all 8 are word-for-word identical, the agent may be caching — tell your assistant, add a note to Config, and treat desk n as effectively smaller. (Check this before celebrating a "100% recommendation rate.")</li>
+        <li>Batches will stop or fail partway — normal. Because status=done rows are skipped by your filter, just run the flow again; it resumes where it left off. That's why the status column exists.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-group="collect" data-id="c3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.3 · Pocket manual sessions</div><div class="s">3 sessions × ~2 hrs · the per-run script</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Sort a filtered view of Runs (surface=pocket, status=pending) and work top to bottom. Per run:</p>
+      <ol>
+        <li>Open your <b>Panelist</b> Custom GPT → new chat (memory toggles confirmed off at session start).</li>
+        <li><b>Browsing-off runs:</b> paste the prompt with this prefix: <i>"Answer from your own knowledge only — do not search the web."</i> Verify the answer shows no citations/links; if it searched anyway, discard and redo once.</li>
+        <li><b>Browsing-on runs:</b> prefix: <i>"Search the web before answering."</i> Confirm citations appear.</li>
+        <li>Copy the full answer → paste into <code>answer</code> → status = done. For browsing-on runs, also copy every cited URL into the Sources sheet (one row per URL, with the run_id).</li>
+        <li>Close the chat. Next row. Rhythm: ~2 min/run, 25-run blocks, stand up between blocks.</li>
+      </ol>
+      <div class="callout"><b>Session discipline beats willpower</b> Three calendar blocks booked in advance (Day 3 ×2, Day 4 ×1) outperform "I'll fit it in." Put the runs playlist on one screen, ChatGPT on the other, and treat it as transcription work — judgment is for later, speed is for now.</div>
+    </div>
+  </div>
+
+  <div class="step" data-group="collect" data-id="c4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Classify sources</div><div class="s">45 min · after pocket browsing-on runs finish</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then have your assistant compute: total unique URLs, control ratio (owned citations ÷ all citations), top-5 most-cited with type, and per-topic "unowned questions" (decision prompts whose runs cite zero owned sources). Note the single most-cited wild source — that's a candidate slide on its own.</p>
+    </div>
+  </div>
+</section>
+<!-- ================= TAB 4 : SCORING ================= -->
+<section class="tab" id="tab-score">
+  <h2>4 · Scoring</h2>
+  <p class="lede">Two paths to the same result. Primary: your assistant batch-codes everything in one pass (fast, reliable). Secondary: the Scorer agent in a Studio flow (slower to wire, but it's the "standing instrument" automation story — build it if Day 4 has slack, and show it either way).</p>
+  <div class="toolbar"><button data-expand="score">Expand all</button><button data-collapse="score">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-score"></div></div>
+
+  <div class="step" data-group="score" data-id="s1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.1 · Batch-code with your assistant (primary path)</div><div class="s">1–2 hrs incl. checks · upload workbook to the Lens build Project</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Code every Runs row where status="done" against this rubric.
+Work in batches; use code execution to keep results consistent.
+
+[Paste the ENTIRE Scorer rubric block from guide step 2.3 here,
+with the real company names substituted]
+
+Write results into the Scores sheet: run_id, the full JSON in
+score_json, and unpack these fields into their own columns:
+recommended_entity, parent_mentioned, product_mentioned,
+first_mentioned, winner. Give me the workbook back, plus:
+- count of coded rows vs total done rows (must match)
+- a frequency table of recommended_entity by topic and surface
+- any rows you could not code, listed with reasons</pre></div>
+      <p>Spot-read the frequency table immediately — this is your first sight of the actual findings. Resist the urge to start slide-making; verification first.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="score" data-id="s2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.2 · Hand-verify 10% <span class="tag method">the credibility step</span></div><div class="s">45 min · this number gets said out loud in the meeting</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Ask the assistant for a random 10% sample (~40 rows) as a table: prompt, answer, coded values. Read each answer yourself and mark agree/disagree with the coding. Log the agreement rate in Config. Above ~90%: proceed. Below: identify the recurring miscode (usually "conditional recommendation" counted as a pick), tighten that rubric line, recode everything, re-verify. "Machine-coded, ten percent hand-verified, agreement rate X%" is a sentence that buys the whole dashboard its credibility.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="score" data-id="s3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.3 · Scorer flow (secondary path — automation story)</div><div class="s">1 hr if Day 4 has slack</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Duplicate Collector → <b>Scorer flow</b>: List rows from <code>runs</code> where status=done → Execute Agent and wait → agent = Scorer, message = the answer text → Update a row writing lastresponse into a <code>score_json</code> column on the Runs table (add the column first). You still parse the JSON with your assistant afterward. The point of this flow isn't efficiency — it's that, chained with Collector and a scheduled trigger, the whole instrument runs itself weekly. One screenshot of these flows + the schedule toggle is your "this is a standing instrument, already partly automated" slide.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="score" data-id="s4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.4 · Schedule the heartbeat</div><div class="s">10 min · makes "standing instrument" literally true</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In Collector's trigger settings, add/swap to a Recurrence trigger: weekly, Monday 6am. It will find zero pending rows most weeks — fine. What matters: the instrument now has a pulse, and "the reading refreshes weekly" is true when you say it. (After the meeting, the real cadence gets designed properly.)</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 5 : DASHBOARD ================= -->
+<section class="tab" id="tab-dash">
+  <h2>5 · Analysis and the dashboard</h2>
+  <p class="lede">All metrics come from the Scores + Sources sheets; the dashboard is one self-contained HTML file your assistant generates. Overview page + one drill-down per topic, matching the approved mock. Presence/recommendation metrics use open prompts only — your assistant knows, because you told it in the Project brief.</p>
+  <div class="toolbar"><button data-expand="dash">Expand all</button><button data-collapse="dash">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-dash"></div></div>
+
+  <div class="step" data-group="dash" data-id="d1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5.1 · Compute the metrics</div><div class="s">1 hr · one prompt, one Analysis sheet</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Using Scores (+ QuestionBank for tier/class, Sources for citations),
+compute and write to the Analysis sheet. OPEN DECISION prompts
+only for items 1–6; report n for every cell.
+
+1. Recommendation rate: % of runs where recommended_entity is PARENT
+   or PRODUCT — by topic × surface × model.
+2. Who wins instead: when we lose, winner share by competitor — by
+   topic. Include overall.
+3. Winner reasons: cluster winner_reasons phrases per competitor;
+   top 3 clusters with counts and one verbatim example each.
+4. Ruling-out language: cluster ruling_out_language across all runs;
+   for each cluster give recurrence count, a verbatim exemplar, and
+   which topics/surfaces it appears in.
+5. Mention rates, SEPARATELY: parent_mentioned % and
+   product_mentioned % — by topic. Flag topics where one is present
+   and the other absent (the two-b***d gap).
+6. Gaps: pocket vs desk-gpt recommendation-rate gap by topic;
+   desk-gpt vs desk-claude gap by topic. Note the largest of each.
+7. Paraphrase stability: for each paraphrase pair, do conclusions
+   flip? Report a stability % overall.
+8. Portrayal (SEEDED prompts): attribute averages and the 3 most
+   common descriptive framings of PARENT and PRODUCT, verbatim.
+9. Sources: control ratio, top-5 cited URLs with type, unowned
+   topics (zero owned citations).
+Then tell me, in one paragraph: the single most dramatic cell in
+this data and why — your nomination for the drill-down topic.</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-group="dash" data-id="d2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5.2 · Generate the dashboard <span class="tag aha">the artifact</span></div><div class="s">1–2 hrs incl. iteration · one file, no dependencies</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Build a single-file HTML dashboard from the Analysis sheet. No
+external libraries, no internet dependencies — inline CSS, inline
+data, simple div/SVG bars. Executive-clean: white cards, one accent
+color, generous whitespace, nothing decorative. Two levels:
+
+OVERVIEW PAGE
+- Header: "Perception lens · v0.1 · [persona name]" + subtitle
+  "Layer 2 of LLM Visibility — how we're presented, and why"
+- Left rail: all five personas, active one highlighted, others
+  grayed with "awaiting data"
+- KPI row: overall recommendation rate (vs best competitor),
+  consideration/mention rate, source control ratio
+- "Position by topic": per-topic bar of our recommendation rate
+  with a tick mark for the leading competitor; color-code
+  trail/lead; clicking a topic row opens its drill-down
+- "Who wins instead — and why": competitor share of our losses +
+  top verbatim reasons
+- "The objection" card (accent color): the top ruling-out cluster,
+  verbatim, with recurrence count and where it appears
+- "Two-b***d panel": per topic, parent mention rate vs product
+  mention rate side by side; call out gap topics
+- "Pocket vs desk" and "GPT vs Claude": recommendation rate pairs
+  by topic, largest gaps flagged
+- "What feeds the answers": owned/earned/wild citation split, top
+  wild source called out
+- "What to do about it": 3 prescriptions (I will write these with
+  you after we see the data)
+- Methodology footer: n per cell type, dates, exact model names
+  from Config, browsing protocol, bank frozen date, coder
+  agreement rate
+
+DRILL-DOWNS (one per topic, same file, shown/hidden by clicks)
+- KPI row scoped to the topic (rec rate, mention rate, topic
+  winner, largest surface gap)
+- "Why [winner] wins this topic": their verbatim reason clusters
+  + how we're framed when mentioned
+- "This topic's objection" (if any): verbatim + recurrence +
+  which surfaces
+- "Pocket vs desk, this topic" with a one-line diagnosis
+- "Sources, this topic": citation type split, note if zero owned
+- "Prescription for this cell": placeholder box for now
+
+Use ONLY real computed numbers. Where data is thin (n<5), show
+the cell grayed with "insufficient n" — never fake confidence.
+Give me the file to download, then we iterate on layout.</pre></div>
+      <p>Expect two or three iteration rounds ("make the objection card bigger," "the bars need n labels"). Keep a copy of each version. When done, also export the overview as a PDF (print → save as PDF) — your backup if demo-day browsers misbehave.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="dash" data-id="d3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">5.3 · Choose the drama cell and write the prescriptions</div><div class="s">1 hr · the last analytical decision</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Take your assistant's nomination from 5.1, but apply the human tests: Is the finding <b>stark</b> (a number that needs no caveats)? Is it <b>sayable in one sentence</b>? Is it <b>actionable</b> (points at content/positioning the firm can actually change)? The best cell passes all three. That cell's drill-down is where the demo lingers; its objection or gap is your headline slide.</p>
+      <p>Then write the three "what to do about it" prescriptions — each must name a concrete artifact (a page to publish, a claim to counter, a citation to win) and a re-measure date. A prescription without a date is a wish.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 6 : DEMO ================= -->
+<section class="tab" id="tab-demo">
+  <h2>6 · Demo day</h2>
+  <p class="lede">The meeting structure lives in your deck outline document (thesis → costs → runs → competes-for). This tab is only the lens segment: the live moment, the walkthrough, and the rehearsal discipline.</p>
+  <div class="toolbar"><button data-expand="demo">Expand all</button><button data-collapse="demo">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-demo"></div></div>
+
+  <div class="step" data-group="demo" data-id="m1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6.1 · The live query</div><div class="s">rehearse ×10 on Day 7 · you know the distribution</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Pick ONE decision prompt — the one whose distribution you know best from the data (ideally feeding the drama cell). In the meeting: open the Panelist GPT in a fresh chat, paste it, let the answer land in front of her. Say nothing while it generates.</p>
+      <p>Two rehearsed follow-ups depending on what appears: if the typical result → <i>"That's what happens in [X]% of our sampled runs — here's the full distribution."</i> If an outlier → <i>"Interesting — that's the outlier. Which is exactly why single queries mislead and we sample. Here's what happens across 40 runs."</i> Both paths land; that's the point of sampling. Record a backup run as a screen recording on Day 7.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="demo" data-id="m2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6.2 · The dashboard walkthrough (5 min)</div><div class="s">overview 30 seconds, then zoom</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ol>
+        <li><b>Overview, 30 sec:</b> "Every audience, every surface, every topic — one instrument. Gray cells are awaiting data; here's the audience we lit up first." Do not read panels aloud.</li>
+        <li><b>Click into the drama cell, 2 min:</b> the number → who wins instead and their verbatim reasons → the objection, verbatim, with its recurrence count. Pause after reading the objection out loud. Then: <i>"Every client who asks an AI hears some version of that. Until this instrument, nobody in this building ever had."</i></li>
+        <li><b>One structural panel, 1 min:</b> whichever of two-b***d gap / pocket-desk / GPT-Claude produced your second-best finding.</li>
+        <li><b>Prescriptions + heartbeat, 1 min:</b> "each has a re-measure date; collection is already automated and scheduled — this is issue one of a series, not a study."</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" data-group="demo" data-id="m3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6.3 · The methodology answers</div><div class="s">have these verbatim-ready</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ul>
+        <li><b>"Couldn't anyone just ask ChatGPT?"</b> — "One query, yes. This is calibrated personas from our segmentation, a pre-registered question bank, sampled runs with competitor controls, machine-coded and hand-verified — and a time series nobody can recreate later. Anyone can ask ten people about the firm; that doesn't make them the tracker."</li>
+        <li><b>"How stable are these results?"</b> — cite your paraphrase stability % and per-cell n; model versions logged; discontinuities expected at model releases, which is why it's a series.</li>
+        <li><b>"Is this the same as the visibility tracker?"</b> — "Layer 2 of the same program. The tracker is the scoreboard — how often we show up. This explains the score — what happens when we do, and why, and what to do."</li>
+        <li><b>"What do you need?"</b> — the hook, not budget: "Send us your next announcement before it ships; we'll show you how AI reads it. And we'll bring you Reading #002 next quarter."</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step" data-group="demo" data-id="m4">
+    <div class="step-head"><input type="checkbox"><div><div class="t">6.4 · Day-7 rehearsal checklist</div><div class="s">90 min total</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ul>
+        <li>Live query ×10 in fresh chats; note the distribution you observe; record one as backup video.</li>
+        <li>Dashboard click-path ×3, timed — the lens segment fits in 8 minutes with 2 minutes of silence budgeted for her reactions.</li>
+        <li>PDF export of overview + drama drill-down on the desktop, in case of browser trouble.</li>
+        <li>One hostile dry-run with a colleague playing the exec, interrupting twice.</li>
+        <li>Memory toggles still off. Panelist GPT loads. Flows show green run history (screenshot it — that's the automation slide).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<!-- ================= TAB : PROMPT LIBRARY ================= -->
+<section class="tab" id="tab-prompts">
+  <h2>Prompt library — decision tier, both personas</h2>
+  <p class="lede">Four open decision prompts per topic, per persona, in that persona's natural register — every one forces a single pick and a rejection. Plus six paraphrases for the stability check, and the Jenny naturalization rules. Copy your persona's set in step 1.3.</p>
+
+  <h3><span class="tag emily">Emily</span> — self-directed, plain-spoken, fee-alert, hype-averse</h3>
+  <div class="card"><div class="codewrap"><button class="copybtn">Copy</button><pre>ETFs
+D001 | I have $10,000 to put into a single broad-market ETF. Which
+company's ETF should I buy, and what made you pick it over the others?
+D002 | If you had to pick one S&P 500 ETF to hold for 20 years, which
+one exactly — and why that company's version instead of the others?
+D003 | Cheapest isn't everything. Which ETF provider is the best
+overall deal for a long-term buy-and-hold investor? Who would you
+skip, and why?
+D004 | A lot of ETFs from different companies look identical to me.
+Pick the best one for someone like me and tell me what actually
+separates them.
+
+Retirement
+D005 | I'm 38 and feel behind on retirement. Recommend one fund
+company to build my retirement investing around — and tell me who
+you'd rule out.
+D006 | Which company has the best target-date retirement funds right
+now? Pick one, and tell me what the runners-up get wrong.
+D007 | If I can only use one provider for the investments in my IRA,
+who should it be? What made you rule out the others?
+D008 | I'm rolling over an old 401(k) and need to reinvest it. Which
+company's retirement funds would you actually put it in — and who
+wouldn't make your list?
+
+Income
+D009 | I eventually want about $500 a month of income from my
+investments. Which company's income ETFs should I build around?
+Who's second-best, and why?
+D010 | Recommend one dividend ETF to start an income portfolio.
+Whose is it exactly, and why not the alternatives?
+D011 | For bond ETFs that pay steady income, which provider is the
+one to use? Anyone you'd avoid?
+D012 | Pick the single best monthly-income fund for someone in her
+late 30s planting seeds now. Whose is it, and what ruled out the rest?
+
+Building a simple portfolio
+D013 | Build me a simple three-fund portfolio. Name the exact funds
+and the companies behind them — and why those companies.
+D014 | If my whole portfolio came from one fund company, which
+should it be? Who came second, and what tipped it?
+D015 | What's the best all-in-one portfolio ETF out there? Name it,
+name the company, and tell me what beat the competition.
+D016 | I want a lazy portfolio I rebalance once a year. Whose funds
+do I use — one pick per slot — and why did those providers win?
+
+Starting to invest
+D017 | I'm opening my first brokerage account this weekend with
+$2,000. Which company's funds should a beginner actually buy first?
+What did you rule out?
+D018 | Recommend the single best first investment for someone completely
+new. Name the fund and the company, and why that one over everything
+else.
+D019 | Which fund company is the most beginner-friendly overall?
+Pick one winner, and tell me who loses and why.
+D020 | If my first ETF purchase should "just work" for the next
+decade, which one do I buy and whose is it? What made the others
+worse picks?</pre></div></div>
+
+  <h3><span class="tag jenny">Jenny</span> — collaborative, goals-first, framework-seeking (advisor appears in ~1 of 4, where validation is the actual point)</h3>
+  <div class="card"><div class="codewrap"><button class="copybtn">Copy</button><pre>ETFs
+D001 | We have $10,000 to invest in one broad-market ETF for our
+long-term goals. Which company's ETF would you pick, and what made
+it beat the others?
+D002 | For a 20-year holding, which S&P 500 ETF is the right one —
+whose exactly, and why that company over the alternatives?
+D003 | Which ETF provider best fits a family investing toward
+specific goals rather than chasing performance? Who would you rule
+out, and why?
+D004 | Different companies' ETFs look nearly identical on paper.
+Which one should we actually choose, and what genuinely separates
+them? I want to be able to explain the choice.
+
+Retirement
+D005 | We're building our retirement plan around clear milestones.
+Recommend one fund company to anchor it — and tell me who you'd
+rule out.
+D006 | Which company's target-date funds are the strongest today?
+Pick one and explain what the others get wrong — I'll compare notes
+with my advisor after.
+D007 | If our IRAs should use a single provider, who should it be
+and what ruled out the rest?
+D008 | We're consolidating an old 401(k). Which company's retirement
+funds deserve the money — and who wouldn't make your shortlist?
+
+Income
+D009 | Down the road we want steady monthly income from investments.
+Which company's income ETFs should we build around, and who's the
+runner-up?
+D010 | Recommend one dividend ETF to start an income sleeve. Whose,
+exactly — and why not the alternatives?
+D011 | For dependable bond-ETF income, which provider is the one?
+Anyone you'd steer us away from?
+D012 | Pick the best income fund for a family a couple of decades
+from retirement. Whose is it, and what ruled out the rest? I want
+reasoning I could walk my advisor through.
+
+Building a simple portfolio
+D013 | Design a simple three-fund portfolio for us. Name the exact
+funds and companies — and why those companies won.
+D014 | If our whole portfolio came from one fund company, which one
+— and who was the close second?
+D015 | What's the best all-in-one portfolio ETF for a goals-driven
+family? Name it and its company, and what beat the competition.
+D016 | We want a low-maintenance portfolio we revisit once a year.
+Whose funds, one pick per slot — and why those providers?
+
+Market volatility
+D017 | Markets are choppy and we don't want to react emotionally.
+Which company's defensive or low-volatility funds are the best
+anchor? Who would you rule out?
+D018 | If we add one investment specifically to steady the portfolio
+in volatile stretches, what exactly — and whose is it? Why that one?
+D019 | Which fund company handles turbulent markets best for
+long-term family investors? One winner, and who loses.
+D020 | Recommend the single best fund for staying invested through
+volatility instead of sitting in cash. Whose, and what made the
+others weaker picks? I'd like to bring the logic to my advisor.
+
+PARAPHRASES (both personas — add with paraphrase_of filled)
+P1 of D001 | If I could only buy one total-market ETF, which
+company's would it be, and why not the other big providers?
+P2 of D005 | Whose funds should be the backbone of a late-30s
+retirement plan? One company, and who you'd pass on.
+P3 of D009 | Best provider for income-focused ETFs — who, and who's
+overrated?
+P4 of D013 | Give me a basic three-fund setup with the actual
+tickers and companies, and why those firms.
+P5 of D017/Emily | First-time investor, first purchase ever: which
+company's fund, and what did you reject?
+P5 of D017/Jenny | Which company's steady-market funds would you
+anchor us on, and who didn't make the cut?
+P6 of D002 | Which S&P 500 fund is actually the best version of the
+same idea, and whose?</pre></div></div>
+
+  <h3>Naturalizing Jenny's existing prompts</h3>
+  <div class="card">
+    <p style="margin:0 0 8px"><b>The problem:</b> her current bank appends "…to discuss with my advisor" to nearly everything. Real people don't ritually invoke their advisor — and the constant tag pushes every answer toward "ask your advisor" hedging, which suppresses the committed picks you're measuring. <b>The rule:</b> keep the advisor in at most one prompt in four, and only where validation IS the question. Elsewhere, keep her collaborative register through "we/our goals" framing, explainability asks, and peer/source-comparison instincts. Five before/afters from your actual bank:</p>
+    <div class="codewrap"><button class="copybtn">Copy</button><pre>BEFORE: For retirement planning, what bond ETFs offer steady income
+at moderate risk that I could review with my advisor?
+AFTER:  For retirement planning, which bond ETFs offer steady income
+at moderate risk? I want to understand the trade-offs properly.
+
+BEFORE: When I talk to my advisor, how should I weigh broad-market
+ETFs versus picking individual stocks over the long term?
+AFTER:  How should someone like me weigh broad-market ETFs against
+picking individual stocks for the long term?
+
+BEFORE: I'd like a safer, capital-preservation option to bring up
+with my advisor. What kinds of ETFs fit that goal?
+AFTER:  We want a safer, capital-preservation piece in our plan.
+What kinds of ETFs fit that goal, and how would you compare them?
+
+BEFORE: How does diversification cushion volatility? I want to
+understand it well for conversations with my advisor.
+AFTER:  How does diversification actually cushion volatility? Explain
+it the way you would to a smart friend, so I can explain it to my
+family.
+
+KEEP (validation IS the point — advisor stays):
+My advisor uses mutual funds. Are ETFs genuinely a better
+diversification option I should raise, or is that overblown?</pre></div>
+    <p style="margin:8px 0 0">Note: several of her existing prompts are also <b>seeded</b> (they name the product line). The tagging in step 1.2 catches those automatically — they become portrayal probes, no rewriting needed.</p>
+  </div>
+</section>
+
+<!-- ================= TAB : TROUBLESHOOTING ================= -->
+<section class="tab" id="tab-fix">
+  <h2>Troubleshooting — the ten ways this breaks</h2>
+  <p class="lede">Everything below either happened during your POC or is the next-most-likely failure. Each entry: symptom → cause → fix. If something breaks that isn't here, describe it to your Lens build assistant with a screenshot — that's what it's for.</p>
+
+  <div class="card"><b>Flow error: "no dependent actions" / structural failure.</b> An action isn't linked into the chain, a loop container is empty, or the trigger is an agent-trigger being run manually. Check the canvas is one connected vertical chain; re-add stray actions via the + between nodes; use a manual or recurrence trigger.</div>
+  <div class="card"><b>Agent gets no question / empty answers.</b> The Message field on "Execute Agent and wait" is hidden under Advanced parameters → Show all. Insert the prompt-text chip there. (Both loop actions hide their key fields this way — the answer column on Update a row too.)</div>
+  <div class="card"><b>Update a row fails.</b> Key Column must be your ID column (exact spelling), Key Value the ID chip from List rows — never conversationID. The file must be closed in desktop Excel while flows write. Locale field: en-US.</div>
+  <div class="card"><b>List rows returns nothing.</b> Data isn't formatted as a named Table (Insert → Table, name it), or the Location/Library/File/Table dropdowns weren't picked from the dropdowns. Re-select all four.</div>
+  <div class="card"><b>Filter Query errors.</b> The Excel connector's filter support is finicky. Drop it; use a Condition action inside the loop instead (status = pending AND surface/model match). Slower, bulletproof.</div>
+  <div class="card"><b>Batches stall or rows stay pending.</b> Rate limiting. Confirm the 30s Delay action is inside the loop; run again — the status filter makes reruns resume, not duplicate. If stalls persist, run smaller batches (filter by topic) and space them across the day.</div>
+  <div class="card"><b>The agent won't pick / hedges everything to "consult a professional."</b> The instruction block lost its ALWAYS-answer + commit-to-ONE lines (usually a partial paste). Re-paste the full block, republish, reset affected rows to pending. Never fix this by rewriting bank prompts — the bank is frozen.</div>
+  <div class="card"><b>Desk answers are word-for-word identical across runs.</b> Caching — sampling is broken on that path. Verify you're asking via fresh flow runs (not one chat session), note it in Config, and treat desk n as reduced. Pocket runs are unaffected; lean on them for sampling claims if this hits.</div>
+  <div class="card"><b>Pocket browsing won't turn off.</b> If "answer from your own knowledge only — do not search the web" still triggers search (links/citations appear), discard, retry once in a new chat; if persistent, note in Config that pocket browsing-off is unavailable and rely on desk (web-off) for the frozen layer. Never keep a run that violated its browsing condition.</div>
+  <div class="card"><b>ChatGPT remembers who you are (workspace context).</b> If a fresh memory-off chat still knows your employer, your account is contaminated for this purpose: measurement runs shift to a colleague's vanilla account or a shared clean account, same protocol. Test once before pocket session 1: "What do you know about me and where I work?"</div>
+  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier desk runs first, seeded portrayal second, perception last — the aha lives in the first bucket.</div>
+  <div class="card"><b>Dashboard file won't open on the demo machine.</b> It's self-contained by design (no libraries) — any browser opens it. If a policy blocks local HTML, use the PDF exports; the walkthrough survives in PDF because the drill-down is pre-selected.</div>
+</section>
+</main>
+<footer>Perception lens build guide · progress stored in this browser only · print for a flat copy</footer>
+<script>
+const tabs=document.querySelectorAll('nav button');
+function show(id){
+  tabs.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+id));
+  window.scrollTo({top:0});
+  try{localStorage.setItem('abg-tab',id);}catch(e){}
+}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+try{const t=localStorage.getItem('abg-tab');if(t)show(t);}catch(e){}
+document.querySelectorAll('.step-head').forEach(h=>{
+  h.addEventListener('click',e=>{
+    if(e.target.tagName==='INPUT')return;
+    h.parentElement.classList.toggle('open');
+  });
+});
+function key(id){return 'abg-step-'+id;}
+function refreshCounts(){
+  const groups={};
+  document.querySelectorAll('.step[data-group]').forEach(s=>{
+    const g=s.dataset.group;groups[g]=groups[g]||{d:0,t:0};groups[g].t++;
+    if(s.classList.contains('done'))groups[g].d++;
+  });
+  for(const g in groups){
+    const c=document.getElementById('cnt-'+g);
+    if(c)c.textContent=groups[g].d+'/'+groups[g].t;
+    const bar=document.getElementById('bar-'+g);
+    if(bar)bar.style.width=(100*groups[g].d/groups[g].t)+'%';
+  }
+}
+document.querySelectorAll('.step[data-group]').forEach(s=>{
+  const cb=s.querySelector('input[type=checkbox]');
+  try{if(localStorage.getItem(key(s.dataset.id))==='1'){cb.checked=true;s.classList.add('done');}}catch(e){}
+  cb.addEventListener('change',()=>{
+    s.classList.toggle('done',cb.checked);
+    try{localStorage.setItem(key(s.dataset.id),cb.checked?'1':'0');}catch(e){}
+    refreshCounts();
+  });
+});
+refreshCounts();
+document.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.step[data-group="'+b.dataset.expand+'"]').forEach(s=>s.classList.add('open'));
+}));
+document.querySelectorAll('[data-collapse]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.step[data-group="'+b.dataset.collapse+'"]').forEach(s=>s.classList.remove('open'));
+}));
+document.querySelectorAll('.copybtn').forEach(b=>b.addEventListener('click',()=>{
+  const txt=b.parentElement.querySelector('pre').innerText;
+  const done=()=>{b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy',1600);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallback());}
+  else fallback();
+  function fallback(){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta);}
+}));
+</script>
+</body>
+</html>
