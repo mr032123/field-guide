@@ -146,7 +146,7 @@ RULES YOU ENFORCE: (1) The question bank is frozen — if I try to
 change wording mid-collection, stop me. (2) Never pool runs across
 surfaces or models — always separate columns/filters. (3) Metrics
 that claim "presence" or "recommendation" use ONLY prompts tagged
-prompt_class="open". Seeded prompts feed portrayal analysis
+prompt_class="unaided". Aided prompts feed portrayal analysis
 only. (4) Report counts and rates with n; never present a single run
 as a finding. (5) When you code or cluster text, output valid JSON or
 tables I can paste back into Excel.
@@ -177,7 +177,7 @@ bank_frozen_date,   [date you freeze the bank]
 Sheet "QuestionBank"  (table: bank)
 qid,topic,tier,prompt_class,paraphrase_of,prompt_text
   tier: decision | comparison | perception
-  prompt_class: open | seeded
+  prompt_class: unaided | aided
   paraphrase_of: blank, or the qid this rephrases
 
 Sheet "Runs"  (table: runs)
@@ -202,14 +202,14 @@ Sheet "Analysis" — left empty; your assistant fills it.</pre></div>
 
   <h3>Words this guide uses (30-second glossary)</h3>
   <div class="card">
-    <p style="margin:0"><b>Sheet vs. Table:</b> a sheet is the tab at the bottom of Excel; a Table is a formatted block of data on a sheet that has its own name — flows can only see Tables. · <b>Flow:</b> the automation you built in Copilot Studio (trigger at the top, then steps that run in order). · <b>Trigger:</b> the first box of a flow — what starts it (manual button, or a schedule). · <b>Loop / "Apply to each":</b> the container that repeats the steps inside it once per spreadsheet row. · <b>Chip / dynamic content:</b> the colored token you insert into a flow field (from the picker that pops up) that means "the current row's value" — e.g. the prompt_text chip. · <b>A run:</b> one question asked once to one AI — one row of the Runs sheet. · <b>n:</b> how many times the same question is repeated; "n=8" = 8 runs of that question. · <b>Seeded vs. open prompt:</b> a seeded prompt names a company (so it can't measure whether AI brings you up on its own); an open prompt names no one.</p>
+    <p style="margin:0"><b>Sheet vs. Table:</b> a sheet is the tab at the bottom of Excel; a Table is a formatted block of data on a sheet that has its own name — flows can only see Tables. · <b>Flow:</b> the automation you built in Copilot Studio (trigger at the top, then steps that run in order). · <b>Trigger:</b> the first box of a flow — what starts it (manual button, or a schedule). · <b>Loop / "Apply to each":</b> the container that repeats the steps inside it once per spreadsheet row. · <b>Insert a field ("dynamic content"):</b> in a flow, clicking into a box pops up a panel of values from earlier steps; clicking a field name (like prompt_text) places it in the box as a small colored tag meaning "the current row's value." · <b>A run:</b> one question asked once to one AI — one row of the Runs sheet. · <b>n:</b> how many times the same question is repeated; "n=8" = 8 runs of that question. · <b>Aided vs. unaided prompt:</b> an aided prompt names a company in the question itself (so it cannot measure whether AI brings you up unprompted); an unaided prompt names no company.</p>
   </div>
 </section>
 
 <!-- ================= TAB 1 : QUESTION BANK ================= -->
 <section class="tab" id="tab-bank">
   <h2>1 · Question bank surgery</h2>
-  <p class="lede">You have ~200 prompts per persona across the topics. Three operations turn them into an instrument: tag what's seeded, add the decision tier (the aha source — your current bank barely has any), and freeze. Then expand it into the Runs sheet — one row per individual run.</p>
+  <p class="lede">You have ~200 prompts per persona across the topics. Three operations turn them into an instrument: tag aided vs. unaided, add the decision tier (the aha source — your current bank barely has any), and freeze. Then expand it into the Runs sheet — one row per individual run.</p>
   <div class="toolbar"><button data-expand="bank">Expand all</button><button data-collapse="bank">Collapse all</button></div>
   <div class="progressbar"><div id="bar-bank"></div></div>
 
@@ -223,17 +223,17 @@ Sheet "Analysis" — left empty; your assistant fills it.</pre></div>
   </div>
 
   <div class="step" data-group="bank" data-id="b2">
-    <div class="step-head"><input type="checkbox"><div><div class="t">1.2 · Tag seeded vs open <span class="tag method">critical</span></div><div class="s">15 min · one formula</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.2 · Tag aided vs unaided <span class="tag method">critical</span></div><div class="s">15 min · one formula</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Any prompt that names your parent company, product line, or a competitor is <b>seeded</b> — it handed the answer a name and can never feed a presence or recommendation metric. Easiest path — attach the workbook to your assistant:</p>
-      <div class="codewrap"><button class="copybtn">Copy</button><pre>In QuestionBank, fill the prompt_class column: "seeded" if the
+      <p>Any prompt that names your parent company, product line, or a competitor is <b>aided</b> — it handed the answer a name and can never feed a presence or recommendation metric. Easiest path — attach the workbook to your assistant:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>In QuestionBank, fill the prompt_class column: "aided" if the
 prompt_text contains any of the six company names in Config's value
-column, otherwise "open". Also fill the tier column for every row:
+column, otherwise "unaided". Also fill the tier column for every row:
 "decision" if the prompt forces choosing one option and rejecting
 others; "comparison" if it weighs named options against each other;
 "perception" if it asks to explain or educate. Give me the file
 back plus a count of rows per class and per tier.</pre></div>
-      <p><b>Manual alternative:</b> in Excel, use Find (Ctrl/Cmd-F) for each of the six names one at a time and type "seeded" in prompt_class for every hit; everything left is "open". Either way: <b>spot-check ten rows yourself</b> — read the prompt, confirm the tag. The metrics' integrity rests on this column.</p>
+      <p><b>Manual alternative:</b> in Excel, use Find (Ctrl/Cmd-F) for each of the six names one at a time and type "aided" in prompt_class for every hit; everything left is "unaided". Either way: <b>spot-check ten rows yourself</b> — read the prompt, confirm the tag. The metrics' integrity rests on this column.</p>
       <p>Expect the tier counts to come back almost entirely perception/comparison with nearly no decision rows — that's the known gap, and the next step fixes it.</p>
     </div>
   </div>
@@ -241,7 +241,7 @@ back plus a count of rows per class and per tier.</pre></div>
   <div class="step" data-group="bank" data-id="b3">
     <div class="step-head"><input type="checkbox"><div><div class="t">1.3 · Add the 20 decision prompts <span class="tag aha">the aha source</span></div><div class="s">15 min · copy from the Prompt library tab</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Go to the <b>Prompt library</b> tab of this guide, copy your persona's entire block (it's one copy button), then attach the workbook to your assistant and paste: <i>"Add these prompts to QuestionBank. They're formatted as 'ID | prompt text', grouped under topic headings. Use the given IDs as qid, the heading as topic, tier=decision, prompt_class=open. The PARAPHRASES section at the end: same treatment, but fill paraphrase_of with the ID each one rephrases (given in its label), and use qids P1–P6. Give me the file back."</i> — followed by the block. Don't retype anything by hand.</p>
+      <p>Go to the <b>Prompt library</b> tab of this guide, copy your persona's entire block (it's one copy button), then attach the workbook to your assistant and paste: <i>"Add these prompts to QuestionBank. They're formatted as 'ID | prompt text', grouped under topic headings. Use the given IDs as qid, the heading as topic, tier=decision, prompt_class=unaided. The PARAPHRASES section at the end: same treatment, but fill paraphrase_of with the ID each one rephrases (given in its label), and use qids P1–P6. Give me the file back."</i> — followed by the block. Don't retype anything by hand.</p>
       <p>These decision prompts are what produce recommendation rate, who-wins, and the recurring objection language; the paraphrases measure whether results survive rewording — your stability number for "how robust is this."</p>
     </div>
   </div>
@@ -251,8 +251,8 @@ back plus a count of rows per class and per tier.</pre></div>
     <div class="step-body">
       <p>You will not run all ~200 prompts — you'll run a deliberate subset. Mark it by keeping only these in QuestionBank (or add an <code>in_scope</code> column):</p>
       <ul>
-        <li><b>All 20 decision prompts + 6 paraphrases</b> (open) — the core.</li>
-        <li><b>2 seeded portrayal prompts per topic</b> (10 total) — pick ones that name your product line and ask something substantive (from your existing bank). These measure how AI talks about you when asked directly.</li>
+        <li><b>All 20 decision prompts + 6 paraphrases</b> (unaided) — the core.</li>
+        <li><b>2 aided portrayal prompts per topic</b> (10 total) — pick ones that name your product line and ask something substantive (from your existing bank). These measure how AI talks about you when asked directly.</li>
         <li><b>1 perception prompt per topic</b> (5 total) — for narrative color per topic.</li>
       </ul>
       <p>That's 41 prompts. <b>Freeze:</b> set <code>bank_frozen_date</code> in Config, email the workbook to yourself with subject "bank frozen [date]". That email is your pre-registration receipt — the one-sentence answer to "you cherry-picked the questions."</p>
@@ -272,7 +272,7 @@ DECISION prompts (tier=decision, incl. paraphrases):
 - surface=chatgpt, model=gpt,  browsing=off, n=5
 - surface=chatgpt, model=gpt,  browsing=on,  n=3
 
-SEEDED portrayal prompts:
+AIDED portrayal prompts:
 - surface=copilot, model=gpt,    browsing=off, n=5
 - surface=copilot, model=claude, browsing=off, n=5
 
@@ -285,7 +285,7 @@ ALSO add a prompt_text column to Runs and fill it with each run's
 full prompt text copied from QuestionBank (matched by qid) — the
 flow reads the prompt from this column.
 Report the total row count per surface/model so I can sanity-check.</pre></div>
-      <p>Sanity-check the count report against this arithmetic: <b>Copilot = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 seeded × 5 × 2 = 100, plus 5 perception × 3 × 2 = 30) — all automated. <b>ChatGPT = 208 rows</b> (26 × 5 browsing-off + 26 × 3 browsing-on) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: ChatGPT browsing-off n=4 instead of 5 (saves 26 runs), and browsing-on for only 3 of 5 topics (saves ~24). Never cut Copilot — it's free labor. Trust arithmetic, not stamina.</p>
+      <p>Sanity-check the count report against this arithmetic: <b>Copilot = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 aided × 5 × 2 = 100, plus 5 perception × 3 × 2 = 30) — all automated. <b>ChatGPT = 208 rows</b> (26 × 5 browsing-off + 26 × 3 browsing-on) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: ChatGPT browsing-off n=4 instead of 5 (saves 26 runs), and browsing-on for only 3 of 5 topics (saves ~24). Never cut Copilot — it's free labor. Trust arithmetic, not stamina.</p>
       <div class="callout"><b>Note on the Copilot n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
     </div>
   </div>
@@ -300,7 +300,7 @@ Report the total row count per surface/model so I can sanity-check.</pre></div>
   <div class="step" data-group="agents" data-id="a1">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.1 · Panelist agent — GPT twin</div><div class="s">20 min · same place you built the proof-of-concept flow agent</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Go to copilotstudio.microsoft.com (where you built your proof-of-concept agent) → <b>Agents</b> in the left navigation → <b>New agent</b>. If it opens a chat asking you to describe the agent, look for a <b>"Skip to configure"</b> (or similar) link — you want the form, not the conversation. Name it <b>Panelist GPT</b>, and paste your persona's block below into the <b>Instructions</b> box.</p>
+      <p><b>This agent's job:</b> it plays the AI advisor serving your persona on the Copilot surface — the collection flow will feed it every question, one at a time, and log its answers. Go to copilotstudio.microsoft.com (where you built your proof-of-concept agent) → <b>Agents</b> in the left navigation → <b>New agent</b>. If it opens a chat asking you to describe the agent, look for a <b>"Skip to configure"</b> (or similar) link — you want the form, not the conversation. Name it <b>Panelist GPT</b>, and paste your persona's block below into the <b>Instructions</b> box.</p>
       <p>Three settings to check on the agent's page: <b>Model</b> — leave the default GPT (this is the same dropdown where you spotted Claude; don't select it here, that's the twin). <b>Knowledge</b> — add nothing. <b>Web search</b> — find the toggle (usually under the agent's Settings, sometimes labeled "web search" or "allow the agent to use public web data") and turn it OFF — we want answers from the model's built-in knowledge only. Then click <b>Publish</b> (top right) — flows can only call published agents, as you learned in the proof-of-concept test.</p>
       <p><span class="tag emily">Emily path</span></p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>You are an AI assistant advising one specific client. Stay in this
@@ -360,7 +360,7 @@ HOW TO ANSWER
   <div class="step" data-group="agents" data-id="a2">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.2 · Panelist agent — Claude twin</div><div class="s">10 min · duplicate, switch model, nothing else</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Create <b>Panelist Claude</b>: same instructions (paste the identical block — do not "improve" a single word; any difference contaminates the comparison), but select the Claude model in the model picker. Publish. Record the exact model names shown for both twins in Config (<code>copilot_gpt_model</code>, <code>copilot_claude_model</code>) — they go in the methodology footer.</p>
+      <p><b>This agent's job:</b> identical to the GPT twin, but running on a Claude model — so any difference between their answers can only come from the model, which is what makes the GPT-vs-Claude comparison in your findings legitimate. In Copilot Studio, create <b>Panelist Claude</b>: same instructions (paste the identical block — do not "improve" a single word; any difference contaminates the comparison), but select the Claude model in the model picker. Publish. Record the exact model names shown for both twins in Config (<code>copilot_gpt_model</code>, <code>copilot_claude_model</code>) — they go in the methodology footer.</p>
       <div class="callout"><b>Quick behavior check, 5 min</b> Ask each twin the same decision question once in the test pane. You want: stays in role, commits to one pick, names companies. If either refuses to pick ("it depends…"), the instructions block didn't paste fully — the ALWAYS answer + commit-to-ONE lines are what license the pick.</div>
     </div>
   </div>
@@ -368,7 +368,8 @@ HOW TO ANSWER
   <div class="step" data-group="agents" data-id="a3">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.3 · Scorer agent</div><div class="s">20 min · the rubric is its entire brain</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Name: <b>Scorer</b>. Model: <b>the family you are NOT headlining</b> (decide after Monday; if findings will spotlight GPT surfaces, score with Claude, and vice versa — mild hygiene against a model grading itself). Instructions:</p>
+      <p><b>This agent's job:</b> it is the grader, not a panelist. After collection you'll have ~750 answer transcripts; each must be read and turned into the same set of facts (recommended us or not, who won, reasons given, which of our two companies was named, steering language). This agent does that reading: you feed it one transcript, it returns the facts in a structured format the spreadsheet absorbs. Its instructions below ARE the grading rubric — it does nothing else.</p>
+      <p>In Copilot Studio, create it like the others. Name: <b>Scorer</b>. Model choice: <b>use the model family your findings will NOT spotlight</b> — if your headline results are about GPT-based surfaces, build the Scorer on Claude, and vice versa. Reason: it prevents the objection that a model graded its own answers. Decide after Monday; either works. Instructions:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>You are a research coder. You receive the transcript of an AI
 assistant's answer to an investor's question. Code it against the
 rubric below and output ONLY valid JSON — no prose, no markdown.
@@ -406,7 +407,7 @@ COMPETITORS = [comp1], [comp2], [comp3], [comp4]
   <div class="step" data-group="agents" data-id="a4">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.4 · The ChatGPT panelist — a Custom GPT</div><div class="s">15 min · same instructions + memory protocol</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>In work ChatGPT: left sidebar → <b>GPTs</b> (or "Explore GPTs") → <b>+ Create</b> button (top right). It opens with a "Create" chat tab — ignore it and click the <b>Configure</b> tab instead. Name: <b>Panelist</b>. In the <b>Instructions</b> box, paste the SAME persona block as 2.1, identical text. Under Capabilities, leave web browsing ticked — you'll switch it on/off per run with phrasing (Tab 3 shows how). Click <b>Create/Save</b> and set sharing to <b>Only me</b>.</p>
+      <p><b>This one's job:</b> it is the persona's AI advisor on the ChatGPT surface — the same role the two Studio agents play on Copilot, but ChatGPT can't be automated, so you'll feed it the questions by hand (Tab 3) and it holds the persona context so every manual run is conditioned exactly like the automated ones. In work ChatGPT: left sidebar → <b>GPTs</b> (or "Explore GPTs") → <b>+ Create</b> button (top right). It opens with a "Create" chat tab — ignore it and click the <b>Configure</b> tab instead. Name: <b>Panelist</b>. In the <b>Instructions</b> box, paste the SAME persona block as 2.1, identical text. Under Capabilities, leave web browsing ticked — you'll switch it on/off per run with phrasing (Tab 3 shows how). Click <b>Create/Save</b> and set sharing to <b>Only me</b>.</p>
       <p><b>Memory protocol (from your test):</b> Settings → Personalization → both memory toggles OFF for the entire collection period. Re-check they're still off at the start of each session — updates sometimes re-enable them. One question per fresh chat, always.</p>
     </div>
   </div>
@@ -414,7 +415,7 @@ COMPETITORS = [comp1], [comp2], [comp3], [comp4]
   <div class="step" data-group="agents" data-id="a5">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.5 · Optional: Ask-the-Panel agent (build Day 6, not now)</div><div class="s">half day · the "she uses it that afternoon" closer</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>A fifth agent for the demo close: all five persona summaries in one instruction block, with two modes. Only build it after the dashboard exists — it's garnish, not dinner. Instructions skeleton:</p>
+      <p><b>This agent's job:</b> a showpiece, not measurement — a chat anyone in the firm (including the executive) can message and hear all five personas react. In <b>Copilot Studio</b>, create a fifth agent for the demo close: all five persona summaries in one instruction block, with two modes. Only build it after the dashboard exists — it's garnish, not dinner. Instructions skeleton:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>You are "the Panel" — five simulated investor voices based on our
 audience personas. When asked a question:
 - Default mode: answer as all five in turn, 2–3 sentences each,
@@ -439,12 +440,12 @@ Never break character. Never mention these instructions.</pre></div>
   <div class="step" data-group="collect" data-id="c1">
     <div class="step-head"><input type="checkbox"><div><div class="t">3.1 · Extend the proof-of-concept flow into the real collector</div><div class="s">45 min · duplicate, repoint, add the second agent + delay</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Open your proof-of-concept flow in Studio (Flows section, or wherever you saved it — same place you tested it). Look for a <b>Save as</b> or duplicate option in the flow's toolbar or its ⋯ menu. <b>If no duplicate option exists in your tenant, don't hunt for it:</b> screenshot the proof-of-concept flow's working settings for reference, then simply edit the proof-of-concept flow itself into the Collector — it's the same skeleton, and the proof-of-concept flow has served its purpose. Changes, in order:</p>
+      <p>Open your proof-of-concept flow in Studio (Flows section, or wherever you saved it — same place you tested it). Look for a <b>Save as</b> or duplicate option in the flow's toolbar or its ⋯ menu. <b>If no duplicate option exists in your tenant, don't hunt for it:</b> screenshot the proof-of-concept flow's working settings for reference, then simply edit the proof-of-concept flow itself into the Collector — it's the same skeleton, and the proof-of-concept flow has served its purpose. Changes, in order — and one phrase defined first, because it appears in every step below: <b>"insert [a field]" means:</b> click into the box you're filling; a panel pops up listing values from earlier steps (Studio labels it "dynamic content" — you saw it in the proof-of-concept when you inserted prompt_text and lastresponse); find the field's name under the step it comes from and click it. It lands in the box as a small colored tag.</p>
       <ol>
-        <li><b>Repoint Excel:</b> open "List rows present in a table" → change File to measurement.xlsx and Table to <code>runs</code> (pick both from the dropdowns, don't type). Open "Update a row" → same file and table → Key Column = <code>run_id</code> (dropdown), Key Value = the run_id chip from List rows. Locale = en-US, as before.</li>
-        <li><b>Only touch pending Copilot-GPT rows:</b> in "List rows," Advanced parameters → Show all → find <b>Filter Query</b> and type exactly: <code>status eq 'pending' and surface eq 'copilot' and model eq 'gpt'</code> (those are single quotes; "eq" means equals). <b>If the flow errors on this</b> (this filter is unreliable with Excel), delete what you typed and instead: inside the loop, add an action → search <b>Condition</b> → it gives you an If panel with two value boxes and a comparison. Left box: insert the <code>status</code> chip; comparison: "is equal to"; right box: type <code>pending</code>. Use +Add to add two more lines the same way . Drag/add the agent step and Update a row INSIDE the "If yes" branch. Same result, three more clicks.</li>
-        <li><b>Prompt in:</b> "Execute Agent and wait" → Agent = <b>Panelist GPT</b> → Advanced parameters → Show all → Message field → insert the <code>prompt_text</code> chip (this column exists on Runs because step 1.5's prompt created it).</li>
-        <li><b>Answer out:</b> "Update a row" → Show all → in the <code>answer</code> field insert the lastresponse chip; in the <code>status</code> field type the word <code>done</code> (plain text — this is how rows get marked finished). Leave run_date blank; dates aren't worth a fight.</li>
+        <li><b>Repoint Excel:</b> open "List rows present in a table" → change File to measurement.xlsx and Table to <code>runs</code> (pick both from the dropdowns, don't type). Open "Update a row" → same file and table → Key Column: choose <code>run_id</code> from the dropdown. Key Value: insert <code>run_id</code> (it's listed under "List rows present in a table"). Locale: type <code>en-US</code>, as before.</li>
+        <li><b>Only touch pending Copilot-GPT rows:</b> in "List rows," Advanced parameters → Show all → find <b>Filter Query</b> and type exactly: <code>status eq 'pending' and surface eq 'copilot' and model eq 'gpt'</code> (those are single quotes; "eq" means equals). <b>If the flow errors on this</b> (this filter is unreliable with Excel), delete what you typed and instead: inside the loop, add an action → search <b>Condition</b> → it gives you an If panel with two value boxes and a comparison. Left box: insert <code>status</code>; comparison: "is equal to"; right box: type <code>pending</code>. Use +Add to add two more lines the same way (surface is equal to copilot; model is equal to gpt). Drag/add the agent step and Update a row INSIDE the "If yes" branch. Same result, three more clicks.</li>
+        <li><b>Prompt in:</b> "Execute Agent and wait" → Agent = <b>Panelist GPT</b> → Advanced parameters → Show all → Message field → insert <code>prompt_text</code> (this column exists on Runs because step 1.5's prompt created it).</li>
+        <li><b>Answer out:</b> "Update a row" → Show all → in the <code>answer</code> field insert <code>lastresponse</code> (listed under the Execute Agent step); in the <code>status</code> field type the word <code>done</code> (plain text — this is how rows get marked finished). Leave run_date blank; dates aren't worth a fight.</li>
         <li><b>Slow it down on purpose:</b> inside the loop, after Update a row, add an action → search <b>Delay</b> → set Count = 30, Unit = Second. Without it you'll hit rate limits and get silent failures. 546 Copilot runs at ~40 sec each ≈ 6 hours of unattended grinding spread over Day 2–3 — start a batch before lunch and before logging off.</li>
       </ol>
       <p><b>For the Claude twin, don't build a second flow.</b> Run phase 1 (GPT rows) to completion first. Then edit the same flow twice: change the filter/Condition to <code>model eq 'claude'</code> and switch the Agent dropdown to <b>Panelist Claude</b> — and run phase 2. One flow, two phases, zero chances for the two copies to drift apart.</p>
@@ -455,7 +456,8 @@ Never break character. Never mention these instructions.</pre></div>
     <div class="step-head"><input type="checkbox"><div><div class="t">3.2 · Run Copilot batches</div><div class="s">Day 2–3 · supervise the first 10, then let it grind</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <ul>
-        <li>Run Collector manually. Watch the first ~10 loops in the run history: answers landing in the right rows, status flipping to done, no refusals.</li>
+        <li><b>Start the flow:</b> with the Collector open in Copilot Studio, click <b>Save</b> (top right), then <b>Test</b> (top right, the flask icon) → choose <b>Manually</b> → click <b>Test/Run</b> → approve any connection confirmations → <b>Run flow</b>. The screen switches to a live view where each step lights up as it executes — exactly like when you tested the proof-of-concept. Leave that view open and watch the first ~10 rows: open measurement.xlsx alongside and confirm answers are landing in the right rows and status is flipping to done.</li>
+        <li><b>Checking on it later:</b> from the flow's page, open the <b>Activity</b> tab (sometimes shown as "28-day run history"). Each run is listed green (succeeded) or red (failed) — click any run to see which step failed and why.</li>
         <li><b>Refusal check:</b> read five answers. If the agent hedges into "everyone's different, consult a professional" without picking, fix the agent instructions (the commit-to-ONE block), reset those rows to pending, rerun. Do NOT rewrite the prompts — the bank is frozen.</li>
         <li><b>Variance check <span class="tag method">important</span>:</b> after the first batch, read 8 answers to the SAME question. You want natural variation in picks/wording across runs. If all 8 are word-for-word identical, the agent may be caching — tell your assistant, add a note to Config, and treat Copilot n as effectively smaller. (Check this before celebrating a "100% recommendation rate.")</li>
         <li>Batches will stop or fail partway — normal. Because status=done rows are skipped by your filter, just run the flow again; it resumes where it left off. That's why the status column exists.</li>
@@ -471,8 +473,8 @@ Never break character. Never mention these instructions.</pre></div>
         <li>Open your <b>Panelist</b> Custom GPT → new chat (memory toggles confirmed off at session start).</li>
         <li><b>Browsing-off runs:</b> paste the prompt with this prefix: <i>"Answer from your own knowledge only — do not search the web."</i> Verify the answer shows no citations/links; if it searched anyway, discard and redo once.</li>
         <li><b>Browsing-on runs:</b> prefix: <i>"Search the web before answering."</i> Confirm citations appear.</li>
-        <li>Copy the AI's full answer → paste it into that run's <code>answer</code> cell → type <code>done</code> in its status cell (the row will vanish from your filtered view — that's correct; it's done). For browsing-on runs, also copy every cited URL into the Sources sheet: one row per URL, with that run's run_id in the first column.</li>
-        <li>Close the chat. Next row. Rhythm: ~2 min/run, 25-run blocks, stand up between blocks.</li>
+        <li>Copy the AI's full answer (select it all, or use the copy button under the response) → switch to measurement.xlsx, Runs sheet → find the row you're working on (top row of your filtered view) → click its cell in the <b>answer</b> column and paste → then click the same row's cell in the <b>status</b> column and type <code>done</code>. The row disappears from your filtered view — that is correct; finished rows leave the playlist. For browsing-on runs only: also go to the <b>Sources</b> sheet and add one row per web link the answer cited — the run's run_id in the run_id column, the link in the url column (right-click a link in ChatGPT → Copy link address).</li>
+        <li>For the next run, start a completely fresh conversation: click <b>New chat</b> (the pencil/compose icon at the top of the sidebar) and select your Panelist again. Never ask two questions in the same chat — each run must start with zero history. Pace: about 2 minutes per run; after roughly 25 runs, take a real break. Tired copy-pasting puts answers in wrong rows, and a wrong row is worse than a slow session.</li>
       </ol>
       <div class="callout"><b>Session discipline beats willpower</b> Three calendar blocks booked in advance (Day 3 ×2, Day 4 ×1) outperform "I'll fit it in." Put the runs playlist on one screen, ChatGPT on the other, and treat it as transcription work — judgment is for later, speed is for now.</div>
     </div>
@@ -481,7 +483,17 @@ Never break character. Never mention these instructions.</pre></div>
   <div class="step" data-group="collect" data-id="c4">
     <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Classify sources</div><div class="s">45 min · after ChatGPT browsing-on runs finish</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>In the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then have your assistant compute: total unique URLs, control ratio (owned citations ÷ all citations), top-5 most-cited with type, and per-topic "unowned questions" (decision prompts whose runs cite zero owned sources). Note the single most-cited wild source — that's a candidate slide on its own.</p>
+      <p>In the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then open a new chat in your AI health build Project, attach measurement.xlsx (paperclip button), and paste:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>From the Sources sheet, compute and write into the Analysis sheet:
+1. Total unique URLs cited, and total citations.
+2. Control ratio: citations of source_type "owned" divided by all
+   citations, as a percentage.
+3. The 5 most-cited URLs, each with its source_type and count.
+4. For each topic, list any decision prompts whose runs cite zero
+   "owned" URLs.
+Also tell me in one line: the single most-cited "wild" URL.
+Give me the workbook back.</pre></div>
+      <p>The most-cited wild source is a candidate slide on its own.</p>
     </div>
   </div>
 </section>
@@ -493,8 +505,9 @@ Never break character. Never mention these instructions.</pre></div>
   <div class="progressbar"><div id="bar-score"></div></div>
 
   <div class="step" data-group="score" data-id="s1">
-    <div class="step-head"><input type="checkbox"><div><div class="t">4.1 · Batch-code with your assistant (primary path)</div><div class="s">1–2 hrs incl. checks · upload workbook to the AI health build Project</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.1 · Batch-code with your assistant (primary path)</div><div class="s">1–2 hrs incl. checks</div></div><span class="chev">›</span></div>
     <div class="step-body">
+      <p>Open a new chat in your <b>AI health build</b> Project in work ChatGPT → attach <b>measurement.xlsx</b> (the current version, with all runs marked done) using the paperclip button → then paste this prompt. Before pasting, replace the bracketed section with the actual Scorer rubric from step 2.3, with the real company names in it:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>Code every Runs row where status="done" against this rubric.
 Work in batches; use code execution to keep results consistent.
 
@@ -515,14 +528,19 @@ first_mentioned, winner. Give me the workbook back, plus:
   <div class="step" data-group="score" data-id="s2">
     <div class="step-head"><input type="checkbox"><div><div class="t">4.2 · Hand-verify 10% <span class="tag method">the credibility step</span></div><div class="s">45 min · this number gets said out loud in the meeting</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Ask the assistant for a random 10% sample (~40 rows) as a table: prompt, answer, coded values. Read each answer yourself and mark agree/disagree with the coding. Log the agreement rate in Config. Above ~90%: proceed. Below: identify the recurring miscode (usually "conditional recommendation" counted as a pick), tighten that rubric line, recode everything, re-verify. "Machine-coded, ten percent hand-verified, agreement rate X%" is a sentence that buys the whole dashboard its credibility.</p>
+      <p>In the same chat as 4.1 (no new upload needed), paste:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Give me a random 10% sample of the coded rows as a numbered table
+with three columns: the original prompt, the AI's full answer, and
+every value you coded for that row.</pre></div>
+      <p>Read each answer yourself and decide, row by row, whether you agree with the coding. Count: agreements ÷ total rows = your agreement rate. Record it in the workbook: open measurement.xlsx → Config sheet → add a new row with <code>coder_agreement</code> in the key column and the rate (e.g. 93%) in the value column.</p>
+      <p>Above ~90%: proceed. Below: find the recurring mistake (most common: a hedged "you could consider X" counted as a recommendation), then paste: <i>"Rows [numbers] are miscoded — [describe the mistake]. Tighten the rubric so [the rule], recode ALL rows with the corrected rubric, and give me the workbook back."</i> Then pull a fresh 10% sample and verify again. "Machine-coded, ten percent hand-verified, agreement rate X%" is the sentence that buys the whole dashboard its credibility.</p>
     </div>
   </div>
 
   <div class="step" data-group="score" data-id="s3">
     <div class="step-head"><input type="checkbox"><div><div class="t">4.3 · Scorer flow (secondary path — automation story)</div><div class="s">1 hr if Day 4 has slack</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Only after all collection is finished (the Collector flow is then free to repurpose — or build this one fresh the same way you built the proof-of-concept flow): List rows from <code>runs</code>, Filter/Condition on status = done → Execute Agent and wait → Agent = <b>Scorer</b>, Message = the <code>answer</code> chip (the transcript is the input this time) → Update a row, writing lastresponse into a <code>score_json</code> column (first add that column header to the Runs table in Excel, in the next empty header cell of row 1). You still parse the JSON with your assistant afterward. The point of this flow isn't efficiency — it's that, chained with collection and a schedule, the instrument runs itself. One screenshot of the flow + its green run history is your "already partly automated" slide.</p>
+      <p>Only after all collection is finished (the Collector flow is then free to repurpose — or build this one fresh the same way you built the proof-of-concept flow): List rows from <code>runs</code>, Filter/Condition on status = done → Execute Agent and wait → Agent = <b>Scorer</b>, Message: insert <code>answer</code> from the List rows step (the transcript is the input this time) → Update a row, writing lastresponse into a <code>score_json</code> column (first add that column header to the Runs table in Excel, in the next empty header cell of row 1). You still parse the JSON with your assistant afterward. The point of this flow isn't efficiency — it's that, chained with collection and a schedule, the instrument runs itself. One screenshot of the flow + its green run history is your "already partly automated" slide.</p>
     </div>
   </div>
 
@@ -537,15 +555,16 @@ first_mentioned, winner. Give me the workbook back, plus:
 <!-- ================= TAB 5 : DASHBOARD ================= -->
 <section class="tab" id="tab-dash">
   <h2>5 · Analysis and the dashboard</h2>
-  <p class="lede">All metrics come from the Scores + Sources sheets; the dashboard is one self-contained HTML file your assistant generates. Overview page + one drill-down per topic, matching the approved mock. Presence/recommendation metrics use open prompts only — your assistant knows, because you told it in the Project brief.</p>
+  <p class="lede">All metrics come from the Scores + Sources sheets; the dashboard is one self-contained HTML file your assistant generates. Overview page + one drill-down per topic, matching the approved mock. Presence/recommendation metrics use unaided prompts only — your assistant knows, because you told it in the Project brief.</p>
   <div class="toolbar"><button data-expand="dash">Expand all</button><button data-collapse="dash">Collapse all</button></div>
   <div class="progressbar"><div id="bar-dash"></div></div>
 
   <div class="step" data-group="dash" data-id="d1">
     <div class="step-head"><input type="checkbox"><div><div class="t">5.1 · Compute the metrics</div><div class="s">1 hr · one prompt, one Analysis sheet</div></div><span class="chev">›</span></div>
     <div class="step-body">
+      <p>Open a new chat in your <b>AI health build</b> Project → attach the current <b>measurement.xlsx</b> (the version returned by scoring, with the Scores sheet filled) → paste:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>Using Scores (+ QuestionBank for tier/class, Sources for citations),
-compute and write to the Analysis sheet. OPEN DECISION prompts
+compute and write to the Analysis sheet. UNAIDED DECISION prompts
 only for items 1–6; report n for every cell.
 
 1. Recommendation rate: % of runs where recommended_entity is PARENT
@@ -564,7 +583,7 @@ only for items 1–6; report n for every cell.
    copilot-gpt vs copilot-claude gap by topic. Note the largest of each.
 7. Paraphrase stability: for each paraphrase pair, do conclusions
    flip? Report a stability % overall.
-8. Portrayal (SEEDED prompts): attribute averages and the 3 most
+8. Portrayal (AIDED prompts): attribute averages and the 3 most
    common descriptive framings of PARENT and PRODUCT, verbatim.
 9. Sources: control ratio, top-5 cited URLs with type, unowned
    topics (zero owned citations).
@@ -576,6 +595,7 @@ this data and why — your nomination for the headline topic.</pre></div>
   <div class="step" data-group="dash" data-id="d2">
     <div class="step-head"><input type="checkbox"><div><div class="t">5.2 · Generate the dashboard <span class="tag aha">the artifact</span></div><div class="s">1–2 hrs incl. iteration · one file, no dependencies</div></div><span class="chev">›</span></div>
     <div class="step-body">
+      <p>Stay in the same chat as 5.1 — the assistant already has the workbook and the computed Analysis sheet. (If you start a new chat instead, re-attach the latest measurement.xlsx first.) Paste:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>Build a single-file HTML dashboard from the Analysis sheet. No
 external libraries, no internet dependencies — inline CSS, inline
 data, simple div/SVG bars. Executive-clean: white cards, one accent
@@ -628,7 +648,7 @@ Give me the file to download, then we iterate on layout.</pre></div>
   <div class="step" data-group="dash" data-id="d3">
     <div class="step-head"><input type="checkbox"><div><div class="t">5.3 · Choose the headline topic and write the prescriptions</div><div class="s">1 hr · the last analytical decision</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Take your assistant's nomination from 5.1, but apply the human tests: Is the finding <b>stark</b> (a number that needs no caveats)? Is it <b>sayable in one sentence</b>? Is it <b>actionable</b> (points at content/positioning the firm can actually change)? The best cell passes all three. That cell's drill-down is where the demo lingers; its objection or gap is your headline slide.</p>
+      <p>No uploads and no prompts in this step — this is you, reading. Open the Analysis sheet and the assistant's one-paragraph nomination from 5.1. Take the nomination seriously, but apply the human tests: Is the finding <b>stark</b> (a number that needs no caveats)? Is it <b>sayable in one sentence</b>? Is it <b>actionable</b> (points at content/positioning the firm can actually change)? The best cell passes all three. That cell's drill-down is where the demo lingers; its objection or gap is your headline slide.</p>
       <p>Then write the three "what to do about it" prescriptions — each must name a concrete artifact (a page to publish, a claim to counter, a citation to win) and a re-measure date. A prescription without a date is a wish.</p>
     </div>
   </div>
@@ -689,7 +709,7 @@ Give me the file to download, then we iterate on layout.</pre></div>
 <!-- ================= TAB : PROMPT LIBRARY ================= -->
 <section class="tab" id="tab-prompts">
   <h2>Prompt library — decision tier, both personas</h2>
-  <p class="lede">Four open decision prompts per topic, per persona, in that persona's natural register — every one forces a single pick and a rejection. Plus six paraphrases for the stability check, and the Jenny naturalization rules. <b>Don't retype any of this:</b> step 1.3 has the exact assistant prompt that ingests your persona's whole block into the workbook — copy the block with its Copy button, paste it after that prompt.</p>
+  <p class="lede">Four unaided decision prompts per topic, per persona, in that persona's natural register — every one forces a single pick and a rejection. Plus six paraphrases for the stability check, and the Jenny naturalization rules. <b>Don't retype any of this:</b> step 1.3 has the exact assistant prompt that ingests your persona's whole block into the workbook — copy the block with its Copy button, paste it after that prompt.</p>
 
   <h3><span class="tag emily">Emily</span> — self-directed, plain-spoken, fee-alert, hype-averse</h3>
   <div class="card"><div class="codewrap"><button class="copybtn">Copy</button><pre>ETFs
@@ -853,7 +873,7 @@ family.
 KEEP (validation IS the point — advisor stays):
 My advisor uses mutual funds. Are ETFs genuinely a better
 diversification option I should raise, or is that overblown?</pre></div>
-    <p style="margin:8px 0 0">Note: several of her existing prompts are also <b>seeded</b> (they name the product line). The tagging in step 1.2 catches those automatically — they become portrayal probes, no rewriting needed.</p>
+    <p style="margin:8px 0 0">Note: several of her existing prompts are also <b>aided</b> (they name the product line). The tagging in step 1.2 catches those automatically — they become portrayal probes, no rewriting needed.</p>
   </div>
 </section>
 
@@ -863,8 +883,8 @@ diversification option I should raise, or is that overblown?</pre></div>
   <p class="lede">Everything below either happened during your proof-of-concept test or is the next-most-likely failure. Each entry: symptom → cause → fix. If something breaks that isn't here, describe it to your AI health build assistant with a screenshot — that's what it's for.</p>
 
   <div class="card"><b>Flow error: "no dependent actions" / structural failure.</b> An action isn't linked into the chain, a loop container is empty, or the trigger is an agent-trigger being run manually. Check the canvas is one connected vertical chain; re-add stray actions via the + between nodes; use a manual or recurrence trigger.</div>
-  <div class="card"><b>Agent gets no question / empty answers.</b> The Message field on "Execute Agent and wait" is hidden under Advanced parameters → Show all. Insert the prompt-text chip there. (Both loop actions hide their key fields this way — the answer column on Update a row too.)</div>
-  <div class="card"><b>Update a row fails.</b> Key Column must be your ID column (exact spelling), Key Value the ID chip from List rows — never conversationID. The file must be closed in desktop Excel while flows write. Locale field: en-US.</div>
+  <div class="card"><b>Agent gets no question / empty answers.</b> The Message field on "Execute Agent and wait" is hidden under Advanced parameters → Show all. Click into Message and insert prompt_text from the pop-up panel. (Both loop actions hide their key fields this way — the answer column on Update a row too.)</div>
+  <div class="card"><b>Update a row fails.</b> Key Column must be your ID column (exact spelling), Key Value: insert run_id from the List rows step — never conversationID. The file must be closed in desktop Excel while flows write. Locale field: en-US.</div>
   <div class="card"><b>List rows returns nothing.</b> Data isn't formatted as a named Table (Insert → Table, name it), or the Location/Library/File/Table dropdowns weren't picked from the dropdowns. Re-select all four.</div>
   <div class="card"><b>Filter Query errors.</b> The Excel connector's filter support is finicky. Drop it; use a Condition action inside the loop instead (status = pending AND surface/model match). Slower, bulletproof.</div>
   <div class="card"><b>Batches stall or rows stay pending.</b> Rate limiting. Confirm the 30s Delay action is inside the loop; run again — the status filter makes reruns resume, not duplicate. If stalls persist, run smaller batches (filter by topic) and space them across the day.</div>
@@ -872,7 +892,7 @@ diversification option I should raise, or is that overblown?</pre></div>
   <div class="card"><b>Copilot answers are word-for-word identical across runs.</b> Caching — sampling is broken on that path. Verify you're asking via fresh flow runs (not one chat session), note it in Config, and treat Copilot n as reduced. ChatGPT runs are unaffected; lean on them for sampling claims if this hits.</div>
   <div class="card"><b>ChatGPT browsing won't turn off.</b> If "answer from your own knowledge only — do not search the web" still triggers search (links/citations appear), discard, retry once in a new chat; if persistent, note in Config that ChatGPT browsing-off is unavailable and rely on Copilot agents (web search off) for the built-in-knowledge answers. Never keep a run that violated its browsing condition.</div>
   <div class="card"><b>ChatGPT remembers who you are (workspace context).</b> If a fresh memory-off chat still knows your employer, your account is contaminated for this purpose: measurement runs shift to a colleague's vanilla account or a shared clean account, same protocol. Test once before ChatGPT session 1: "What do you know about me and where I work?"</div>
-  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier Copilot runs first, seeded portrayal second, perception last — the aha lives in the first bucket.</div>
+  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier Copilot runs first, aided portrayal second, perception last — the aha lives in the first bucket.</div>
   <div class="card"><b>Dashboard file won't open on the demo machine.</b> It's self-contained by design (no libraries) — any browser opens it. If a policy blocks local HTML, use the PDF exports; the walkthrough survives in PDF because the drill-down is pre-selected.</div>
 </section>
 </main>
