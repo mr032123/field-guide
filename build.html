@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Perception lens v0.1 — complete build guide</title>
+<title>AI B***d Health — v0.1 build guide</title>
 <style>
   :root{
     --ink:#1a1d23; --muted:#5b6472; --bg:#f7f7f5; --card:#ffffff;
@@ -79,7 +79,7 @@
 </head>
 <body>
 <header><div class="wrap">
-  <h1>Perception lens v0.1 — complete build guide</h1>
+  <h1>AI B***d Health — v0.1 build guide</h1>
   <p>Layer 2 of the LLM Visibility program · one audience deep · 5 topics · 2 surfaces · 2 model families · progress saves in this browser</p>
 </div></header>
 <nav><div class="wrap">
@@ -98,9 +98,9 @@
 <!-- ================= TAB 0 : START ================= -->
 <section class="tab active" id="tab-start">
   <h2>Read this first</h2>
-  <p class="lede">You are building three connected things: a <b>logbook</b> (one Excel workbook that holds the question bank, every run, every score), a <b>collection machine</b> (Copilot Studio agents + your proven flow for the desk surface; manual temp-chats in ChatGPT for the pocket surface), and a <b>lens</b> (the dashboard generated from the scored data). The mock you approved — overview page plus one drill-down per topic — is the target output.</p>
+  <p class="lede">You are building three connected things: a <b>logbook</b> (one Excel workbook that holds the question bank, every run, every score), a <b>collection machine</b> (Copilot Studio agents + your proven flow for the Copilot surface; manual temp-chats in ChatGPT for the ChatGPT surface), and a <b>dashboard</b> generated from the scored data. The mock you approved — overview page plus one drill-down per topic — is the target output.</p>
 
-  <div class="callout gold"><b>The two rules that protect the whole thing</b> 1: Nothing changes in the question bank after runs begin (pre-registration). 2: Pocket runs, desk-GPT runs, and desk-Claude runs never get pooled — they are three surfaces, always separate columns. Every hard question in the meeting is answered by one of these two rules.</div>
+  <div class="callout gold"><b>The two rules that protect the whole thing</b> 1: Nothing changes in the question bank after runs begin (pre-registration). 2: ChatGPT runs, Copilot-GPT runs, and Copilot-Claude runs never get pooled — they are three surfaces, always separate columns. Every hard question in the meeting is answered by one of these two rules.</div>
 
   <h3>Decisions already locked</h3>
   <table>
@@ -109,36 +109,36 @@
     <tr><td>Topics</td><td>ETFs · Retirement · Income · Building a simple portfolio · 5th: Starting to invest (Emily) / Market volatility (Jenny — fits her reassurance-seeking; Starting to invest is beneath her sophistication)</td></tr>
     <tr><td>Competitors</td><td>The four you benchmark against (enter them in the Config sheet — this page stays generic on purpose)</td></tr>
     <tr><td>Two-b***d tracking</td><td>Parent company and product line tracked separately in every score: which one gets mentioned, which one gets credited, per topic</td></tr>
-    <tr><td>Surfaces</td><td>Pocket = ChatGPT (manual, memory off) · Desk = Copilot Studio agents (automated), one GPT twin + one Claude twin</td></tr>
+    <tr><td>Surfaces</td><td>ChatGPT (manual runs, memory off) · Copilot Studio agents (automated runs), one GPT twin + one Claude twin</td></tr>
   </table>
 
   <h3>The seven days</h3>
   <table>
     <tr><th>Day</th><th>Work</th><th>Tab</th></tr>
     <tr><td>1</td><td>Build the workbook · tag the existing prompts · add the decision prompts · freeze the bank · expand into the Runs sheet</td><td>1</td></tr>
-    <tr><td>2</td><td>Build the four agents (2 panelists, scorer, backup) · extend the POC flow · start desk batches</td><td>2–3</td></tr>
-    <tr><td>3</td><td>Desk batches finish · pocket manual sessions 1–2 · citation logging on browsing runs</td><td>3</td></tr>
-    <tr><td>4</td><td>Pocket session 3 · run scoring · hand-verify 10%</td><td>4</td></tr>
-    <tr><td>5</td><td>Analysis: metrics, two-b***d matrix, who-wins, kill sentences · pick the drama cell</td><td>5</td></tr>
+    <tr><td>2</td><td>Build the four agents (2 panelists, scorer, backup) · extend the proof-of-concept flow · start Copilot batches</td><td>2–3</td></tr>
+    <tr><td>3</td><td>Copilot batches finish · ChatGPT manual sessions 1–2 · citation logging on browsing runs</td><td>3</td></tr>
+    <tr><td>4</td><td>ChatGPT session 3 · run scoring · hand-verify 10%</td><td>4</td></tr>
+    <tr><td>5</td><td>Analysis: metrics, two-b***d matrix, who-wins, kill sentences · pick the headline topic</td><td>5</td></tr>
     <tr><td>6</td><td>Generate dashboard + drill-downs · build Ask-the-Panel agent (optional) · integrate into deck</td><td>5–6</td></tr>
     <tr><td>7</td><td>Rehearse live query ×10 · record backup · dry run</td><td>6</td></tr>
   </table>
 
   <h3>Set up your work assistant (do this before anything)</h3>
   <div class="card">
-    <p style="margin:0 0 8px">You'll be executing without me, but not without help. <b>How to set it up:</b> open ChatGPT → in the left sidebar click <b>Projects</b> (or the + next to it) → <b>New project</b> → name it <b>Lens build</b> → inside the project, look for <b>Instructions</b> (sometimes "Add instructions" or a gear icon) → paste the block below and save.</p>
-    <p style="margin:0 0 8px">From here on, whenever this guide says <b>"your assistant,"</b> it means: open a new chat <i>inside this Project</i> and paste the indicated prompt there. Whenever a step says "upload the workbook," it means: attach perception_lens.xlsx to that chat using the paperclip/attach button, then paste the prompt. The assistant gives you files back via a download link — save each returned copy over your OneDrive one (or keep versions: v1, v2…).</p>
+    <p style="margin:0 0 8px">You'll be executing without me, but not without help. <b>How to set it up:</b> open ChatGPT → in the left sidebar click <b>Projects</b> (or the + next to it) → <b>New project</b> → name it <b>AI health build</b> → inside the project, look for <b>Instructions</b> (sometimes "Add instructions" or a gear icon) → paste the block below and save.</p>
+    <p style="margin:0 0 8px">From here on, whenever this guide says <b>"your assistant,"</b> it means: open a new chat <i>inside this Project</i> and paste the indicated prompt there. Whenever a step says "upload the workbook," it means: attach measurement.xlsx to that chat using the paperclip/attach button, then paste the prompt. The assistant gives you files back via a download link — save each returned copy over your OneDrive one (or keep versions: v1, v2…).</p>
     <div class="codewrap"><button class="copybtn">Copy</button><pre>You are my execution partner for a measurement project called the
-"perception lens." Context you must retain:
+"AI b***d health" (before pasting this brief, replace every b***d with the real word). Context you must retain:
 
 WHAT IT IS: We measure how AI assistants present our company and its
 product line to a specific investor persona, across 5 topics, on two
-surfaces (this ChatGPT = "pocket"; Copilot Studio agents = "desk",
-with one GPT twin and one Claude twin). Data lives in one Excel
+surfaces (this ChatGPT, and Copilot Studio agents
+— one GPT twin and one Claude twin). Data lives in one Excel
 workbook (sheets: Config, QuestionBank, Runs, Scores, Sources,
 Analysis). Outputs: recommendation rates, mention rates for parent
 company vs product line separately, who-wins-and-why by competitor,
-recurring ruling-out language, pocket/desk and GPT/Claude gaps,
+recurring ruling-out language, ChatGPT/Copilot and GPT/Claude gaps,
 citation sources, and a single-file HTML dashboard (overview + one
 drill-down per topic).
 
@@ -158,9 +158,9 @@ Keep responses short and execution-focused.</pre></div>
 
   <h3>Create the workbook</h3>
   <div class="card">
-    <p style="margin:0 0 8px">One file: <b>perception_lens.xlsx</b>. Below is the blueprint — how to read it: each sheet is listed with its name, the name its Table must have (in parentheses), and its column headers separated by commas. <b>Each comma-separated name is one column header, typed across row 1.</b> Indented lines under a sheet are notes about allowed values, not columns. Config is the exception: it's two columns (key, value) with one row per listed key — you type the real company names into the value column.</p>
-    <p style="margin:0 0 8px"><b>Easiest way to create it — let your assistant build the file (recommended):</b> open a chat in your Lens build Project and paste: <i>"Create an Excel workbook exactly matching this blueprint: six sheets, headers in row 1, each sheet's data range formatted as an Excel Table with the table name given in parentheses. In Config, include the key rows with blank values. Give me the file to download."</i> — followed by the blueprint block below. Download the file it returns, then in Excel use File → Save As → OneDrive, into the <b>same folder as your POC test file</b>, named perception_lens.xlsx. Open it once and fill in Config's value column with the real names.</p>
-    <p style="margin:0 0 8px"><b>Manual way (if you prefer):</b> Excel → new blank workbook → Save As to that OneDrive folder as perception_lens.xlsx. Rename Sheet1 by double-clicking its tab at the bottom → type Config. Click the + next to the tab five times for the other sheets; rename each. On each sheet, type the headers across row 1 (one per cell). Then on each sheet: click any header cell → Insert (ribbon) → Table → tick "My table has headers" → OK → with the table selected, open the <b>Table Design</b> ribbon tab → in the "Table Name" box on the far left, type the name in parentheses below (cfg, bank, runs, scores, sources) and press Enter. The table names matter — your flows find the data by them.</p>
+    <p style="margin:0 0 8px">One file: <b>measurement.xlsx</b>. Below is the blueprint — how to read it: each sheet is listed with its name, the name its Table must have (in parentheses), and its column headers separated by commas. <b>Each comma-separated name is one column header, typed across row 1.</b> Indented lines under a sheet are notes about allowed values, not columns. Config is the exception: it's two columns (key, value) with one row per listed key — you type the real company names into the value column.</p>
+    <p style="margin:0 0 8px"><b>Easiest way to create it — let your assistant build the file (recommended):</b> open a chat in your AI health build Project and paste: <i>"Create an Excel workbook exactly matching this blueprint: six sheets, headers in row 1, each sheet's data range formatted as an Excel Table with the table name given in parentheses. In Config, include the key rows with blank values. Give me the file to download."</i> — followed by the blueprint block below. Download the file it returns, then in Excel use File → Save As → OneDrive, into the <b>same folder as your proof-of-concept test file</b>, named measurement.xlsx. Open it once and fill in Config's value column with the real names.</p>
+    <p style="margin:0 0 8px"><b>Manual way (if you prefer):</b> Excel → new blank workbook → Save As to that OneDrive folder as measurement.xlsx. Rename Sheet1 by double-clicking its tab at the bottom → type Config. Click the + next to the tab five times for the other sheets; rename each. On each sheet, type the headers across row 1 (one per cell). Then on each sheet: click any header cell → Insert (ribbon) → Table → tick "My table has headers" → OK → with the table selected, open the <b>Table Design</b> ribbon tab → in the "Table Name" box on the far left, type the name in parentheses below (cfg, bank, runs, scores, sources) and press Enter. The table names matter — your flows find the data by them.</p>
     <div class="codewrap"><button class="copybtn">Copy</button><pre>Sheet "Config"  (table: cfg)
 key,value
 parent_term,        [your parent company name]
@@ -170,8 +170,8 @@ comp2,              [competitor 2]
 comp3,              [competitor 3]
 comp4,              [competitor 4]
 persona,            [Emily or Jenny — set Monday]
-desk_gpt_model,     [exact model name shown in Studio]
-desk_claude_model,  [exact Claude model name shown in Studio]
+copilot_gpt_model,  [exact model name shown in Studio]
+copilot_claude_model, [exact Claude model name shown in Studio]
 bank_frozen_date,   [date you freeze the bank]
 
 Sheet "QuestionBank"  (table: bank)
@@ -182,7 +182,7 @@ qid,topic,tier,prompt_class,paraphrase_of,prompt_text
 
 Sheet "Runs"  (table: runs)
 run_id,qid,surface,model,browsing,run_index,status,answer,run_date
-  surface: pocket | desk
+  surface: chatgpt | copilot
   model: gpt | claude
   browsing: off | on
   status: pending | done
@@ -202,7 +202,7 @@ Sheet "Analysis" — left empty; your assistant fills it.</pre></div>
 
   <h3>Words this guide uses (30-second glossary)</h3>
   <div class="card">
-    <p style="margin:0"><b>Sheet vs. Table:</b> a sheet is the tab at the bottom of Excel; a Table is a formatted block of data on a sheet that has its own name — flows can only see Tables. · <b>Flow:</b> the automation you built in Copilot Studio (trigger at the top, then steps that run in order). · <b>Trigger:</b> the first box of a flow — what starts it (manual button, or a schedule). · <b>Loop / "Apply to each":</b> the container that repeats the steps inside it once per spreadsheet row. · <b>Chip / dynamic content:</b> the colored token you insert into a flow field (from the picker that pops up) that means "the current row's value" — e.g. the prompt_text chip. · <b>A run:</b> one question asked once to one AI — one row of the Runs sheet. · <b>n:</b> how many times the same question is repeated; "n=8" = 8 runs of that question. · <b>Frozen vs. live layer:</b> answers from the model's built-in knowledge (web off) vs. answers using web search (web on). · <b>Seeded vs. open prompt:</b> a seeded prompt names a company (so it can't measure whether AI brings you up on its own); an open prompt names no one.</p>
+    <p style="margin:0"><b>Sheet vs. Table:</b> a sheet is the tab at the bottom of Excel; a Table is a formatted block of data on a sheet that has its own name — flows can only see Tables. · <b>Flow:</b> the automation you built in Copilot Studio (trigger at the top, then steps that run in order). · <b>Trigger:</b> the first box of a flow — what starts it (manual button, or a schedule). · <b>Loop / "Apply to each":</b> the container that repeats the steps inside it once per spreadsheet row. · <b>Chip / dynamic content:</b> the colored token you insert into a flow field (from the picker that pops up) that means "the current row's value" — e.g. the prompt_text chip. · <b>A run:</b> one question asked once to one AI — one row of the Runs sheet. · <b>n:</b> how many times the same question is repeated; "n=8" = 8 runs of that question. · <b>Seeded vs. open prompt:</b> a seeded prompt names a company (so it can't measure whether AI brings you up on its own); an open prompt names no one.</p>
   </div>
 </section>
 
@@ -217,8 +217,8 @@ Sheet "Analysis" — left empty; your assistant fills it.</pre></div>
     <div class="step-head"><input type="checkbox"><div><div class="t">1.1 · Extract your persona's prompts for the five topics</div><div class="s">30 min · from your cleaned prompts file</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <p>Open your cleaned-prompts workbook. Click the small filter arrow in the <b>Persona</b> column header → untick Select All → tick only your persona → OK. Same on the <b>Topic</b> column header: tick only your five topics. Select the visible rows (click the first row, Shift-click the last), copy.</p>
-      <p>In perception_lens.xlsx, on the QuestionBank sheet: paste the prompt texts into the <code>prompt_text</code> column and the topics into the <code>topic</code> column (paste each column separately if your copy grabbed both — paste into a blank area first and move columns if needed; this is 5 minutes of tidying, don't aim for elegance). Fill <code>qid</code> with Q001, Q002…: type Q001 and Q002 in the first two cells, select both, then drag the small square at the selection's bottom-right corner (the fill handle) down the column — Excel continues the numbering.</p>
-      <p><b>Shortcut if the copy-paste fights you:</b> attach BOTH workbooks to your assistant and say: <i>"Copy all rows from the cleaned-prompts file for persona [name] and topics [list] into perception_lens.xlsx's QuestionBank sheet — prompt into prompt_text, topic into topic, sequential qids Q001 onward. Leave tier and prompt_class blank. Give me the file back."</i></p>
+      <p>In measurement.xlsx, on the QuestionBank sheet: paste the prompt texts into the <code>prompt_text</code> column and the topics into the <code>topic</code> column (paste each column separately if your copy grabbed both — paste into a blank area first and move columns if needed; this is 5 minutes of tidying, don't aim for elegance). Fill <code>qid</code> with Q001, Q002…: type Q001 and Q002 in the first two cells, select both, then drag the small square at the selection's bottom-right corner (the fill handle) down the column — Excel continues the numbering.</p>
+      <p><b>Shortcut if the copy-paste fights you:</b> attach BOTH workbooks to your assistant and say: <i>"Copy all rows from the cleaned-prompts file for persona [name] and topics [list] into measurement.xlsx's QuestionBank sheet — prompt into prompt_text, topic into topic, sequential qids Q001 onward. Leave tier and prompt_class blank. Give me the file back."</i></p>
     </div>
   </div>
 
@@ -267,41 +267,41 @@ back plus a count of rows per class and per tier.</pre></div>
 run using these rules, and give me the workbook back:
 
 DECISION prompts (tier=decision, incl. paraphrases):
-- surface=desk, model=gpt,    browsing=off, n=8  (run_index 1..8)
-- surface=desk, model=claude, browsing=off, n=8
-- surface=pocket, model=gpt,  browsing=off, n=5
-- surface=pocket, model=gpt,  browsing=on,  n=3
+- surface=copilot, model=gpt,    browsing=off, n=8  (run_index 1..8)
+- surface=copilot, model=claude, browsing=off, n=8
+- surface=chatgpt, model=gpt,  browsing=off, n=5
+- surface=chatgpt, model=gpt,  browsing=on,  n=3
 
 SEEDED portrayal prompts:
-- surface=desk, model=gpt,    browsing=off, n=5
-- surface=desk, model=claude, browsing=off, n=5
+- surface=copilot, model=gpt,    browsing=off, n=5
+- surface=copilot, model=claude, browsing=off, n=5
 
 PERCEPTION prompts:
-- surface=desk, model=gpt,    browsing=off, n=3
-- surface=desk, model=claude, browsing=off, n=3
+- surface=copilot, model=gpt,    browsing=off, n=3
+- surface=copilot, model=claude, browsing=off, n=3
 
 run_id = R0001 onward. status = "pending". answer and run_date empty.
 ALSO add a prompt_text column to Runs and fill it with each run's
 full prompt text copied from QuestionBank (matched by qid) — the
 flow reads the prompt from this column.
 Report the total row count per surface/model so I can sanity-check.</pre></div>
-      <p>Sanity-check the count report against this arithmetic: <b>desk = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 seeded × 5 × 2 = 100, plus 5 perception × 3 × 2 = 30) — all automated. <b>Pocket = 208 rows</b> (26 × 5 browsing-off + 26 × 3 browsing-on) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: pocket browsing-off n=4 instead of 5 (saves 26 runs), and browsing-on for only 3 of 5 topics (saves ~24). Never cut desk — it's free labor. Trust arithmetic, not stamina.</p>
-      <div class="callout"><b>Note on the desk n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
+      <p>Sanity-check the count report against this arithmetic: <b>Copilot = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 seeded × 5 × 2 = 100, plus 5 perception × 3 × 2 = 30) — all automated. <b>ChatGPT = 208 rows</b> (26 × 5 browsing-off + 26 × 3 browsing-on) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: ChatGPT browsing-off n=4 instead of 5 (saves 26 runs), and browsing-on for only 3 of 5 topics (saves ~24). Never cut Copilot — it's free labor. Trust arithmetic, not stamina.</p>
+      <div class="callout"><b>Note on the Copilot n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
     </div>
   </div>
 </section>
 <!-- ================= TAB 2 : AGENTS ================= -->
 <section class="tab" id="tab-agents">
   <h2>2 · Build the agents</h2>
-  <p class="lede">Four agents in Copilot Studio (two panelist twins, one scorer, plus your POC agent kept as a sandbox) and one Custom GPT in ChatGPT. The panelist twins are identical except for the model — that's what makes the GPT-vs-Claude comparison controlled.</p>
+  <p class="lede">Four agents in Copilot Studio (two panelist twins, one scorer, plus your proof-of-concept agent kept as a sandbox) and one Custom GPT in ChatGPT. The panelist twins are identical except for the model — that's what makes the GPT-vs-Claude comparison controlled.</p>
   <div class="toolbar"><button data-expand="agents">Expand all</button><button data-collapse="agents">Collapse all</button></div>
   <div class="progressbar"><div id="bar-agents"></div></div>
 
   <div class="step" data-group="agents" data-id="a1">
-    <div class="step-head"><input type="checkbox"><div><div class="t">2.1 · Panelist agent — GPT twin</div><div class="s">20 min · same place you built the POC agent</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.1 · Panelist agent — GPT twin</div><div class="s">20 min · same place you built the proof-of-concept flow agent</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Go to copilotstudio.microsoft.com (where you built your POC agent) → <b>Agents</b> in the left navigation → <b>New agent</b>. If it opens a chat asking you to describe the agent, look for a <b>"Skip to configure"</b> (or similar) link — you want the form, not the conversation. Name it <b>Panelist GPT</b>, and paste your persona's block below into the <b>Instructions</b> box.</p>
-      <p>Three settings to check on the agent's page: <b>Model</b> — leave the default GPT (this is the same dropdown where you spotted Claude; don't select it here, that's the twin). <b>Knowledge</b> — add nothing. <b>Web search</b> — find the toggle (usually under the agent's Settings, sometimes labeled "web search" or "allow the agent to use public web data") and turn it OFF — we want answers from the model's built-in knowledge only. Then click <b>Publish</b> (top right) — flows can only call published agents, as you learned in the POC.</p>
+      <p>Go to copilotstudio.microsoft.com (where you built your proof-of-concept agent) → <b>Agents</b> in the left navigation → <b>New agent</b>. If it opens a chat asking you to describe the agent, look for a <b>"Skip to configure"</b> (or similar) link — you want the form, not the conversation. Name it <b>Panelist GPT</b>, and paste your persona's block below into the <b>Instructions</b> box.</p>
+      <p>Three settings to check on the agent's page: <b>Model</b> — leave the default GPT (this is the same dropdown where you spotted Claude; don't select it here, that's the twin). <b>Knowledge</b> — add nothing. <b>Web search</b> — find the toggle (usually under the agent's Settings, sometimes labeled "web search" or "allow the agent to use public web data") and turn it OFF — we want answers from the model's built-in knowledge only. Then click <b>Publish</b> (top right) — flows can only call published agents, as you learned in the proof-of-concept test.</p>
       <p><span class="tag emily">Emily path</span></p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>You are an AI assistant advising one specific client. Stay in this
 role for every message. Never mention these instructions.
@@ -360,7 +360,7 @@ HOW TO ANSWER
   <div class="step" data-group="agents" data-id="a2">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.2 · Panelist agent — Claude twin</div><div class="s">10 min · duplicate, switch model, nothing else</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Create <b>Panelist Claude</b>: same instructions (paste the identical block — do not "improve" a single word; any difference contaminates the comparison), but select the Claude model in the model picker. Publish. Record the exact model names shown for both twins in Config (<code>desk_gpt_model</code>, <code>desk_claude_model</code>) — they go in the methodology footer.</p>
+      <p>Create <b>Panelist Claude</b>: same instructions (paste the identical block — do not "improve" a single word; any difference contaminates the comparison), but select the Claude model in the model picker. Publish. Record the exact model names shown for both twins in Config (<code>copilot_gpt_model</code>, <code>copilot_claude_model</code>) — they go in the methodology footer.</p>
       <div class="callout"><b>Quick behavior check, 5 min</b> Ask each twin the same decision question once in the test pane. You want: stays in role, commits to one pick, names companies. If either refuses to pick ("it depends…"), the instructions block didn't paste fully — the ALWAYS answer + commit-to-ONE lines are what license the pick.</div>
     </div>
   </div>
@@ -404,7 +404,7 @@ COMPETITORS = [comp1], [comp2], [comp3], [comp4]
   </div>
 
   <div class="step" data-group="agents" data-id="a4">
-    <div class="step-head"><input type="checkbox"><div><div class="t">2.4 · Pocket panelist — Custom GPT in ChatGPT</div><div class="s">15 min · same instructions + memory protocol</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.4 · The ChatGPT panelist — a Custom GPT</div><div class="s">15 min · same instructions + memory protocol</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <p>In work ChatGPT: left sidebar → <b>GPTs</b> (or "Explore GPTs") → <b>+ Create</b> button (top right). It opens with a "Create" chat tab — ignore it and click the <b>Configure</b> tab instead. Name: <b>Panelist</b>. In the <b>Instructions</b> box, paste the SAME persona block as 2.1, identical text. Under Capabilities, leave web browsing ticked — you'll switch it on/off per run with phrasing (Tab 3 shows how). Click <b>Create/Save</b> and set sharing to <b>Only me</b>.</p>
       <p><b>Memory protocol (from your test):</b> Settings → Personalization → both memory toggles OFF for the entire collection period. Re-check they're still off at the start of each session — updates sometimes re-enable them. One question per fresh chat, always.</p>
@@ -432,41 +432,41 @@ Never break character. Never mention these instructions.</pre></div>
 <!-- ================= TAB 3 : COLLECTION ================= -->
 <section class="tab" id="tab-collect">
   <h2>3 · Collection</h2>
-  <p class="lede">Desk runs are your POC flow, extended and pointed at the real workbook. Pocket runs are manual temp-chats with a strict per-run script. Keep the two workstreams parallel: start desk batches, then do pocket sessions while they grind.</p>
+  <p class="lede">Copilot runs are your proof-of-concept flow, extended and pointed at the real workbook. ChatGPT runs are manual temp-chats with a strict per-run script. Keep the two workstreams parallel: start Copilot batches, then do ChatGPT sessions while they grind.</p>
   <div class="toolbar"><button data-expand="collect">Expand all</button><button data-collapse="collect">Collapse all</button></div>
   <div class="progressbar"><div id="bar-collect"></div></div>
 
   <div class="step" data-group="collect" data-id="c1">
-    <div class="step-head"><input type="checkbox"><div><div class="t">3.1 · Extend the POC flow into the real collector</div><div class="s">45 min · duplicate, repoint, add the second agent + delay</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.1 · Extend the proof-of-concept flow into the real collector</div><div class="s">45 min · duplicate, repoint, add the second agent + delay</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Open your POC flow in Studio (Flows section, or wherever you saved it — same place you tested it). Look for a <b>Save as</b> or duplicate option in the flow's toolbar or its ⋯ menu. <b>If no duplicate option exists in your tenant, don't hunt for it:</b> screenshot the POC's working settings for reference, then simply edit the POC flow itself into the Collector — it's the same skeleton, and the POC has served its purpose. Changes, in order:</p>
+      <p>Open your proof-of-concept flow in Studio (Flows section, or wherever you saved it — same place you tested it). Look for a <b>Save as</b> or duplicate option in the flow's toolbar or its ⋯ menu. <b>If no duplicate option exists in your tenant, don't hunt for it:</b> screenshot the proof-of-concept flow's working settings for reference, then simply edit the proof-of-concept flow itself into the Collector — it's the same skeleton, and the proof-of-concept flow has served its purpose. Changes, in order:</p>
       <ol>
-        <li><b>Repoint Excel:</b> open "List rows present in a table" → change File to perception_lens.xlsx and Table to <code>runs</code> (pick both from the dropdowns, don't type). Open "Update a row" → same file and table → Key Column = <code>run_id</code> (dropdown), Key Value = the run_id chip from List rows. Locale = en-US, as before.</li>
-        <li><b>Only touch pending desk-GPT rows:</b> in "List rows," Advanced parameters → Show all → find <b>Filter Query</b> and type exactly: <code>status eq 'pending' and surface eq 'desk' and model eq 'gpt'</code> (those are single quotes; "eq" means equals). <b>If the flow errors on this</b> (this filter is unreliable with Excel), delete what you typed and instead: inside the loop, add an action → search <b>Condition</b> → it gives you an If panel with two value boxes and a comparison. Left box: insert the <code>status</code> chip; comparison: "is equal to"; right box: type <code>pending</code>. Use +Add to add two more lines the same way (surface = desk, model = gpt). Drag/add the agent step and Update a row INSIDE the "If yes" branch. Same result, three more clicks.</li>
+        <li><b>Repoint Excel:</b> open "List rows present in a table" → change File to measurement.xlsx and Table to <code>runs</code> (pick both from the dropdowns, don't type). Open "Update a row" → same file and table → Key Column = <code>run_id</code> (dropdown), Key Value = the run_id chip from List rows. Locale = en-US, as before.</li>
+        <li><b>Only touch pending Copilot-GPT rows:</b> in "List rows," Advanced parameters → Show all → find <b>Filter Query</b> and type exactly: <code>status eq 'pending' and surface eq 'copilot' and model eq 'gpt'</code> (those are single quotes; "eq" means equals). <b>If the flow errors on this</b> (this filter is unreliable with Excel), delete what you typed and instead: inside the loop, add an action → search <b>Condition</b> → it gives you an If panel with two value boxes and a comparison. Left box: insert the <code>status</code> chip; comparison: "is equal to"; right box: type <code>pending</code>. Use +Add to add two more lines the same way . Drag/add the agent step and Update a row INSIDE the "If yes" branch. Same result, three more clicks.</li>
         <li><b>Prompt in:</b> "Execute Agent and wait" → Agent = <b>Panelist GPT</b> → Advanced parameters → Show all → Message field → insert the <code>prompt_text</code> chip (this column exists on Runs because step 1.5's prompt created it).</li>
         <li><b>Answer out:</b> "Update a row" → Show all → in the <code>answer</code> field insert the lastresponse chip; in the <code>status</code> field type the word <code>done</code> (plain text — this is how rows get marked finished). Leave run_date blank; dates aren't worth a fight.</li>
-        <li><b>Slow it down on purpose:</b> inside the loop, after Update a row, add an action → search <b>Delay</b> → set Count = 30, Unit = Second. Without it you'll hit rate limits and get silent failures. 546 desk runs at ~40 sec each ≈ 6 hours of unattended grinding spread over Day 2–3 — start a batch before lunch and before logging off.</li>
+        <li><b>Slow it down on purpose:</b> inside the loop, after Update a row, add an action → search <b>Delay</b> → set Count = 30, Unit = Second. Without it you'll hit rate limits and get silent failures. 546 Copilot runs at ~40 sec each ≈ 6 hours of unattended grinding spread over Day 2–3 — start a batch before lunch and before logging off.</li>
       </ol>
       <p><b>For the Claude twin, don't build a second flow.</b> Run phase 1 (GPT rows) to completion first. Then edit the same flow twice: change the filter/Condition to <code>model eq 'claude'</code> and switch the Agent dropdown to <b>Panelist Claude</b> — and run phase 2. One flow, two phases, zero chances for the two copies to drift apart.</p>
     </div>
   </div>
 
   <div class="step" data-group="collect" data-id="c2">
-    <div class="step-head"><input type="checkbox"><div><div class="t">3.2 · Run desk batches</div><div class="s">Day 2–3 · supervise the first 10, then let it grind</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.2 · Run Copilot batches</div><div class="s">Day 2–3 · supervise the first 10, then let it grind</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <ul>
         <li>Run Collector manually. Watch the first ~10 loops in the run history: answers landing in the right rows, status flipping to done, no refusals.</li>
         <li><b>Refusal check:</b> read five answers. If the agent hedges into "everyone's different, consult a professional" without picking, fix the agent instructions (the commit-to-ONE block), reset those rows to pending, rerun. Do NOT rewrite the prompts — the bank is frozen.</li>
-        <li><b>Variance check <span class="tag method">important</span>:</b> after the first batch, read 8 answers to the SAME question. You want natural variation in picks/wording across runs. If all 8 are word-for-word identical, the agent may be caching — tell your assistant, add a note to Config, and treat desk n as effectively smaller. (Check this before celebrating a "100% recommendation rate.")</li>
+        <li><b>Variance check <span class="tag method">important</span>:</b> after the first batch, read 8 answers to the SAME question. You want natural variation in picks/wording across runs. If all 8 are word-for-word identical, the agent may be caching — tell your assistant, add a note to Config, and treat Copilot n as effectively smaller. (Check this before celebrating a "100% recommendation rate.")</li>
         <li>Batches will stop or fail partway — normal. Because status=done rows are skipped by your filter, just run the flow again; it resumes where it left off. That's why the status column exists.</li>
       </ul>
     </div>
   </div>
 
   <div class="step" data-group="collect" data-id="c3">
-    <div class="step-head"><input type="checkbox"><div><div class="t">3.3 · Pocket manual sessions</div><div class="s">3 sessions × ~2 hrs · the per-run script</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.3 · ChatGPT manual sessions</div><div class="s">3 sessions × ~2 hrs · the per-run script</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>In the Runs sheet, click the filter arrow on the <b>surface</b> column header → tick only <code>pocket</code>; then the <b>status</b> header → tick only <code>pending</code>. What's left on screen is your playlist — work it top to bottom. Per run:</p>
+      <p>In the Runs sheet, click the filter arrow on the <b>surface</b> column header → tick only <code>chatgpt</code>; then the <b>status</b> header → tick only <code>pending</code>. What's left on screen is your playlist — work it top to bottom. Per run:</p>
       <ol>
         <li>Open your <b>Panelist</b> Custom GPT → new chat (memory toggles confirmed off at session start).</li>
         <li><b>Browsing-off runs:</b> paste the prompt with this prefix: <i>"Answer from your own knowledge only — do not search the web."</i> Verify the answer shows no citations/links; if it searched anyway, discard and redo once.</li>
@@ -479,7 +479,7 @@ Never break character. Never mention these instructions.</pre></div>
   </div>
 
   <div class="step" data-group="collect" data-id="c4">
-    <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Classify sources</div><div class="s">45 min · after pocket browsing-on runs finish</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Classify sources</div><div class="s">45 min · after ChatGPT browsing-on runs finish</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <p>In the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then have your assistant compute: total unique URLs, control ratio (owned citations ÷ all citations), top-5 most-cited with type, and per-topic "unowned questions" (decision prompts whose runs cite zero owned sources). Note the single most-cited wild source — that's a candidate slide on its own.</p>
     </div>
@@ -493,7 +493,7 @@ Never break character. Never mention these instructions.</pre></div>
   <div class="progressbar"><div id="bar-score"></div></div>
 
   <div class="step" data-group="score" data-id="s1">
-    <div class="step-head"><input type="checkbox"><div><div class="t">4.1 · Batch-code with your assistant (primary path)</div><div class="s">1–2 hrs incl. checks · upload workbook to the Lens build Project</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.1 · Batch-code with your assistant (primary path)</div><div class="s">1–2 hrs incl. checks · upload workbook to the AI health build Project</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <div class="codewrap"><button class="copybtn">Copy</button><pre>Code every Runs row where status="done" against this rubric.
 Work in batches; use code execution to keep results consistent.
@@ -522,12 +522,12 @@ first_mentioned, winner. Give me the workbook back, plus:
   <div class="step" data-group="score" data-id="s3">
     <div class="step-head"><input type="checkbox"><div><div class="t">4.3 · Scorer flow (secondary path — automation story)</div><div class="s">1 hr if Day 4 has slack</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Only after all collection is finished (the Collector flow is then free to repurpose — or build this one fresh the same way you built the POC): List rows from <code>runs</code>, Filter/Condition on status = done → Execute Agent and wait → Agent = <b>Scorer</b>, Message = the <code>answer</code> chip (the transcript is the input this time) → Update a row, writing lastresponse into a <code>score_json</code> column (first add that column header to the Runs table in Excel, in the next empty header cell of row 1). You still parse the JSON with your assistant afterward. The point of this flow isn't efficiency — it's that, chained with collection and a schedule, the instrument runs itself. One screenshot of the flow + its green run history is your "already partly automated" slide.</p>
+      <p>Only after all collection is finished (the Collector flow is then free to repurpose — or build this one fresh the same way you built the proof-of-concept flow): List rows from <code>runs</code>, Filter/Condition on status = done → Execute Agent and wait → Agent = <b>Scorer</b>, Message = the <code>answer</code> chip (the transcript is the input this time) → Update a row, writing lastresponse into a <code>score_json</code> column (first add that column header to the Runs table in Excel, in the next empty header cell of row 1). You still parse the JSON with your assistant afterward. The point of this flow isn't efficiency — it's that, chained with collection and a schedule, the instrument runs itself. One screenshot of the flow + its green run history is your "already partly automated" slide.</p>
     </div>
   </div>
 
   <div class="step" data-group="score" data-id="s4">
-    <div class="step-head"><input type="checkbox"><div><div class="t">4.4 · Schedule the heartbeat</div><div class="s">10 min · makes "standing instrument" literally true</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">4.4 · Set the flow to run on a weekly schedule</div><div class="s">10 min · makes "standing instrument" literally true</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <p><b>Do this only after all collection and scoring are done</b> — changing a trigger mid-collection risks breaking a working flow. In the flow, click the trigger (the top box, "Manually trigger a flow") → delete it → click the + that appears where it was → search <b>Recurrence</b> → add it → set Frequency = Week, on Monday, at 6:00. Save. It will find zero pending rows most weeks and do nothing — fine. What matters: the instrument now has a pulse, and "the reading refreshes weekly" is true when you say it in the room.</p>
     </div>
@@ -560,8 +560,8 @@ only for items 1–6; report n for every cell.
 5. Mention rates, SEPARATELY: parent_mentioned % and
    product_mentioned % — by topic. Flag topics where one is present
    and the other absent (the two-b***d gap).
-6. Gaps: pocket vs desk-gpt recommendation-rate gap by topic;
-   desk-gpt vs desk-claude gap by topic. Note the largest of each.
+6. Gaps: chatgpt vs copilot-gpt recommendation-rate gap by topic;
+   copilot-gpt vs copilot-claude gap by topic. Note the largest of each.
 7. Paraphrase stability: for each paraphrase pair, do conclusions
    flip? Report a stability % overall.
 8. Portrayal (SEEDED prompts): attribute averages and the 3 most
@@ -569,7 +569,7 @@ only for items 1–6; report n for every cell.
 9. Sources: control ratio, top-5 cited URLs with type, unowned
    topics (zero owned citations).
 Then tell me, in one paragraph: the single most dramatic cell in
-this data and why — your nomination for the drill-down topic.</pre></div>
+this data and why — your nomination for the headline topic.</pre></div>
     </div>
   </div>
 
@@ -582,7 +582,7 @@ data, simple div/SVG bars. Executive-clean: white cards, one accent
 color, generous whitespace, nothing decorative. Two levels:
 
 OVERVIEW PAGE
-- Header: "Perception lens · v0.1 · [persona name]" + subtitle
+- Header: "AI [the real word] Health · v0.1 · [persona name]" + subtitle
   "Layer 2 of LLM Visibility — how we're presented, and why"
 - Left rail: all five personas, active one highlighted, others
   grayed with "awaiting data"
@@ -597,7 +597,7 @@ OVERVIEW PAGE
   verbatim, with recurrence count and where it appears
 - "Two-b***d panel": per topic, parent mention rate vs product
   mention rate side by side; call out gap topics
-- "Pocket vs desk" and "GPT vs Claude": recommendation rate pairs
+- "ChatGPT vs Copilot" and "GPT vs Claude": recommendation rate pairs
   by topic, largest gaps flagged
 - "What feeds the answers": owned/earned/wild citation split, top
   wild source called out
@@ -614,7 +614,7 @@ DRILL-DOWNS (one per topic, same file, shown/hidden by clicks)
   + how we're framed when mentioned
 - "This topic's objection" (if any): verbatim + recurrence +
   which surfaces
-- "Pocket vs desk, this topic" with a one-line diagnosis
+- "ChatGPT vs Copilot, this topic" with a one-line diagnosis
 - "Sources, this topic": citation type split, note if zero owned
 - "Prescription for this cell": placeholder box for now
 
@@ -626,7 +626,7 @@ Give me the file to download, then we iterate on layout.</pre></div>
   </div>
 
   <div class="step" data-group="dash" data-id="d3">
-    <div class="step-head"><input type="checkbox"><div><div class="t">5.3 · Choose the drama cell and write the prescriptions</div><div class="s">1 hr · the last analytical decision</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">5.3 · Choose the headline topic and write the prescriptions</div><div class="s">1 hr · the last analytical decision</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <p>Take your assistant's nomination from 5.1, but apply the human tests: Is the finding <b>stark</b> (a number that needs no caveats)? Is it <b>sayable in one sentence</b>? Is it <b>actionable</b> (points at content/positioning the firm can actually change)? The best cell passes all three. That cell's drill-down is where the demo lingers; its objection or gap is your headline slide.</p>
       <p>Then write the three "what to do about it" prescriptions — each must name a concrete artifact (a page to publish, a claim to counter, a citation to win) and a re-measure date. A prescription without a date is a wish.</p>
@@ -637,14 +637,14 @@ Give me the file to download, then we iterate on layout.</pre></div>
 <!-- ================= TAB 6 : DEMO ================= -->
 <section class="tab" id="tab-demo">
   <h2>6 · Demo day</h2>
-  <p class="lede">The meeting structure lives in your deck outline document (thesis → costs → runs → competes-for). This tab is only the lens segment: the live moment, the walkthrough, and the rehearsal discipline.</p>
+  <p class="lede">The meeting structure lives in your deck outline document (thesis → costs → runs → competes-for). This tab covers only this instrument's segment: the live moment, the walkthrough, and the rehearsal discipline.</p>
   <div class="toolbar"><button data-expand="demo">Expand all</button><button data-collapse="demo">Collapse all</button></div>
   <div class="progressbar"><div id="bar-demo"></div></div>
 
   <div class="step" data-group="demo" data-id="m1">
     <div class="step-head"><input type="checkbox"><div><div class="t">6.1 · The live query</div><div class="s">rehearse ×10 on Day 7 · you know the distribution</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Pick ONE decision prompt — the one whose distribution you know best from the data (ideally feeding the drama cell). In the meeting: open the Panelist GPT in a fresh chat, paste it, let the answer land in front of her. Say nothing while it generates.</p>
+      <p>Pick ONE decision prompt — the one whose distribution you know best from the data (ideally feeding the headline topic). In the meeting: open the Panelist GPT in a fresh chat, paste it, let the answer land in front of her. Say nothing while it generates.</p>
       <p>Two rehearsed follow-ups depending on what appears: if the typical result → <i>"That's what happens in [X]% of our sampled runs — here's the full distribution."</i> If an outlier → <i>"Interesting — that's the outlier. Which is exactly why single queries mislead and we sample. Here's what happens across 40 runs."</i> Both paths land; that's the point of sampling. Record a backup run as a screen recording on Day 7.</p>
     </div>
   </div>
@@ -654,9 +654,9 @@ Give me the file to download, then we iterate on layout.</pre></div>
     <div class="step-body">
       <ol>
         <li><b>Overview, 30 sec:</b> "Every audience, every surface, every topic — one instrument. Gray cells are awaiting data; here's the audience we lit up first." Do not read panels aloud.</li>
-        <li><b>Click into the drama cell, 2 min:</b> the number → who wins instead and their verbatim reasons → the objection, verbatim, with its recurrence count. Pause after reading the objection out loud. Then: <i>"Every client who asks an AI hears some version of that. Until this instrument, nobody in this building ever had."</i></li>
-        <li><b>One structural panel, 1 min:</b> whichever of two-b***d gap / pocket-desk / GPT-Claude produced your second-best finding.</li>
-        <li><b>Prescriptions + heartbeat, 1 min:</b> "each has a re-measure date; collection is already automated and scheduled — this is issue one of a series, not a study."</li>
+        <li><b>Click into the headline topic, 2 min:</b> the number → who wins instead and their verbatim reasons → the objection, verbatim, with its recurrence count. Pause after reading the objection out loud. Then: <i>"Every client who asks an AI hears some version of that. Until this instrument, nobody in this building ever had."</i></li>
+        <li><b>One structural panel, 1 min:</b> whichever of two-b***d gap / ChatGPT-Copilot / GPT-Claude produced your second-best finding.</li>
+        <li><b>Prescriptions + the weekly schedule, 1 min:</b> "each has a re-measure date; collection is already automated and scheduled — this is issue one of a series, not a study."</li>
       </ol>
     </div>
   </div>
@@ -678,8 +678,8 @@ Give me the file to download, then we iterate on layout.</pre></div>
     <div class="step-body">
       <ul>
         <li>Live query ×10 in fresh chats; note the distribution you observe; record one as backup video.</li>
-        <li>Dashboard click-path ×3, timed — the lens segment fits in 8 minutes with 2 minutes of silence budgeted for her reactions.</li>
-        <li>PDF export of overview + drama drill-down on the desktop, in case of browser trouble.</li>
+        <li>Dashboard click-path ×3, timed — the AI health segment fits in 8 minutes with 2 minutes of silence budgeted for her reactions.</li>
+        <li>PDF export of overview + headline-topic drill-down on the desktop, in case of browser trouble.</li>
         <li>One hostile dry-run with a colleague playing the exec, interrupting twice.</li>
         <li>Memory toggles still off. Panelist GPT loads. Flows show green run history (screenshot it — that's the automation slide).</li>
       </ul>
@@ -860,7 +860,7 @@ diversification option I should raise, or is that overblown?</pre></div>
 <!-- ================= TAB : TROUBLESHOOTING ================= -->
 <section class="tab" id="tab-fix">
   <h2>Troubleshooting — the ten ways this breaks</h2>
-  <p class="lede">Everything below either happened during your POC or is the next-most-likely failure. Each entry: symptom → cause → fix. If something breaks that isn't here, describe it to your Lens build assistant with a screenshot — that's what it's for.</p>
+  <p class="lede">Everything below either happened during your proof-of-concept test or is the next-most-likely failure. Each entry: symptom → cause → fix. If something breaks that isn't here, describe it to your AI health build assistant with a screenshot — that's what it's for.</p>
 
   <div class="card"><b>Flow error: "no dependent actions" / structural failure.</b> An action isn't linked into the chain, a loop container is empty, or the trigger is an agent-trigger being run manually. Check the canvas is one connected vertical chain; re-add stray actions via the + between nodes; use a manual or recurrence trigger.</div>
   <div class="card"><b>Agent gets no question / empty answers.</b> The Message field on "Execute Agent and wait" is hidden under Advanced parameters → Show all. Insert the prompt-text chip there. (Both loop actions hide their key fields this way — the answer column on Update a row too.)</div>
@@ -869,14 +869,14 @@ diversification option I should raise, or is that overblown?</pre></div>
   <div class="card"><b>Filter Query errors.</b> The Excel connector's filter support is finicky. Drop it; use a Condition action inside the loop instead (status = pending AND surface/model match). Slower, bulletproof.</div>
   <div class="card"><b>Batches stall or rows stay pending.</b> Rate limiting. Confirm the 30s Delay action is inside the loop; run again — the status filter makes reruns resume, not duplicate. If stalls persist, run smaller batches (filter by topic) and space them across the day.</div>
   <div class="card"><b>The agent won't pick / hedges everything to "consult a professional."</b> The instruction block lost its ALWAYS-answer + commit-to-ONE lines (usually a partial paste). Re-paste the full block, republish, reset affected rows to pending. Never fix this by rewriting bank prompts — the bank is frozen.</div>
-  <div class="card"><b>Desk answers are word-for-word identical across runs.</b> Caching — sampling is broken on that path. Verify you're asking via fresh flow runs (not one chat session), note it in Config, and treat desk n as reduced. Pocket runs are unaffected; lean on them for sampling claims if this hits.</div>
-  <div class="card"><b>Pocket browsing won't turn off.</b> If "answer from your own knowledge only — do not search the web" still triggers search (links/citations appear), discard, retry once in a new chat; if persistent, note in Config that pocket browsing-off is unavailable and rely on desk (web-off) for the frozen layer. Never keep a run that violated its browsing condition.</div>
-  <div class="card"><b>ChatGPT remembers who you are (workspace context).</b> If a fresh memory-off chat still knows your employer, your account is contaminated for this purpose: measurement runs shift to a colleague's vanilla account or a shared clean account, same protocol. Test once before pocket session 1: "What do you know about me and where I work?"</div>
-  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier desk runs first, seeded portrayal second, perception last — the aha lives in the first bucket.</div>
+  <div class="card"><b>Copilot answers are word-for-word identical across runs.</b> Caching — sampling is broken on that path. Verify you're asking via fresh flow runs (not one chat session), note it in Config, and treat Copilot n as reduced. ChatGPT runs are unaffected; lean on them for sampling claims if this hits.</div>
+  <div class="card"><b>ChatGPT browsing won't turn off.</b> If "answer from your own knowledge only — do not search the web" still triggers search (links/citations appear), discard, retry once in a new chat; if persistent, note in Config that ChatGPT browsing-off is unavailable and rely on Copilot agents (web search off) for the built-in-knowledge answers. Never keep a run that violated its browsing condition.</div>
+  <div class="card"><b>ChatGPT remembers who you are (workspace context).</b> If a fresh memory-off chat still knows your employer, your account is contaminated for this purpose: measurement runs shift to a colleague's vanilla account or a shared clean account, same protocol. Test once before ChatGPT session 1: "What do you know about me and where I work?"</div>
+  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier Copilot runs first, seeded portrayal second, perception last — the aha lives in the first bucket.</div>
   <div class="card"><b>Dashboard file won't open on the demo machine.</b> It's self-contained by design (no libraries) — any browser opens it. If a policy blocks local HTML, use the PDF exports; the walkthrough survives in PDF because the drill-down is pre-selected.</div>
 </section>
 </main>
-<footer>Perception lens build guide · progress stored in this browser only · print for a flat copy</footer>
+<footer>AI B***d Health build guide · progress stored in this browser only · print for a flat copy</footer>
 <script>
 const tabs=document.querySelectorAll('nav button');
 function show(id){
