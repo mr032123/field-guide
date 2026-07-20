@@ -292,6 +292,16 @@ full prompt text copied from QuestionBank (matched by qid) — the
 flow reads the prompt from this column.
 Report the total row count per surface/model so I can sanity-check.</pre></div>
       <p>Sanity-check the count report against this arithmetic: <b>Copilot = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 aided × 5 × 2 = 100, plus 5 explanation × 3 × 2 = 30) — all automated. <b>ChatGPT = 208 rows</b> (26 × 5 natural + 26 × 3 web-off) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: natural n=4 instead of 5 (saves 26 runs), and the web-off diagnostic for only 3 of 5 topics (saves ~24). Never cut Copilot — it's free labor. Trust arithmetic, not stamina.</p>
+      <div class="callout gold"><b>Already mid-build? Catch-up for the July revision</b> This guide changed after collection design feedback (web search now ON by default; citation tracking added). If you built before that: (1) open each panelist agent in Copilot Studio → Settings → make sure web search is ON. (2) If your Runs sheet was already generated, remap it with the prompt below. (3) If any Copilot runs already completed with web search off, don't mix them in — change their browsing value to <code>off-legacy</code> and exclude them from headline metrics. Your own qid labels and the "explanation" tier name are fine — every step selects by the tier column, never by ID.</div>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>In the Runs sheet:
+1. Every row with surface=copilot: set browsing to "on".
+2. Rows with surface=chatgpt that currently say browsing="off":
+   change to "natural".
+3. Rows with surface=chatgpt that currently say browsing="on":
+   change to "off".
+4. Add an empty column to the Runs table named "searched".
+Give me the file back, plus a count of rows per browsing value
+so I can check.</pre></div>
       <div class="callout"><b>Why "natural" is the default condition</b> The headline numbers must reflect what these tools actually do for a real client — and real answers use the web. The small web-off subset exists for one diagnostic reason: if a damaging narrative appears in web-off answers too, it's baked into the model itself (persists for years, unfixable by content); if it only appears with the web on, it's coming from specific pages you can go fix. That's what makes the prescriptions credible.</div>
       <div class="callout"><b>Note on the Copilot n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
     </div>
