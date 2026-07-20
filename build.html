@@ -117,7 +117,7 @@
     <tr><th>Day</th><th>Work</th><th>Tab</th></tr>
     <tr><td>1</td><td>Build the workbook · tag the existing prompts · add the decision prompts · freeze the bank · expand into the Runs sheet</td><td>1</td></tr>
     <tr><td>2</td><td>Build the four agents (2 panelists, scorer, backup) · extend the proof-of-concept flow · start Copilot batches</td><td>2–3</td></tr>
-    <tr><td>3</td><td>Copilot batches finish · ChatGPT manual sessions 1–2 · citation logging on browsing runs</td><td>3</td></tr>
+    <tr><td>3</td><td>Copilot batches finish · ChatGPT manual sessions 1–2 · log citations from any answer that used the web</td><td>3</td></tr>
     <tr><td>4</td><td>ChatGPT session 3 · run scoring · hand-verify 10%</td><td>4</td></tr>
     <tr><td>5</td><td>Analysis: metrics, two-b***d matrix, who-wins, kill sentences · pick the headline topic</td><td>5</td></tr>
     <tr><td>6</td><td>Generate dashboard + drill-downs · build Ask-the-Panel agent (optional) · integrate into deck</td><td>5–6</td></tr>
@@ -176,15 +176,16 @@ bank_frozen_date,   [date you freeze the bank]
 
 Sheet "QuestionBank"  (table: bank)
 qid,topic,tier,prompt_class,paraphrase_of,prompt_text
-  tier: decision | comparison | perception
+  tier: decision | comparison | explanation
   prompt_class: unaided | aided
   paraphrase_of: blank, or the qid this rephrases
 
 Sheet "Runs"  (table: runs)
-run_id,qid,surface,model,browsing,run_index,status,answer,run_date
+run_id,qid,surface,model,browsing,run_index,status,answer,searched,run_date
   surface: chatgpt | copilot
   model: gpt | claude
-  browsing: off | on
+  browsing: on | natural | off
+  searched: (ChatGPT natural runs only) y | n — did it search the web?
   status: pending | done
 
 Sheet "Scores"  (table: scores)
@@ -202,7 +203,7 @@ Sheet "Analysis" — left empty; your assistant fills it.</pre></div>
 
   <h3>Words this guide uses (30-second glossary)</h3>
   <div class="card">
-    <p style="margin:0"><b>Sheet vs. Table:</b> a sheet is the tab at the bottom of Excel; a Table is a formatted block of data on a sheet that has its own name — flows can only see Tables. · <b>Flow:</b> the automation you built in Copilot Studio (trigger at the top, then steps that run in order). · <b>Trigger:</b> the first box of a flow — what starts it (manual button, or a schedule). · <b>Loop / "Apply to each":</b> the container that repeats the steps inside it once per spreadsheet row. · <b>Insert a field ("dynamic content"):</b> in a flow, clicking into a box pops up a panel of values from earlier steps; clicking a field name (like prompt_text) places it in the box as a small colored tag meaning "the current row's value." · <b>A run:</b> one question asked once to one AI — one row of the Runs sheet. · <b>n:</b> how many times the same question is repeated; "n=8" = 8 runs of that question. · <b>Aided vs. unaided prompt:</b> an aided prompt names a company in the question itself (so it cannot measure whether AI brings you up unprompted); an unaided prompt names no company.</p>
+    <p style="margin:0"><b>Sheet vs. Table:</b> a sheet is the tab at the bottom of Excel; a Table is a formatted block of data on a sheet that has its own name — flows can only see Tables. · <b>Flow:</b> the automation you built in Copilot Studio (trigger at the top, then steps that run in order). · <b>Trigger:</b> the first box of a flow — what starts it (manual button, or a schedule). · <b>Loop / "Apply to each":</b> the container that repeats the steps inside it once per spreadsheet row. · <b>Insert a field ("dynamic content"):</b> in a flow, clicking into a box pops up a panel of values from earlier steps; clicking a field name (like prompt_text) places it in the box as a small colored tag meaning "the current row's value." · <b>A run:</b> one question asked once to one AI — one row of the Runs sheet. · <b>n:</b> how many times the same question is repeated; "n=8" = 8 runs of that question. · <b>Browsing values:</b> on = the Copilot agent has web search enabled; natural = ChatGPT asked with no instructions about the web (we record whether it searched); off = ChatGPT told not to search — a diagnostic subset that isolates what the model believes without the web. · <b>Aided vs. unaided prompt:</b> an aided prompt names a company in the question itself (so it cannot measure whether AI brings you up unprompted); an unaided prompt names no company.</p>
   </div>
 </section>
 
@@ -231,17 +232,17 @@ prompt_text contains any of the six company names in Config's value
 column, otherwise "unaided". Also fill the tier column for every row:
 "decision" if the prompt forces choosing one option and rejecting
 others; "comparison" if it weighs named options against each other;
-"perception" if it asks to explain or educate. Give me the file
+"explanation" if it asks to explain or educate. Give me the file
 back plus a count of rows per class and per tier.</pre></div>
       <p><b>Manual alternative:</b> in Excel, use Find (Ctrl/Cmd-F) for each of the six names one at a time and type "aided" in prompt_class for every hit; everything left is "unaided". Either way: <b>spot-check ten rows yourself</b> — read the prompt, confirm the tag. The metrics' integrity rests on this column.</p>
-      <p>Expect the tier counts to come back almost entirely perception/comparison with nearly no decision rows — that's the known gap, and the next step fixes it.</p>
+      <p>Expect the tier counts to come back almost entirely explanation/comparison with nearly no decision rows — that's the known gap, and the next step fixes it.</p>
     </div>
   </div>
 
   <div class="step" data-group="bank" data-id="b3">
     <div class="step-head"><input type="checkbox"><div><div class="t">1.3 · Add the 20 decision prompts <span class="tag aha">the aha source</span></div><div class="s">15 min · copy from the Prompt library tab</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Go to the <b>Prompt library</b> tab of this guide, copy your persona's entire block (it's one copy button), then attach the workbook to your assistant and paste: <i>"Add these prompts to QuestionBank. They're formatted as 'ID | prompt text', grouped under topic headings. Use the given IDs as qid, the heading as topic, tier=decision, prompt_class=unaided. The PARAPHRASES section at the end: same treatment, but fill paraphrase_of with the ID each one rephrases (given in its label), and use qids P1–P6. Give me the file back."</i> — followed by the block. Don't retype anything by hand.</p>
+      <p>Go to the <b>Prompt library</b> tab of this guide, copy your persona's entire block (it's one copy button), then attach the workbook to your assistant and paste: <i>"Add these prompts to QuestionBank. They're formatted as 'ID | prompt text', grouped under topic headings. Give them qids in whatever numbering scheme your bank already uses (IDs are just labels — every later step selects prompts by the tier column, never by ID), the heading as topic, tier=decision, prompt_class=unaided. The PARAPHRASES section at the end: same treatment, but fill paraphrase_of with the ID each one rephrases (given in its label), and give them qids in your scheme. Give me the file back."</i> — followed by the block. Don't retype anything by hand.</p>
       <p>These decision prompts are what produce recommendation rate, who-wins, and the recurring objection language; the paraphrases measure whether results survive rewording — your stability number for "how robust is this."</p>
     </div>
   </div>
@@ -253,7 +254,7 @@ back plus a count of rows per class and per tier.</pre></div>
       <ul>
         <li><b>All 20 decision prompts + 6 paraphrases</b> (unaided) — the core.</li>
         <li><b>2 aided portrayal prompts per topic</b> (10 total) — pick ones that name your product line and ask something substantive (from your existing bank). These measure how AI talks about you when asked directly.</li>
-        <li><b>1 perception prompt per topic</b> (5 total) — for narrative color per topic.</li>
+        <li><b>1 explanation prompt per topic</b> (5 total) — for narrative color, and the tier where citation rate matters most.</li>
       </ul>
       <p>That's 41 prompts. <b>Freeze:</b> set <code>bank_frozen_date</code> in Config, email the workbook to yourself with subject "bank frozen [date]". That email is your pre-registration receipt — the one-sentence answer to "you cherry-picked the questions."</p>
     </div>
@@ -267,25 +268,31 @@ back plus a count of rows per class and per tier.</pre></div>
 run using these rules, and give me the workbook back:
 
 DECISION prompts (tier=decision, incl. paraphrases):
-- surface=copilot, model=gpt,    browsing=off, n=8  (run_index 1..8)
-- surface=copilot, model=claude, browsing=off, n=8
-- surface=chatgpt, model=gpt,  browsing=off, n=5
-- surface=chatgpt, model=gpt,  browsing=on,  n=3
+- surface=copilot, model=gpt,    browsing=on, n=8  (run_index 1..8)
+- surface=copilot, model=claude, browsing=on, n=8
+- surface=chatgpt, model=gpt,  browsing=natural, n=5
+- surface=chatgpt, model=gpt,  browsing=off,     n=3
+
+browsing meanings: "on" = the Copilot agent has web search enabled;
+"natural" = ChatGPT asked with no instructions about the web (it
+searches if it wants to — we record whether it did in the searched
+column); "off" = ChatGPT told not to search (diagnostic subset).
 
 AIDED portrayal prompts:
-- surface=copilot, model=gpt,    browsing=off, n=5
-- surface=copilot, model=claude, browsing=off, n=5
+- surface=copilot, model=gpt,    browsing=on, n=5
+- surface=copilot, model=claude, browsing=on, n=5
 
-PERCEPTION prompts:
-- surface=copilot, model=gpt,    browsing=off, n=3
-- surface=copilot, model=claude, browsing=off, n=3
+EXPLANATION prompts:
+- surface=copilot, model=gpt,    browsing=on, n=3
+- surface=copilot, model=claude, browsing=on, n=3
 
 run_id = R0001 onward. status = "pending". answer and run_date empty.
 ALSO add a prompt_text column to Runs and fill it with each run's
 full prompt text copied from QuestionBank (matched by qid) — the
 flow reads the prompt from this column.
 Report the total row count per surface/model so I can sanity-check.</pre></div>
-      <p>Sanity-check the count report against this arithmetic: <b>Copilot = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 aided × 5 × 2 = 100, plus 5 perception × 3 × 2 = 30) — all automated. <b>ChatGPT = 208 rows</b> (26 × 5 browsing-off + 26 × 3 browsing-on) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: ChatGPT browsing-off n=4 instead of 5 (saves 26 runs), and browsing-on for only 3 of 5 topics (saves ~24). Never cut Copilot — it's free labor. Trust arithmetic, not stamina.</p>
+      <p>Sanity-check the count report against this arithmetic: <b>Copilot = 546 rows</b> (26 decision × 8 × 2 models = 416, plus 10 aided × 5 × 2 = 100, plus 5 explanation × 3 × 2 = 30) — all automated. <b>ChatGPT = 208 rows</b> (26 × 5 natural + 26 × 3 web-off) — manual, ≈ 7 hours at ~2 min/run across three sessions. If that's too heavy, two sanctioned cuts: natural n=4 instead of 5 (saves 26 runs), and the web-off diagnostic for only 3 of 5 topics (saves ~24). Never cut Copilot — it's free labor. Trust arithmetic, not stamina.</p>
+      <div class="callout"><b>Why "natural" is the default condition</b> The headline numbers must reflect what these tools actually do for a real client — and real answers use the web. The small web-off subset exists for one diagnostic reason: if a damaging narrative appears in web-off answers too, it's baked into the model itself (persists for years, unfixable by content); if it only appears with the web on, it's coming from specific pages you can go fix. That's what makes the prescriptions credible.</div>
       <div class="callout"><b>Note on the Copilot n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
     </div>
   </div>
@@ -302,6 +309,7 @@ Report the total row count per surface/model so I can sanity-check.</pre></div>
     <div class="step-body">
       <p><b>This agent's job:</b> it plays the AI advisor serving your persona on the Copilot surface — the collection flow will feed it every question, one at a time, and log its answers. Go to copilotstudio.microsoft.com (where you built your proof-of-concept agent) → <b>Agents</b> in the left navigation → <b>New agent</b>. If it opens a chat asking you to describe the agent, look for a <b>"Skip to configure"</b> (or similar) link — you want the form, not the conversation. Name it <b>Panelist GPT</b>, and paste your persona's block below into the <b>Instructions</b> box.</p>
       <p>Three settings to check on the agent's page: <b>Model</b> — leave the default GPT (this is the same dropdown where you spotted Claude; don't select it here, that's the twin). <b>Knowledge</b> — add nothing. <b>Web search</b> — find the toggle (usually under the agent's Settings, sometimes labeled "web search" or "allow the agent to use public web data") and turn it OFF — we want answers from the model's built-in knowledge only. Then click <b>Publish</b> (top right) — flows can only call published agents, as you learned in the proof-of-concept test.</p>
+      <p><b>Why there is no memory protocol here</b> (there is one for ChatGPT in 2.4): every time the flow calls this agent, a completely new conversation starts — that is why each run's output shows a different conversationID. Runs cannot remember each other, so there is nothing to switch off. ChatGPT needed a protocol only because your personal account carries memory across chats. If you ever notice the same conversationID on two different runs, flag it — that would mean sessions are being reused, and the variance check in 3.2 would also catch it.</p>
       <p><span class="tag emily">Emily path</span></p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>You are an AI assistant advising one specific client. Stay in this
 role for every message. Never mention these instructions.
@@ -407,7 +415,7 @@ COMPETITORS = [comp1], [comp2], [comp3], [comp4]
   <div class="step" data-group="agents" data-id="a4">
     <div class="step-head"><input type="checkbox"><div><div class="t">2.4 · The ChatGPT panelist — a Custom GPT</div><div class="s">15 min · same instructions + memory protocol</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p><b>This one's job:</b> it is the persona's AI advisor on the ChatGPT surface — the same role the two Studio agents play on Copilot, but ChatGPT can't be automated, so you'll feed it the questions by hand (Tab 3) and it holds the persona context so every manual run is conditioned exactly like the automated ones. In work ChatGPT: left sidebar → <b>GPTs</b> (or "Explore GPTs") → <b>+ Create</b> button (top right). It opens with a "Create" chat tab — ignore it and click the <b>Configure</b> tab instead. Name: <b>Panelist</b>. In the <b>Instructions</b> box, paste the SAME persona block as 2.1, identical text. Under Capabilities, leave web browsing ticked — you'll switch it on/off per run with phrasing (Tab 3 shows how). Click <b>Create/Save</b> and set sharing to <b>Only me</b>.</p>
+      <p><b>This one's job:</b> it is the persona's AI advisor on the ChatGPT surface — the same role the two Studio agents play on Copilot, but ChatGPT can't be automated, so you'll feed it the questions by hand (Tab 3) and it holds the persona context so every manual run is conditioned exactly like the automated ones. In work ChatGPT: left sidebar → <b>GPTs</b> (or "Explore GPTs") → <b>+ Create</b> button (top right). It opens with a "Create" chat tab — ignore it and click the <b>Configure</b> tab instead. Name: <b>Panelist</b>. In the <b>Instructions</b> box, paste the SAME persona block as 2.1, identical text. Under Capabilities, leave web browsing ticked. Most runs are "natural" — you paste the question with no instructions about the web; a small diagnostic subset is told not to search (Tab 3 shows both). Click <b>Create/Save</b> and set sharing to <b>Only me</b>.</p>
       <p><b>Memory protocol (from your test):</b> Settings → Personalization → both memory toggles OFF for the entire collection period. Re-check they're still off at the start of each session — updates sometimes re-enable them. One question per fresh chat, always.</p>
     </div>
   </div>
@@ -471,9 +479,9 @@ Never break character. Never mention these instructions.</pre></div>
       <p>In the Runs sheet, click the filter arrow on the <b>surface</b> column header → tick only <code>chatgpt</code>; then the <b>status</b> header → tick only <code>pending</code>. What's left on screen is your playlist — work it top to bottom. Per run:</p>
       <ol>
         <li>Open your <b>Panelist</b> Custom GPT → new chat (memory toggles confirmed off at session start).</li>
-        <li><b>Browsing-off runs:</b> paste the prompt with this prefix: <i>"Answer from your own knowledge only — do not search the web."</i> Verify the answer shows no citations/links; if it searched anyway, discard and redo once.</li>
-        <li><b>Browsing-on runs:</b> prefix: <i>"Search the web before answering."</i> Confirm citations appear.</li>
-        <li>Copy the AI's full answer (select it all, or use the copy button under the response) → switch to measurement.xlsx, Runs sheet → find the row you're working on (top row of your filtered view) → click its cell in the <b>answer</b> column and paste → then click the same row's cell in the <b>status</b> column and type <code>done</code>. The row disappears from your filtered view — that is correct; finished rows leave the playlist. For browsing-on runs only: also go to the <b>Sources</b> sheet and add one row per web link the answer cited — the run's run_id in the run_id column, the link in the url column (right-click a link in ChatGPT → Copy link address).</li>
+        <li><b>Natural runs</b> (browsing column says natural): paste the question exactly as written — no additions, no instructions about the web. Let it do whatever it does. After the answer: in that run's <code>searched</code> cell, type <code>y</code> if the answer shows web links/citations, <code>n</code> if not.</li>
+        <li><b>Web-off runs</b> (browsing column says off): paste the question with this prefix: <i>"Answer from your own knowledge only — do not search the web."</i> Verify no links/citations appear; if it searched anyway, discard and redo once in a new chat.</li>
+        <li>Copy the AI's full answer (select it all, or use the copy button under the response) → switch to measurement.xlsx, Runs sheet → find the row you're working on (top row of your filtered view) → click its cell in the <b>answer</b> column and paste → then click the same row's cell in the <b>status</b> column and type <code>done</code>. The row disappears from your filtered view — that is correct; finished rows leave the playlist. For any run whose answer shows web links/citations: also go to the <b>Sources</b> sheet and add one row per web link the answer cited — the run's run_id in the run_id column, the link in the url column (right-click a link in ChatGPT → Copy link address).</li>
         <li>For the next run, start a completely fresh conversation: click <b>New chat</b> (the pencil/compose icon at the top of the sidebar) and select your Panelist again. Never ask two questions in the same chat — each run must start with zero history. Pace: about 2 minutes per run; after roughly 25 runs, take a real break. Tired copy-pasting puts answers in wrong rows, and a wrong row is worse than a slow session.</li>
       </ol>
       <div class="callout"><b>Session discipline beats willpower</b> Three calendar blocks booked in advance (Day 3 ×2, Day 4 ×1) outperform "I'll fit it in." Put the runs playlist on one screen, ChatGPT on the other, and treat it as transcription work — judgment is for later, speed is for now.</div>
@@ -481,9 +489,10 @@ Never break character. Never mention these instructions.</pre></div>
   </div>
 
   <div class="step" data-group="collect" data-id="c4">
-    <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Classify sources</div><div class="s">45 min · after ChatGPT browsing-on runs finish</div></div><span class="chev">›</span></div>
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Build the citation record</div><div class="s">45 min · after collection finishes — includes Copilot answers</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>In the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then open a new chat in your AI health build Project, attach measurement.xlsx (paperclip button), and paste:</p>
+      <p>First, capture the citations you did not log by hand: the Copilot answers. Open a new chat in your AI health build Project, attach measurement.xlsx, and paste: <i>"Scan the answer text of every Runs row for web addresses and links. Add each one you find to the Sources sheet as a new row: the run_id and the URL. Skip URLs already logged for that run. Give me the file back."</i></p>
+      <p>Then, in the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then open a new chat in your AI health build Project, attach measurement.xlsx (paperclip button), and paste:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>From the Sources sheet, compute and write into the Analysis sheet:
 1. Total unique URLs cited, and total citations.
 2. Control ratio: citations of source_type "owned" divided by all
@@ -491,6 +500,13 @@ Never break character. Never mention these instructions.</pre></div>
 3. The 5 most-cited URLs, each with its source_type and count.
 4. For each topic, list any decision prompts whose runs cite zero
    "owned" URLs.
+5. CITATION RATE — the "are we a source?" metric: of all runs whose
+   answers contained web citations, the percentage where at least
+   one "owned" URL was cited. Report it overall, by topic, and by
+   tier — with the explanation tier broken out on its own line.
+6. Add a column to the Runs sheet named owned_cited: y if that run
+   cited at least one owned URL, n if it cited sources but none of
+   ours, blank if the answer had no citations.
 Also tell me in one line: the single most-cited "wild" URL.
 Give me the workbook back.</pre></div>
       <p>The most-cited wild source is a candidate slide on its own.</p>
@@ -587,6 +603,11 @@ only for items 1–6; report n for every cell.
    common descriptive framings of PARENT and PRODUCT, verbatim.
 9. Sources: control ratio, top-5 cited URLs with type, unowned
    topics (zero owned citations).
+10. Citation rate (from the Sources work in 3.4): % of web-informed
+    answers citing at least one of our sites — overall, by topic,
+    and by tier, with the explanation tier on its own line.
+11. Search behavior: % of ChatGPT natural runs where searched = y,
+    by topic (how often the real tool actually goes to the web).
 Then tell me, in one paragraph: the single most dramatic cell in
 this data and why — your nomination for the headline topic.</pre></div>
     </div>
@@ -621,6 +642,8 @@ OVERVIEW PAGE
   by topic, largest gaps flagged
 - "What feeds the answers": owned/earned/wild citation split, top
   wild source called out
+- "Are we a source?": citation rate — % of web-informed answers
+  citing our sites, by topic, explanation tier highlighted
 - "What to do about it": 3 prescriptions (I will write these with
   you after we see the data)
 - Methodology footer: n per cell type, dates, exact model names
@@ -635,7 +658,7 @@ DRILL-DOWNS (one per topic, same file, shown/hidden by clicks)
 - "This topic's objection" (if any): verbatim + recurrence +
   which surfaces
 - "ChatGPT vs Copilot, this topic" with a one-line diagnosis
-- "Sources, this topic": citation type split, note if zero owned
+- "Sources, this topic": citation type split, our citation rate on this topic, note if zero owned
 - "Prescription for this cell": placeholder box for now
 
 Use ONLY real computed numbers. Where data is thin (n<5), show
@@ -890,9 +913,9 @@ diversification option I should raise, or is that overblown?</pre></div>
   <div class="card"><b>Batches stall or rows stay pending.</b> Rate limiting. Confirm the 30s Delay action is inside the loop; run again — the status filter makes reruns resume, not duplicate. If stalls persist, run smaller batches (filter by topic) and space them across the day.</div>
   <div class="card"><b>The agent won't pick / hedges everything to "consult a professional."</b> The instruction block lost its ALWAYS-answer + commit-to-ONE lines (usually a partial paste). Re-paste the full block, republish, reset affected rows to pending. Never fix this by rewriting bank prompts — the bank is frozen.</div>
   <div class="card"><b>Copilot answers are word-for-word identical across runs.</b> Caching — sampling is broken on that path. Verify you're asking via fresh flow runs (not one chat session), note it in Config, and treat Copilot n as reduced. ChatGPT runs are unaffected; lean on them for sampling claims if this hits.</div>
-  <div class="card"><b>ChatGPT browsing won't turn off.</b> If "answer from your own knowledge only — do not search the web" still triggers search (links/citations appear), discard, retry once in a new chat; if persistent, note in Config that ChatGPT browsing-off is unavailable and rely on Copilot agents (web search off) for the built-in-knowledge answers. Never keep a run that violated its browsing condition.</div>
+  <div class="card"><b>ChatGPT browsing won't turn off.</b> If "answer from your own knowledge only — do not search the web" still triggers search (links/citations appear), discard, retry once in a new chat; if persistent, note in Config that the web-off diagnostic is unavailable in your workspace and drop that subset — the natural runs are the headline data anyway. Never keep a run that violated its browsing condition.</div>
   <div class="card"><b>ChatGPT remembers who you are (workspace context).</b> If a fresh memory-off chat still knows your employer, your account is contaminated for this purpose: measurement runs shift to a colleague's vanilla account or a shared clean account, same protocol. Test once before ChatGPT session 1: "What do you know about me and where I work?"</div>
-  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier Copilot runs first, aided portrayal second, perception last — the aha lives in the first bucket.</div>
+  <div class="card"><b>AI Builder credit warnings in Studio.</b> Screenshot the warning, note remaining capacity. Prioritize: decision-tier Copilot runs first, aided portrayal second, explanation last — the aha lives in the first bucket.</div>
   <div class="card"><b>Dashboard file won't open on the demo machine.</b> It's self-contained by design (no libraries) — any browser opens it. If a policy blocks local HTML, use the PDF exports; the walkthrough survives in PDF because the drill-down is pre-selected.</div>
 </section>
 </main>
