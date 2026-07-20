@@ -302,6 +302,12 @@ Report the total row count per surface/model so I can sanity-check.</pre></div>
 4. Add an empty column to the Runs table named "searched".
 Give me the file back, plus a count of rows per browsing value
 so I can check.</pre></div>
+      <div class="callout"><b>Scaling rule — if your bank is bigger than the 41-prompt design</b> Copilot runs everything: automated labor is cheap (watch for AI-credit warnings; if batches crawl, drop decision n from 8 to 6). ChatGPT stays fixed-size: only a pre-registered subset gets ChatGPT rows — for each topic, the first two decision-tier prompts in qid order. That is 2 × 5 topics × 8 runs = 80 manual runs, about 3 hours. Pick the subset by this rule NOW, before any results exist — choosing it after seeing data is cherry-picking. The ChatGPT-vs-Copilot comparison then uses only these matched prompts. If your Runs sheet already has ChatGPT rows for every decision prompt, paste this to your assistant with the workbook attached:</div>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>In the Runs sheet, keep rows with surface=chatgpt ONLY for this
+subset: for each topic, the first two decision-tier prompts in qid
+order (look up tier and topic in QuestionBank). Delete every other
+surface=chatgpt row. Copilot rows are untouched. Report the subset
+qids and the remaining chatgpt row count (should be ~80).</pre></div>
       <div class="callout"><b>Why "natural" is the default condition</b> The headline numbers must reflect what these tools actually do for a real client — and real answers use the web. The small web-off subset exists for one diagnostic reason: if a damaging narrative appears in web-off answers too, it's baked into the model itself (persists for years, unfixable by content); if it only appears with the web on, it's coming from specific pages you can go fix. That's what makes the prescriptions credible.</div>
       <div class="callout"><b>Note on the Copilot n=8</b> Not 10, deliberately: 8 keeps total agent calls near 500, inside plausible daily quotas, while still being a real sample. If batches run fast and error-free on Day 2, top up to 10 — add rows, never replace.</div>
     </div>
