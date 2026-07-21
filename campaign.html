@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Backup demo — automated campaign pipeline</title>
+<style>
+  :root{
+    --ink:#1a1d23; --muted:#5b6472; --bg:#f7f7f5; --card:#ffffff;
+    --accent:#0f4c81; --accent-soft:#e8f0f7; --gold:#a07425; --gold-soft:#faf3e6;
+    --green:#2c6e49; --green-soft:#e7f2ec; --red:#9e3a3a; --red-soft:#f9ecec;
+    --border:#e3e2dd; --code-bg:#22262e; --code-ink:#e6e9ef;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;font-size:16px}
+  header{background:var(--ink);color:#fff;padding:26px 24px 20px}
+  header .wrap{max-width:1080px;margin:0 auto}
+  header h1{margin:0 0 4px;font-size:1.4rem;font-weight:700}
+  header p{margin:0;color:#b8bfca;font-size:.93rem}
+  header a{color:#9fc1e0}
+  nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--border);overflow-x:auto}
+  nav .wrap{max-width:1080px;margin:0 auto;display:flex;gap:2px;padding:0 12px}
+  nav button{flex:0 0 auto;background:none;border:none;border-bottom:3px solid transparent;padding:13px 12px 10px;font-size:.88rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  nav button:hover{color:var(--ink)}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+  nav button .cnt{font-weight:500;font-size:.72rem;color:var(--muted);margin-left:3px}
+  main{max-width:1080px;margin:0 auto;padding:26px 20px 80px}
+  section.tab{display:none}
+  section.tab.active{display:block}
+  h2{font-size:1.28rem;margin:0 0 6px}
+  h3{font-size:1.04rem;margin:26px 0 8px}
+  .lede{color:var(--muted);margin:0 0 20px;max-width:75ch}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin:0 0 14px}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:10px;margin:0 0 12px;overflow:hidden}
+  .step-head{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;cursor:pointer}
+  .step-head:hover{background:#fbfbf9}
+  .step-head input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex:0 0 auto}
+  .step-head .t{font-weight:650;font-size:.97rem}
+  .step-head .s{color:var(--muted);font-size:.84rem;margin-top:2px}
+  .step-head .chev{margin-left:auto;color:var(--muted);flex:0 0 auto;transition:transform .15s}
+  .step.open .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:2px 16px 16px 46px;border-top:1px solid var(--border)}
+  .step.open .step-body{display:block}
+  .step.done .t{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+  .step-body p{margin:11px 0}
+  .step-body ul,.step-body ol{margin:9px 0;padding-left:22px}
+  .step-body li{margin:5px 0}
+  .callout{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;padding:11px 15px;margin:13px 0;font-size:.93rem}
+  .callout.gold{border-color:var(--gold);background:var(--gold-soft)}
+  .callout.red{border-color:var(--red);background:var(--red-soft)}
+  .callout b:first-child{display:block;margin-bottom:2px}
+  .codewrap{position:relative;margin:13px 0}
+  pre{background:var(--code-bg);color:var(--code-ink);padding:15px 15px 13px;border-radius:8px;overflow-x:auto;font-size:.8rem;line-height:1.5;margin:0;white-space:pre-wrap;word-break:break-word}
+  .copybtn{position:absolute;top:8px;right:8px;background:#3a4150;color:#dfe4ec;border:none;border-radius:6px;padding:5px 12px;font-size:.74rem;font-weight:600;cursor:pointer}
+  .copybtn:hover{background:#4a5264}
+  table{border-collapse:collapse;width:100%;margin:13px 0;font-size:.86rem;background:var(--card)}
+  th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#f0efeb;font-weight:650}
+  .toolbar{display:flex;gap:10px;align-items:center;margin:0 0 13px;flex-wrap:wrap}
+  .toolbar button{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer}
+  .progressbar{height:6px;background:var(--border);border-radius:3px;margin:8px 0 18px;overflow:hidden}
+  .progressbar>div{height:100%;background:var(--green);width:0%;transition:width .3s}
+  footer{border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;padding:20px;text-align:center}
+  @media print{nav,.toolbar,.copybtn{display:none} section.tab{display:block!important;page-break-before:always} .step-body{display:block!important} body{background:#fff}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Backup demo — automated campaign pipeline</h1>
+  <p>One agent runs audience research → brief → territories → compliance scoring → recommendation, for any persona. The live moment: switch the persona, run it again. · <a href="build.html">Main build guide</a></p>
+</div></header>
+<nav><div class="wrap">
+  <button data-tab="start" class="active">0 · Start + feasibility test</button>
+  <button data-tab="agent">1 · Build the agent <span class="cnt" id="cnt-agent"></span></button>
+  <button data-tab="outputs">2 · Document, deck, image <span class="cnt" id="cnt-outputs"></span></button>
+  <button data-tab="demo">3 · Demo script <span class="cnt" id="cnt-demo"></span></button>
+  <button data-tab="fix">Troubleshooting</button>
+</div></nav>
+<main>
+
+<!-- ============ TAB 0 ============ -->
+<section class="tab active" id="tab-start">
+  <h2>What this is and when to build it</h2>
+  <p class="lede">This is the backup for the measurement demo — decide at your Day-4 gate. It shows an agent running a complete campaign development process for an invented ETF, grounded in your real templates and guidance documents, ending in a campaign book (Word), a deck (PowerPoint), and a hero visual (Copilot image). The demo's peak is the audience switch: same process, same controls, different persona — one changed word in the instruction.</p>
+
+  <div class="callout gold"><b>What it proves</b> The pipeline is the cost story (a campaign process that runs itself, with legal and identity guidance enforced by an agent, not a review queue). The persona switch is the opportunity story (personalization as a built-in capability). It reuses the same five personas as the measurement work — one audience science powering both measuring and making.</div>
+
+  <h3>Total build: about 2 days once files are ready</h3>
+  <table>
+    <tr><th>Block</th><th>Work</th><th>Time</th></tr>
+    <tr><td>Feasibility test</td><td>The four checks below</td><td>~2 hours, do this week</td></tr>
+    <tr><td>Build</td><td>Files folder → agent → test runs → tune instructions</td><td>~1 day</td></tr>
+    <tr><td>Outputs + rehearse</td><td>Word/deck/image chain · pre-run persona A · rehearse the live switch</td><td>~1 day</td></tr>
+  </table>
+
+  <h3>Feasibility test — four checks, ~2 hours, before committing</h3>
+  <div class="card">
+    <ol style="margin:0;padding-left:20px">
+      <li><b>Image generation (already confirmed working):</b> in Copilot chat, ask for an image. Done — yours generated.</li>
+      <li><b>Agent grounding:</b> in Copilot Studio, create a throwaway agent, add 2–3 of your files as Knowledge (the product sheet and one persona card), publish, then ask it in the test pane: "What is the product in the product sheet, and what does it cost?" If it answers from the file — grounding works. If it answers generically or says it doesn't know, the files haven't indexed yet: wait 15 minutes and re-ask before concluding anything.</li>
+      <li><b>Word export:</b> the plan is to run the agent inside the Microsoft 365 Copilot app (the main Copilot chat, where your agents appear in the right-hand panel or under "Agents" once published). Run any prompt at your throwaway agent there, and look at the buttons under its response for an <b>export or "Edit in Word / Edit in Pages"</b> option. If it exists, the campaign book becomes a Word file in one click, no copying. If it doesn't exist in your tenant, use the fallback in step 2.1.</li>
+      <li><b>Deck from document:</b> open PowerPoint → open your deck template file → click <b>Copilot</b> in the ribbon → look for <b>"Create a presentation from a file"</b> → point it at any Word document you have. If it builds slides, the deck chain works.</li>
+    </ol>
+  </div>
+  <p>All four pass → this backup is real and the 2-day estimate holds. Checks 3 or 4 fail → the demo still works, ending at the campaign book + image (skip the deck), which is still a complete story.</p>
+</section>
+
+<!-- ============ TAB 1 ============ -->
+<section class="tab" id="tab-agent">
+  <h2>1 · Build the agent</h2>
+  <div class="toolbar"><button data-expand="agent">Expand all</button><button data-collapse="agent">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-agent"></div></div>
+
+  <div class="step" data-group="agent" data-id="a1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.1 · Assemble the knowledge folder</div><div class="s">30 min · one folder, clear filenames</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Create a folder in OneDrive or SharePoint named <b>Campaign Studio files</b>. Put copies of these in it (copies — leave your originals wherever they live), renamed so their purpose is obvious to the agent:</p>
+      <ul>
+        <li><code>PRODUCT SHEET - [invented ETF name].docx</code> — the fake product sheet</li>
+        <li><code>PERSONA - Amy.docx</code> … <code>PERSONA - Linda.docx</code> — one file per persona card</li>
+        <li><code>AUDIENCE RESEARCH.docx</code> — the corroborating research</li>
+        <li><code>CREATIVE BRIEF TEMPLATE.docx</code></li>
+        <li><code>LEGAL GUIDANCE.docx</code> — the rules creative must follow</li>
+        <li><code>IDENTITY AND TONE GUIDELINES.docx</code> — your voice/visual guidance</li>
+        <li><code>MEDIA CONTEXT.docx</code> and <code>MEASUREMENT CONTEXT.docx</code></li>
+      </ul>
+      <p>Filenames matter: the agent's instructions refer to files by these names. If a document is a deck (.pptx), that's fine — agents can read those too — but Word/PDF index most reliably. Keep the folder under ~20 files; more dilutes retrieval.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="agent" data-id="a2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.2 · Create the agent</div><div class="s">30 min · Copilot Studio, same as your other agents</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>copilotstudio.microsoft.com → Agents → New agent → skip to the configure form. Name: <b>Campaign Studio</b>. Model: the default is fine. <b>Web search: OFF</b> — different reason than the measurement build: this agent must build from YOUR files (product truth, your guidance), not from the internet's idea of marketing. In <b>Knowledge</b>, add every file from the folder (Add knowledge → browse to the folder → select all the files). Paste the instructions below, then <b>Publish</b> — and when publishing, enable it for <b>Microsoft 365 Copilot</b> and <b>Teams</b> (there's a channels/availability step in publishing; tick both), because the demo runs in the Copilot app where the Word-export button lives.</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>You are Campaign Studio, an automated campaign development pipeline.
+
+When the user sends: "Run the pipeline for [product] for [persona]"
+(persona is one of: Amy, Brad, Emily, Jenny, Linda), execute all
+five stages below in one single response, in order, with a clear
+heading per stage. Do not ask questions first. If the user adds
+"concise mode", write stages 1-3 at half length.
+
+STAGE 1 — AUDIENCE INSIGHT
+From the PERSONA file for the named persona and the AUDIENCE
+RESEARCH file: who this person is, what they want, what stops them,
+where to reach them — and the single insight about them most
+relevant to this product. 150 words maximum.
+
+STAGE 2 — CREATIVE BRIEF
+Follow the section structure of the CREATIVE BRIEF TEMPLATE file:
+objective, audience, single-minded proposition, support, tone (from
+the IDENTITY AND TONE GUIDELINES file), mandatories (from the LEGAL
+GUIDANCE file), recommended channels (from the MEDIA CONTEXT file,
+matched to this persona's media habits).
+
+STAGE 3 — CAMPAIGN TERRITORIES
+Three genuinely distinct creative territories. For each: a name,
+the big idea in two sentences, one example headline, one example
+social post line, and the two best channels for this audience.
+
+STAGE 4 — COMPLIANCE AND CONSISTENCY SCORECARD
+Score every territory against the LEGAL GUIDANCE and IDENTITY AND
+TONE GUIDELINES files. Output a table: rows are the specific rules
+or criteria drawn from those two files; columns are the three
+territories; each cell is PASS, FLAG, or FAIL. Below the table,
+one line of explanation for every FLAG or FAIL.
+
+STAGE 5 — RECOMMENDATION AND IMAGE BRIEF
+Name the winning territory and justify it in three sentences,
+citing the scorecard. Then write "IMAGE BRIEF:" followed by one
+paragraph an image tool could render as the hero visual: subject,
+setting, mood, style, colors. No real people, no logos, no text
+inside the image.
+
+Rules: ground every stage in the knowledge files; where a file
+contradicts your general knowledge, the file wins. Never invent
+product facts that are not in the PRODUCT SHEET file. Keep the
+full response under 1,200 words.</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-group="agent" data-id="a3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">1.3 · Test and tune</div><div class="s">1–2 hrs · run it, read hard, adjust</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>In the agent's test pane, type: <code>Run the pipeline for [your invented ETF's name] for Emily</code>. Read the output against four tests:</p>
+      <ul>
+        <li><b>Grounding:</b> does Stage 1 sound like YOUR Emily (details from her card), or a generic 38-year-old? Does the brief use your template's section names? Generic output = knowledge files not indexing or not named as the instructions expect — check filenames match.</li>
+        <li><b>Product truth:</b> every product claim traceable to the fake product sheet. If it invents features, add the missing fact to the product sheet rather than fighting the agent.</li>
+        <li><b>Scorecard teeth:</b> Stage 4's criteria should be recognizably from your actual guidance documents, and at least one territory should FLAG something — a scorecard where everything passes looks fake. If all-pass, your guidance files may be too vague for the agent to extract rules from; add a "key rules" summary section at the top of the legal guidance copy.</li>
+        <li><b>The switch:</b> run <code>Run the pipeline for [product] for Linda</code>. Stages 1–3 should be visibly, meaningfully different — different insight, different tone, different channels, different territories. This difference IS the demo; if the two runs feel samey, sharpen the persona files' distinctive details.</li>
+      </ul>
+      <p>Tune by editing the instructions or the files, re-publish, re-run. Two or three cycles is normal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="tab-outputs">
+  <h2>2 · Document, deck, and image</h2>
+  <p class="lede">The agent's chat response becomes three artifacts, all inside Microsoft: a Word campaign book, a PowerPoint deck, and a rendered hero visual. This chain is what answers "can it make a deck" — the agent writes, the suite renders.</p>
+  <div class="toolbar"><button data-expand="outputs">Expand all</button><button data-collapse="outputs">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-outputs"></div></div>
+
+  <div class="step" data-group="outputs" data-id="o1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.1 · Campaign book → Word</div><div class="s">1 click if export exists · fallback included</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p><b>Primary path:</b> run the pipeline in the <b>Microsoft 365 Copilot app</b> (not the Studio test pane): open Copilot → find <b>Campaign Studio</b> in your agents list (it appears there because you published to Microsoft 365 Copilot in 1.2) → send the run command → when the response finishes, use the <b>export / "Edit in Word"</b> control under the response. Name the file <code>Campaign book - [persona].docx</code>, save it into a folder called <b>Campaign outputs</b>. One click, no copying.</p>
+      <p><b>Fallback if your tenant has no export button:</b> select the full response in the chat → copy → open your brief template in Word → paste. It's one paste, inside your own suite, and takes fifteen seconds — acceptable for a backup demo, and invisible if you do it as a pre-run before the meeting. (For the live switch moment, you'll show the response on screen directly, so no export is needed live either way.)</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="outputs" data-id="o2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.2 · Campaign book → deck</div><div class="s">1 click in PowerPoint · template first</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Open PowerPoint → <b>open your deck template file first</b> (Copilot builds slides in whatever theme is open — opening the template first is how you keep your look) → click <b>Copilot</b> in the ribbon → choose <b>Create a presentation from a file</b> → select <code>Campaign book - [persona].docx</code>. Review the slides it builds; expect to delete a couple and tighten titles — five minutes of cleanup, not authorship. Save as <code>Campaign deck - [persona].pptx</code> in the same outputs folder.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="outputs" data-id="o3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">2.3 · Image brief → hero visual</div><div class="s">2 min · in Copilot chat, where your image test worked</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>From Stage 5 of the campaign book, copy the paragraph after "IMAGE BRIEF:" → open Copilot chat (the same place your test image generated) → paste it with this prefix: <code>Generate an image: </code> → generate. If the first render misses, add one steering line ("more minimalist," "warmer light") rather than rewriting the brief. Save the image into the outputs folder as <code>Hero visual - [persona].png</code>.</p>
+      <p><b>Labeling rule:</b> anywhere this image appears (deck, demo), caption it <b>"AI concept visual — not final creative."</b> Financial-promotion review will ask; having the label already there is the right answer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="tab-demo">
+  <h2>3 · Demo script — 6 to 8 minutes</h2>
+  <div class="toolbar"><button data-expand="demo">Expand all</button><button data-collapse="demo">Collapse all</button></div>
+  <div class="progressbar"><div id="bar-demo"></div></div>
+
+  <div class="step" data-group="demo" data-id="d1">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.1 · Pre-run everything for persona A</div><div class="s">day before · nothing live depends on generation speed</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <p>Run the full chain for your first persona (pick the one whose output read best in testing): campaign book, deck, hero visual, all saved in the outputs folder. These are your show-and-tell artifacts. Also screen-record one full pipeline run — that recording is your backup if anything misbehaves live.</p>
+    </div>
+  </div>
+
+  <div class="step" data-group="demo" data-id="d2">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.2 · The beats, in order</div><div class="s">rehearse twice, timed</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ol>
+        <li><b>The artifacts (2 min):</b> open the persona-A deck and page through: brief → territories → scorecard → recommendation → hero visual. One sentence of setup: "One instruction produced this — research, brief, territories, a compliance scorecard against our actual legal and identity guidance, a recommendation, and the concept visual."</li>
+        <li><b>Pause on the scorecard (30 sec):</b> "The rules in these rows are our real guidance documents. The reviewer here is an agent — the controls are in the tool, not in a queue."</li>
+        <li><b>The switch (3–4 min, live):</b> open Copilot, the Campaign Studio agent, and type the run command with a different persona and <code>concise mode</code>: <code>Run the pipeline for [product] for Jenny. Concise mode.</code> Say nothing while it streams. As the stages appear, point at what changed: different insight, different tone, different territories, same guardrails. Land the line: <i>"Same process, same controls, different human. The change was one word."</i></li>
+        <li><b>Optional applause beat (1 min):</b> copy the new run's IMAGE BRIEF paragraph into Copilot image generation and let persona B's visual render in the room. Only do this if it behaved in rehearsal — a good demo ends on a peak, not on a spinner.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" data-group="demo" data-id="d3">
+    <div class="step-head"><input type="checkbox"><div><div class="t">3.3 · Questions to be ready for</div><div class="s">the three that will come</div></div><span class="chev">›</span></div>
+    <div class="step-body">
+      <ul>
+        <li><b>"Is this creative any good?"</b> — "It's a first-pass system: the territories are starting points a team refines. The point isn't that it replaces creatives; it's that research, briefing, compliance checking, and audience adaptation stopped being weeks of coordination."</li>
+        <li><b>"Would legal actually sign off on agent-scored compliance?"</b> — "The agent applies the written rules and flags; humans still approve. It moves legal from reading everything to reading flags — that's the saving."</li>
+        <li><b>"How long did this take to build?"</b> — answer honestly with your build days; the small number IS the point.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="tab-fix">
+  <h2>Troubleshooting</h2>
+  <div class="card"><b>Output is generic — doesn't sound like your files.</b> Knowledge hasn't indexed (wait 15 minutes after adding files, then re-test) or filenames don't match what the instructions reference (compare exactly). Re-publish after any change.</div>
+  <div class="card"><b>It invents product facts.</b> The fact it needed isn't in the product sheet. Add the fact to the sheet rather than adding "don't invent" scolding to the instructions — agents follow available truth better than prohibitions.</div>
+  <div class="card"><b>The scorecard passes everything.</b> Your guidance files are too narrative for rule extraction. Add a section at the top of the legal guidance copy titled "Key rules" with 6–10 one-line rules; the scorecard will use them as rows.</div>
+  <div class="card"><b>Two personas produce similar campaigns.</b> The persona files lack distinctive, concrete detail where it matters (what they'd never respond to, words they'd use, channels). Sharpen the two cards you demo with; re-run.</div>
+  <div class="card"><b>Response cuts off mid-stage.</b> Output length limits. The instructions cap at 1,200 words — if it still truncates, run with "concise mode", or split the run: "Run stages 1-3…" then "Run stages 4-5 for the same product and persona."</div>
+  <div class="card"><b>No export/Edit-in-Word button in Copilot.</b> Use the fallback in 2.1 (one paste into your Word template). For the live switch this doesn't matter — the streaming response on screen is the demo.</div>
+  <div class="card"><b>Agent doesn't appear in the Copilot app.</b> Publishing didn't include the Microsoft 365 Copilot channel — go back to the agent's publish/channels settings and enable it; allow a few minutes to appear.</div>
+  <div class="card"><b>Image generation refuses the brief.</b> Usually a compliance filter on financial imagery or people. Remove references to money outcomes and specific people; describe scene, mood, and style only. The instructions already ban real people, logos, and in-image text for this reason.</div>
+  <div class="card"><b>Deck ignores your template look.</b> The template wasn't the open, active presentation when you clicked Copilot. Open the template file first, then Create from file.</div>
+</section>
+</main>
+<footer>Backup demo guide · progress stored in this browser only · <a href="build.html">main build guide</a></footer>
+<script>
+const tabs=document.querySelectorAll('nav button');
+function show(id){
+  tabs.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+id));
+  window.scrollTo({top:0});
+  try{localStorage.setItem('abc-tab',id);}catch(e){}
+}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+try{const t=localStorage.getItem('abc-tab');if(t)show(t);}catch(e){}
+document.querySelectorAll('.step-head').forEach(h=>{
+  h.addEventListener('click',e=>{
+    if(e.target.tagName==='INPUT')return;
+    h.parentElement.classList.toggle('open');
+  });
+});
+function key(id){return 'abc-step-'+id;}
+function refreshCounts(){
+  const groups={};
+  document.querySelectorAll('.step[data-group]').forEach(s=>{
+    const g=s.dataset.group;groups[g]=groups[g]||{d:0,t:0};groups[g].t++;
+    if(s.classList.contains('done'))groups[g].d++;
+  });
+  for(const g in groups){
+    const c=document.getElementById('cnt-'+g);
+    if(c)c.textContent=groups[g].d+'/'+groups[g].t;
+    const bar=document.getElementById('bar-'+g);
+    if(bar)bar.style.width=(100*groups[g].d/groups[g].t)+'%';
+  }
+}
+document.querySelectorAll('.step[data-group]').forEach(s=>{
+  const cb=s.querySelector('input[type=checkbox]');
+  try{if(localStorage.getItem(key(s.dataset.id))==='1'){cb.checked=true;s.classList.add('done');}}catch(e){}
+  cb.addEventListener('change',()=>{
+    s.classList.toggle('done',cb.checked);
+    try{localStorage.setItem(key(s.dataset.id),cb.checked?'1':'0');}catch(e){}
+    refreshCounts();
+  });
+});
+refreshCounts();
+document.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.step[data-group="'+b.dataset.expand+'"]').forEach(s=>s.classList.add('open'));
+}));
+document.querySelectorAll('[data-collapse]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.step[data-group="'+b.dataset.collapse+'"]').forEach(s=>s.classList.remove('open'));
+}));
+document.querySelectorAll('.copybtn').forEach(b=>b.addEventListener('click',()=>{
+  const txt=b.parentElement.querySelector('pre').innerText;
+  const done=()=>{b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy',1600);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallback());}
+  else fallback();
+  function fallback(){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta);}
+}));
+</script>
+</body>
+</html>
