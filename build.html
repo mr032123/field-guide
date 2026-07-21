@@ -431,6 +431,10 @@ set its issuer to "unknown" — never guess.
     PARENT or PRODUCT, if any"],
  "role_attribution": "which entity, if any, the answer treats as
     the natural fit for this topic, and in one short phrase why",
+ "criteria_taught": ["for educational/explanation answers: the
+    decision criteria the answer teaches the reader to use (like
+    'low fees' or 'diversification'), in order of emphasis; []
+    if not an educational answer"],
  "attributes": {"fees": -1|0|1, "trust": -1|0|1,
     "performance": -1|0|1, "breadth": -1|0|1,
     "beginner_fit": -1|0|1}  — sentiment toward PARENT/PRODUCT
@@ -534,7 +538,8 @@ of rows for each distinct filterkey value.</pre></div></li>
   <div class="step" data-group="collect" data-id="c4">
     <div class="step-head"><input type="checkbox"><div><div class="t">3.4 · Build the citation record</div><div class="s">45 min · after collection finishes — includes Copilot answers</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>First, capture the citations you did not log by hand: the Copilot answers. Open a new chat in your AI health build Project, attach measurement.xlsx, and paste: <i>"Scan the answer text of every Runs row for web addresses and links. Add each one you find to the Sources sheet as a new row: the run_id and the URL. Skip URLs already logged for that run. Give me the file back."</i></p>
+      <p>Note on Copilot citations: agent answers that come through the flow often drop their reference links even when the agent searched. If your Copilot answers contain no URLs, that is expected — the Sources sheet then builds from the ChatGPT runs, where links are visible and logged by hand. Do NOT add "list your sources" to the agent instructions mid-collection; the instructions are part of the frozen measurement condition. It is a legitimate Reading-2 improvement, noted in Config as a protocol change.</p>
+      <p>First, capture any citations you did not log by hand: the Copilot answers. Open a new chat in your AI health build Project, attach measurement.xlsx, and paste: <i>"Scan the answer text of every Runs row for web addresses and links. Add each one you find to the Sources sheet as a new row: the run_id and the URL. Skip URLs already logged for that run. Give me the file back."</i></p>
       <p>Then, in the Sources sheet, fill <code>source_type</code> per URL: <b>owned</b> (any domain you control — parent or product sites), <b>earned</b> (press coverage you influenced), <b>wild</b> (forums, ratings sites, blogs, stale articles — everything else). Then open a new chat in your AI health build Project, attach measurement.xlsx (paperclip button), and paste:</p>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>From the Sources sheet, compute and write into the Analysis sheet:
 1. Total unique URLs cited, and total citations.
