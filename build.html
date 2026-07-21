@@ -606,7 +606,18 @@ every value you coded for that row.</pre></div>
   <div class="step" data-group="score" data-id="s4">
     <div class="step-head"><input type="checkbox"><div><div class="t">4.4 · Set the flow to run on a weekly schedule</div><div class="s">10 min · makes "standing instrument" literally true</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p><b>Do this only after all collection and scoring are done</b> — changing a trigger mid-collection risks breaking a working flow. In the flow, click the trigger (the top box, "Manually trigger a flow") → delete it → click the + that appears where it was → search <b>Recurrence</b> → add it → set Frequency = Week, on Monday, at 6:00. Save. It will find zero pending rows most weeks and do nothing — fine. What matters: the instrument now has a pulse, and "the reading refreshes weekly" is true when you say it in the room.</p>
+      <p><b>Do this only after all collection and scoring are done</b> — changing a trigger mid-collection risks breaking a working flow. In the flow, click the trigger (the top box, "Manually trigger a flow") → delete it → click the + that appears where it was → search <b>Recurrence</b> → add it → set Frequency = Week, on Monday, at 6:00. Save.</p>
+      <p><b>How the schedule gets fresh work:</b> done rows are history — a recurring reading never re-runs them; it appends a new batch. The workbook is a time series: each reading's rows are tagged with a <code>reading</code> value (R1, R2…) so waves never mix and the analysis can compare them. Before each new cycle, attach the workbook to your assistant and paste:</p>
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>We are starting a new reading cycle. First, if the Runs sheet has
+no "reading" column, add one and set every existing row to "R1".
+Then append a fresh set of run rows using the same rules as the
+original run matrix (same prompts selected by tier, same
+surface/model/browsing combinations and repetition counts), with:
+status = pending, answer/searched/run_date empty, run_id continuing
+the R-numbering after the last existing row, and reading = "R2"
+(or the next number). Report the new row count per surface/model.
+Give me the file back.</pre></div>
+      <p>Save the returned file to OneDrive and the scheduled flow takes it from there on its next Monday. Two minutes of human work per reading cycle; fully automating the refresh itself is a legitimate roadmap item, not a pre-meeting build. (The Claude phase stays a manual second pass for now — duplicate the scheduled flow with the swapped condition and agent after the meeting if you want both on the clock.)</p>
     </div>
   </div>
 </section>
