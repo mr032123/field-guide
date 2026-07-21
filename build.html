@@ -404,9 +404,20 @@ PARENT = [parent company name]
 PRODUCT = [product line name]
 COMPETITORS = [comp1], [comp2], [comp3], [comp4]
 
+TICKER RULE: answers often name ETF tickers (like VOO or IVV)
+without naming the company behind them. Resolve every ticker to
+its issuing company using your knowledge, and treat a ticker
+mention or recommendation as a mention/recommendation of its
+issuer. Show every resolution in the tickers field below so it
+can be audited. If you are not certain of a ticker's issuer,
+set its issuer to "unknown" — never guess.
+
 {
+ "tickers": [{"ticker": "each ticker mentioned",
+    "issuer": "resolved company or 'unknown'"}],
  "recommended_entity": "PARENT | PRODUCT | one competitor name |
-    other | none  — the single pick the answer committed to",
+    other | none  — the single pick the answer committed to; if
+    the pick was a ticker, this is its resolved issuer",
  "parent_mentioned": true/false,
  "parent_context": "verbatim phrase where PARENT appears, or ''",
  "product_mentioned": true/false,
@@ -580,7 +591,7 @@ first_mentioned, winner. Give me the workbook back, plus:
       <div class="codewrap"><button class="copybtn">Copy</button><pre>Give me a random 10% sample of the coded rows as a numbered table
 with three columns: the original prompt, the AI's full answer, and
 every value you coded for that row.</pre></div>
-      <p>Read each answer yourself and decide, row by row, whether you agree with the coding. Count: agreements ÷ total rows = your agreement rate. Record it in the workbook: open measurement.xlsx → Config sheet → add a new row with <code>coder_agreement</code> in the key column and the rate (e.g. 93%) in the value column.</p>
+      <p>Read each answer yourself and decide, row by row, whether you agree with the coding — including the ticker-to-company attributions, which you can check at a glance. Also ask in the same chat: <i>"Show me the distinct ticker-to-issuer resolutions you used across all rows, with counts, plus any marked unknown."</i> — one table, thirty seconds to eyeball, and resolve any unknowns by telling it the right company. Count: agreements ÷ total rows = your agreement rate. Record it in the workbook: open measurement.xlsx → Config sheet → add a new row with <code>coder_agreement</code> in the key column and the rate (e.g. 93%) in the value column.</p>
       <p>Above ~90%: proceed. Below: find the recurring mistake (most common: a hedged "you could consider X" counted as a recommendation), then paste: <i>"Rows [numbers] are miscoded — [describe the mistake]. Tighten the rubric so [the rule], recode ALL rows with the corrected rubric, and give me the workbook back."</i> Then pull a fresh 10% sample and verify again. "Machine-coded, ten percent hand-verified, agreement rate X%" is the sentence that buys the whole dashboard its credibility.</p>
     </div>
   </div>
