@@ -415,9 +415,18 @@ set its issuer to "unknown" — never guess.
 {
  "tickers": [{"ticker": "each ticker mentioned",
     "issuer": "resolved company or 'unknown'"}],
+ "answer_style": "single_pick | pick_with_rejections |
+    narrow_set (2-3 options, no favorite) | menu (4+ options, no
+    favorite) | no_products",
+ "entities": [for PARENT, PRODUCT, and each competitor that
+    appears: {"entity": "name", "standing": "sole_pick | preferred
+    | shortlisted | menu_mention | mentioned_negative",
+    "list_position": number (1 = first named), "co_mentioned_with":
+    number of other providers in the same answer}],
  "recommended_entity": "PARENT | PRODUCT | one competitor name |
     other | none  — the single pick the answer committed to; if
-    the pick was a ticker, this is its resolved issuer",
+    the pick was a ticker, this is its resolved issuer; 'none'
+    for narrow_set/menu answers with no favorite",
  "parent_mentioned": true/false,
  "parent_context": "verbatim phrase where PARENT appears, or ''",
  "product_mentioned": true/false,
@@ -676,6 +685,18 @@ only for items 1–6; report n for every cell.
 5. Mention rates, SEPARATELY: parent_mentioned % and
    product_mentioned % — by topic. Flag topics where one is present
    and the other absent (the two-b***d gap).
+5b. THE FUNNEL: for PARENT+PRODUCT combined and for each
+    competitor, by topic × surface × model: inclusion rate (any
+    appearance), consideration rate (standing of shortlisted or
+    better), endorsement rate (preferred or sole_pick). Also:
+    share of shelf (when in menu answers: average number of
+    co-mentioned providers, and average list_position), and an
+    endorsement score per topic (sole_pick=4, preferred=3,
+    shortlisted=2, menu_mention=1, mentioned_negative=-2,
+    absent=0, averaged across runs).
+5c. THE COMMITMENT CUT: among answers with answer_style
+    single_pick or pick_with_rejections ONLY: who wins, by topic.
+    (The "when AI commits, who does it commit to" table.)
 6. Gaps: chatgpt vs copilot-gpt recommendation-rate gap by topic;
    copilot-gpt vs copilot-claude gap by topic. Note the largest of each.
 7. Paraphrase stability: for each paraphrase pair, do conclusions
@@ -715,6 +736,10 @@ OVERVIEW PAGE
   trail/lead; clicking a topic row opens its drill-down
 - "Who wins instead — and why": competitor share of our losses +
   top verbatim reasons
+- "The funnel": inclusion → consideration → endorsement rates for
+  us vs the best competitor, by topic; call out the largest drop
+  (e.g. on-the-shelf-but-never-the-pick topics)
+- "When AI commits": winner share among decisive answers only
 - "The objection" card (accent color): the top ruling-out cluster,
   verbatim, with recurrence count and where it appears
 - "Two-b***d panel": per topic, parent mention rate vs product
