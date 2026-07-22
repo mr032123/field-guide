@@ -431,6 +431,9 @@ set its issuer to "unknown" — never guess.
     PARENT or PRODUCT, if any"],
  "role_attribution": "which entity, if any, the answer treats as
     the natural fit for this topic, and in one short phrase why",
+ "tenant_context": true/false — true if the answer references
+    the user's employer, company email domain, or internal/tenant
+    context instead of treating the asker as a retail client,
  "criteria_taught": ["for educational/explanation answers: the
     decision criteria the answer teaches the reader to use (like
     'low fees' or 'diversification'), in order of emphasis; []
@@ -518,6 +521,25 @@ of rows for each distinct filterkey value.</pre></div></li>
         <li>Batches will stop or fail partway — normal. Because status=done rows are skipped by your filter, just run the flow again; it resumes where it left off. That's why the status column exists.</li>
       </ul>
     </div>
+  </div>
+
+  <div class="card">
+    <p style="margin:0 0 8px"><b>Web-toggle recovery + scaling the run count.</b> If a Copilot batch ran with the agents' web search OFF while rows said browsing="on": the data is valid, the label is wrong — those runs measured the no-web condition. Fix the labels, then add a true web-on batch. Before the new batch: open each panelist agent → Settings → web search ON → <b>Publish</b> (mandatory — unpublished settings changes never reach the flow) → test-pane check with a current-events question. Then run these two prompts in Excel Copilot (or your assistant), in order:</p>
+    <div class="codewrap"><button class="copybtn">Copy</button><pre>In the Runs table on the Runs sheet: for every row where surface
+is "copilot" AND status is "done", change the browsing value to
+"off". Change nothing else. Tell me how many rows you changed.</pre></div>
+    <div class="codewrap"><button class="copybtn">Copy</button><pre>In the Runs table on the Runs sheet: find every distinct qid that
+appears in rows with surface="copilot". For each of those qids, add
+4 new rows: two with model="gpt" and two with model="claude". For
+every new row: surface="copilot", browsing="on", status="pending",
+run_index = 1 and 2 within each model pair, answer / searched /
+run_date left empty, and all other column values (such as
+prompt_text) copied from an existing row with the same qid and
+surface="copilot". run_id continues the R-numbering sequentially
+from the highest existing run_id (if the last is R0736, new rows
+start at R0737). Tell me how many rows you added, the new total
+row count, and the last run_id used.</pre></div>
+    <p style="margin:8px 0 0">Then run the Collector as before: GPT phase → the two edits → Claude phase → final sweep. The status filter picks up only the new pending rows. Tenant-awareness note: if any answers reference your employer or email domain, the scorer's <code>tenant_context</code> flag (rubric, step 2.3) catches them — report the flag rate in the methodology footer, and check whether flagged answers skew favorable before trusting Copilot-surface comparisons.</p>
   </div>
 
   <div class="step" data-group="collect" data-id="c3">
