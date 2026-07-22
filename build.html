@@ -723,10 +723,26 @@ this data and why — your nomination for the headline topic.</pre></div>
     <div class="step-head"><input type="checkbox"><div><div class="t">5.2 · Generate the dashboard <span class="tag aha">the artifact</span></div><div class="s">1–2 hrs incl. iteration · one file, no dependencies</div></div><span class="chev">›</span></div>
     <div class="step-body">
       <p>Stay in the same chat as 5.1 — the assistant already has the workbook and the computed Analysis sheet. (If you start a new chat instead, re-attach the latest measurement.xlsx first.) Paste:</p>
-      <div class="codewrap"><button class="copybtn">Copy</button><pre>Build a single-file HTML dashboard from the Analysis sheet. No
-external libraries, no internet dependencies — inline CSS, inline
-data, simple div/SVG bars. Executive-clean: white cards, one accent
-color, generous whitespace, nothing decorative. Two levels:
+      <div class="codewrap"><button class="copybtn">Copy</button><pre>Build a single-file HTML dashboard. No external libraries, no
+internet dependencies — inline CSS, inline data, simple div/SVG
+bars. Executive-clean: white cards, one accent color, generous
+whitespace, nothing decorative.
+
+INTERACTIVE FILTERING: embed the scored run-level rows (qid, topic,
+tier, surface, model, browsing, and the coded fields — NOT the full
+answer text) as inline JSON inside the file. Add a filter bar at
+the top with multi-select toggle chips for: surface, model, web
+on/off, topic, question tier. All NUMERIC panels (rates, funnel,
+gaps, share of shelf) recompute live in JavaScript from the
+embedded rows when filters change. TEXT panels (objection clusters,
+winner reasons, prescriptions) are pre-computed from the Analysis
+sheet at topic level — show/hide them with the filters and label
+the scope they were computed at.
+
+THE N-GUARD, strictly: every displayed number shows its n; any
+cell whose filtered n falls below 8 renders grayed with
+"insufficient n" instead of a rate. Never display a rate without
+its n. Two levels:
 
 OVERVIEW PAGE
 - Header: "AI [the real word] Health · v0.1 · [persona name]" + subtitle
@@ -771,9 +787,8 @@ DRILL-DOWNS (one per topic, same file, shown/hidden by clicks)
 - "Sources, this topic": citation type split, our citation rate on this topic, note if zero owned
 - "Prescription for this cell": placeholder box for now
 
-Use ONLY real computed numbers. Where data is thin (n<5), show
-the cell grayed with "insufficient n" — never fake confidence.
-Give me the file to download, then we iterate on layout.</pre></div>
+Use ONLY real computed numbers. Give me the file to download,
+then we iterate on layout.</pre></div>
       <p>Expect two or three iteration rounds ("make the objection card bigger," "the bars need n labels"). Keep a copy of each version. When done, also export the overview as a PDF (print → save as PDF) — your backup if demo-day browsers misbehave.</p>
     </div>
   </div>
