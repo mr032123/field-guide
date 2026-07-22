@@ -418,8 +418,10 @@ set its issuer to "unknown" — never guess.
  "answer_style": "single_pick | pick_with_rejections |
     narrow_set (2-3 options, no favorite) | menu (4+ options, no
     favorite) | no_products",
- "entities": [for PARENT, PRODUCT, and each competitor that
-    appears: {"entity": "name", "standing": "sole_pick | preferred
+ "entities": [for EVERY provider named in the answer — PARENT,
+    PRODUCT, the four benchmark competitors, AND any other company
+    (resolve tickers to issuers first): {"entity": "name",
+    "standing": "sole_pick | preferred
     | shortlisted | menu_mention | mentioned_negative",
     "list_position": number (1 = first named), "co_mentioned_with":
     number of other providers in the same answer}],
@@ -675,8 +677,10 @@ only for items 1–6; report n for every cell.
 
 1. Recommendation rate: % of runs where recommended_entity is PARENT
    or PRODUCT — by topic × surface × model.
-2. Who wins instead: when we lose, winner share by competitor — by
-   topic. Include overall.
+2. Who wins instead: when we lose, winner share by provider — by
+   topic and overall. Include providers OUTSIDE the four benchmark
+   competitors; name any outside provider that wins more than 5%
+   of losses rather than lumping it into "other".
 3. Winner reasons: cluster winner_reasons phrases per competitor;
    top 3 clusters with counts and one verbatim example each.
 4. Ruling-out language: cluster ruling_out_language across all runs;
