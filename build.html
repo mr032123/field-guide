@@ -302,7 +302,7 @@ Report the total row count per surface/model so I can sanity-check.</pre></div>
 4. Add an empty column to the Runs table named "searched".
 Give me the file back, plus a count of rows per browsing value
 so I can check.</pre></div>
-      <div class="callout"><b>Scaling rule — if your bank is bigger than the 41-prompt design</b> Copilot runs everything: automated labor is cheap (watch for AI-credit warnings; if batches crawl, drop decision n from 8 to 6). ChatGPT stays fixed-size: only a pre-registered subset gets ChatGPT rows — for each topic, the first two decision-tier prompts in qid order. That is 2 × 5 topics × 8 runs = 80 manual runs, about 3 hours. Pick the subset by this rule NOW, before any results exist — choosing it after seeing data is cherry-picking. The ChatGPT-vs-Copilot comparison then uses only these matched prompts. <b>Time-crunch floor:</b> if even that is too much, the minimum is your ONE live-demo question run 10 times naturally in ChatGPT and logged as real runs — rehearsal and collection in the same ~35 minutes. (The web-off diagnostic no longer depends on ChatGPT: the relabeled Copilot batch covers it at scale.) Label the ChatGPT surface "pilot scale this reading; full wave in Reading 2" in the methodology footer, and let the dashboard's n-guard gray out the thin cells honestly. If your Runs sheet already has ChatGPT rows for every decision prompt, paste this to your assistant with the workbook attached:</div>
+      <div class="callout"><b>Scaling rule — if your bank is bigger than the 41-prompt design</b> Copilot runs everything: automated labor is cheap (watch for AI-credit warnings; if batches crawl, drop decision n from 8 to 6). ChatGPT stays fixed-size: only a pre-registered subset gets ChatGPT rows — for each topic, the first two decision-tier prompts in qid order. That is 2 × 5 topics × 8 runs = 80 manual runs, about 3 hours. Pick the subset by this rule NOW, before any results exist — choosing it after seeing data is cherry-picking. The ChatGPT-vs-Copilot comparison then uses only these matched prompts. <b>READING-1 SCOPE DECISION (made):</b> manual ChatGPT runs are EXCLUDED from this reading entirely — all Reading-1 data comes from the Copilot agents, presented by model family as <b>GPT</b> and <b>Claude</b>. Skip every ChatGPT-manual step (3.3 included); delete or ignore any surface=chatgpt rows in the Runs sheet. The ChatGPT consumer surface is the named first item of the Reading-2 roadmap. The web-off condition is covered at scale by the relabeled Copilot batch. If your Runs sheet already has ChatGPT rows for every decision prompt, paste this to your assistant with the workbook attached:</div>
       <div class="codewrap"><button class="copybtn">Copy</button><pre>In the Runs sheet, keep rows with surface=chatgpt ONLY for this
 subset: for each topic, the first two decision-tier prompts in qid
 order (look up tier and topic in QuestionBank). Delete every other
@@ -728,11 +728,17 @@ internet dependencies — inline CSS, inline data, simple div/SVG
 bars. Executive-clean: white cards, one accent color, generous
 whitespace, nothing decorative.
 
+DISPLAY LABELS: present the two datasets by model family as "GPT"
+and "Claude". Every page carries the footnote: "Both model families
+measured via Copilot agents under identical conditions; consumer-app
+surfaces (ChatGPT) planned for Reading 2."
+
 INTERACTIVE FILTERING: embed the scored run-level rows (qid, topic,
-tier, surface, model, browsing, and the coded fields — NOT the full
+tier, model, browsing, and the coded fields — NOT the full
 answer text) as inline JSON inside the file. Add a filter bar at
-the top with multi-select toggle chips for: surface, model, web
-on/off, topic, question tier. All NUMERIC panels (rates, funnel,
+the top with multi-select toggle chips for: model, web
+on/off, topic, question tier (single surface this reading — no
+surface chip). All NUMERIC panels (rates, funnel,
 gaps, share of shelf) recompute live in JavaScript from the
 embedded rows when filters change. TEXT panels (objection clusters,
 winner reasons, prescriptions) are pre-computed from the Analysis
@@ -812,7 +818,7 @@ then we iterate on layout.</pre></div>
   <div class="step" data-group="demo" data-id="m1">
     <div class="step-head"><input type="checkbox"><div><div class="t">6.1 · The live query</div><div class="s">rehearse ×10 on Day 7 · you know the distribution</div></div><span class="chev">›</span></div>
     <div class="step-body">
-      <p>Pick ONE decision prompt — the one whose distribution you know best from the data (ideally feeding the headline topic). In the meeting: open the Panelist GPT in a fresh chat, paste it, let the answer land in front of her. Say nothing while it generates.</p>
+      <p>Pick ONE decision prompt — the one whose distribution you know best from the data (ideally feeding the headline topic). In the meeting: open the <b>Panelist GPT agent</b> in Copilot Studio's test pane (or message it in Teams), paste the question, and let the answer land in front of her. Say nothing while it generates. Same agent, same environment the data came from — that consistency is a strength worth one sentence.</p>
       <p>Two rehearsed follow-ups depending on what appears: if the typical result → <i>"That's what happens in [X]% of our sampled runs — here's the full distribution."</i> If an outlier → <i>"Interesting — that's the outlier. Which is exactly why single queries mislead and we sample. Here's what happens across 40 runs."</i> Both paths land; that's the point of sampling. Record a backup run as a screen recording on Day 7.</p>
     </div>
   </div>
@@ -849,7 +855,7 @@ then we iterate on layout.</pre></div>
         <li>Dashboard click-path ×3, timed — the AI health segment fits in 8 minutes with 2 minutes of silence budgeted for her reactions.</li>
         <li>PDF export of overview + headline-topic drill-down on the desktop, in case of browser trouble.</li>
         <li>One hostile dry-run with a colleague playing the exec, interrupting twice.</li>
-        <li>Memory toggles still off. Panelist GPT loads. Flows show green run history (screenshot it — that's the automation slide).</li>
+        <li>Panelist GPT agent opens and responds in the test pane / Teams. Flows show green run history (screenshot it — that's the automation slide).</li>
       </ul>
     </div>
   </div>
